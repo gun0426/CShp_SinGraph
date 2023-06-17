@@ -39,6 +39,7 @@ namespace GunUtility
         bool bTog = false;
         CheckBox[,] boxes = new CheckBox[5, 8];
         int[] aAreaSel = new int[20];
+        int nSeries = 0;
         public Form1()
         {
             InitializeComponent();
@@ -118,10 +119,11 @@ namespace GunUtility
             chart1.Series.Clear();
 
             int row, column;
-            int bArea = 0;
-            int nSeries = 0;
+            int bArea = 0;           
             int nEmptyCol = 0;
-            
+
+            nSeries = 0;
+
             for (int i = 0; i < 20; i++)
             {
                 aAreaSel[i] = 0;
@@ -271,54 +273,21 @@ namespace GunUtility
                 chart1.Invoke(del, new object[] { buffer, size });
             }
             else
-            {             
-                double area_0 = buffer[0];
-                chart1.Series[0].Points.AddXY(chart1_x, area_0);
-                if (chart1.ChartAreas[aAreaSel[0]].AxisY.Minimum > area_0) chart1.ChartAreas[aAreaSel[0]].AxisY.Minimum = area_0;
-                if (chart1.ChartAreas[aAreaSel[0]].AxisY.Maximum < area_0) chart1.ChartAreas[aAreaSel[0]].AxisY.Maximum = area_0;
-                if (chart1.Series[0].Points.Count > 100)
-                {
-                    chart1.Series[0].Points.RemoveAt(0);
+            {
+                for (int i = 0; i < nSeries; i++)
+                { 
+                    double data = buffer[i];
+                    chart1.Series[i].Points.AddXY(chart1_x, data);
+                    if (chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum > data) chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum = data;
+                    if (chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum < data) chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = data;
+                    if (chart1.Series[i].Points.Count > 100)
+                    {
+                        chart1.Series[i].Points.RemoveAt(0);
+                    }
+                    chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = chart1.Series[i].Points[0].XValue;
+                    chart1.ChartAreas[aAreaSel[i]].AxisX.Maximum = chart1_x;
                 }
-                chart1.ChartAreas[aAreaSel[0]].AxisX.Minimum = chart1.Series[0].Points[0].XValue;
-                chart1.ChartAreas[aAreaSel[0]].AxisX.Maximum = chart1_x;
                 chart1_x++;
-
-                double area_1 = buffer[1];
-                chart1.Series[1].Points.AddXY(chart1_x, area_1);
-                if (chart1.ChartAreas[aAreaSel[1]].AxisY.Minimum > area_1) chart1.ChartAreas[aAreaSel[1]].AxisY.Minimum = area_1;
-                if (chart1.ChartAreas[aAreaSel[1]].AxisY.Maximum < area_1) chart1.ChartAreas[aAreaSel[1]].AxisY.Maximum = area_1;
-                if (chart1.Series[1].Points.Count > 100)
-                {
-                    chart1.Series[1].Points.RemoveAt(0);
-                }
-                chart1.ChartAreas[aAreaSel[1]].AxisX.Minimum = chart1.Series[1].Points[0].XValue;
-                chart1.ChartAreas[aAreaSel[1]].AxisX.Maximum = chart1_x;
-                //chart1_x++;
-
-                double area_2 = buffer[2];
-                chart1.Series[2].Points.AddXY(chart1_x, area_2);
-                if (chart1.ChartAreas[aAreaSel[2]].AxisY.Minimum > area_2) chart1.ChartAreas[aAreaSel[2]].AxisY.Minimum = area_2;
-                if (chart1.ChartAreas[aAreaSel[2]].AxisY.Maximum < area_2) chart1.ChartAreas[aAreaSel[2]].AxisY.Maximum = area_2;
-                if (chart1.Series[2].Points.Count > 100)
-                {
-                    chart1.Series[2].Points.RemoveAt(0);
-                }
-                chart1.ChartAreas[aAreaSel[2]].AxisX.Minimum = chart1.Series[2].Points[0].XValue;
-                chart1.ChartAreas[aAreaSel[2]].AxisX.Maximum = chart1_x;
-                //chart1_x++;
-
-                double area_3 = buffer[3];
-                chart1.Series[3].Points.AddXY(chart1_x, area_3);
-                if (chart1.ChartAreas[aAreaSel[3]].AxisY.Minimum > area_3) chart1.ChartAreas[aAreaSel[3]].AxisY.Minimum = area_3;
-                if (chart1.ChartAreas[aAreaSel[3]].AxisY.Maximum < area_3) chart1.ChartAreas[aAreaSel[3]].AxisY.Maximum = area_3;
-                if (chart1.Series[3].Points.Count > 100)
-                {
-                    chart1.Series[3].Points.RemoveAt(0);
-                }
-                chart1.ChartAreas[aAreaSel[3]].AxisX.Minimum = chart1.Series[3].Points[0].XValue;
-                chart1.ChartAreas[aAreaSel[3]].AxisX.Maximum = chart1_x;
-                //chart1_x++;
             }
         }
         private double calcStrMath(string math)
