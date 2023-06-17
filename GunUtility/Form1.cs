@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Data;
 /**********************************************
 *
 *       Search Keyword
@@ -31,10 +26,17 @@ namespace GunUtility
         public const double AXIS_Y_MAX = Double.NaN;
         public const double FREQ = 100.0;
         public const double TICK = 100.0;
-        public const double PI = 3.1415926535897931;
+ //       public const double PI = 3.1415926535897931;
         double chart1_x = 0;
+        double chart2_x = 0;
+        double chart3_x = 0;
+        double chart4_x = 0;
         int t1 = 0;
         bool bS0 = false;
+        int xIndx = 0;
+        bool bTog = false;
+        CheckBox[,] boxes = new CheckBox[5, 8];
+        int[] aAreaSel = new int[20];
         public Form1()
         {
             InitializeComponent();
@@ -44,45 +46,137 @@ namespace GunUtility
             timer1.Stop();
             /* Chart1 @Chart */
             /* Chart2 @Chart */
-            textBox0.Text = "2 * sin(x + pi/4)";
-            textBox1.Text = "2 * cos(x + pi/4)";
-            textBox2.Text = "F0 + F1";
-            textBox3.Text = "3 * sin(x + pi/6) + 2 * cos(x + pi/7)";
-            textBox4.Text = "F3 * sin(x)";
-            textBox5.Text = "F3 * cos(x)";
+            textBox0.Text = "sin(x)";
+            textBox1.Text = "cos(x)";
+            textBox2.Text = "sin(x)+cos(x)";
+            textBox3.Text = "sin(x)+sin(2x)+sin(3x)+sin(4x)+sin(5x)+sin(6x)+sin(7x)+sin(8x)+sin(9x)+sin(10x)";
+            textBox4.Text = "";
+            textBox_Samples.Text = "50";
+
+            boxes[0, 0] = checkBox1;
+            boxes[0, 1] = checkBox2;
+            boxes[0, 2] = checkBox3;
+            boxes[0, 3] = checkBox4;
+            boxes[0, 4] = checkBox5;
+            boxes[0, 5] = checkBox6;
+            boxes[0, 6] = checkBox7;
+            boxes[0, 7] = checkBox8;
+            boxes[1, 0] = checkBox9;
+            boxes[1, 1] = checkBox10;
+            boxes[1, 2] = checkBox11;
+            boxes[1, 3] = checkBox12;
+            boxes[1, 4] = checkBox13;
+            boxes[1, 5] = checkBox14;
+            boxes[1, 6] = checkBox15;
+            boxes[1, 7] = checkBox16;
+            boxes[2, 0] = checkBox17;
+            boxes[2, 1] = checkBox18;
+            boxes[2, 2] = checkBox19;
+            boxes[2, 3] = checkBox20;
+            boxes[2, 4] = checkBox21;
+            boxes[2, 5] = checkBox22;
+            boxes[2, 6] = checkBox23;
+            boxes[2, 7] = checkBox24;
+            boxes[3, 0] = checkBox25;
+            boxes[3, 1] = checkBox26;
+            boxes[3, 2] = checkBox27;
+            boxes[3, 3] = checkBox28;
+            boxes[3, 4] = checkBox29;
+            boxes[3, 5] = checkBox30;
+            boxes[3, 6] = checkBox31;
+            boxes[3, 7] = checkBox32;
+            boxes[4, 0] = checkBox33;
+            boxes[4, 1] = checkBox34;
+            boxes[4, 2] = checkBox35;
+            boxes[4, 3] = checkBox36;
+            boxes[4, 4] = checkBox37;
+            boxes[4, 5] = checkBox38;
+            boxes[4, 6] = checkBox39;
+            boxes[4, 7] = checkBox40;
+
+            boxes[0, 0].Checked = true;
+            boxes[1, 0].Checked = true;
+            boxes[2, 0].Checked = true;
+            boxes[3, 0].Checked = true;
+        }
+
+        static int countSetBits(int n)
+        {
+            int count = 0;
+            while (n > 0)
+            {
+                count += n & 1;
+                n >>= 1;
+            }
+            return count;
         }
         private void Chart1_Set()
         {
             chart1.ChartAreas.Clear();
             chart1.Series.Clear();
-            Chart1_Area(2);
-            Chart1_Series(0, 0, 5, ChartDashStyle.Solid, Color.Red);
-            Chart1_Series(1, 0, 5, ChartDashStyle.Solid, Color.Yellow);
-            Chart1_Series(2, 0, 5, ChartDashStyle.Dash, Color.Cyan);
-            Chart1_Series(3, 0, 5, ChartDashStyle.Dash, Color.Blue);
-            Chart1_Series(4, 1, 5, ChartDashStyle.Dot, Color.Red);
-            Chart1_Series(5, 1, 5, ChartDashStyle.Solid, Color.Yellow);
-            Chart1_Series(6, 1, 5, ChartDashStyle.Dash, Color.Cyan);
-            Chart1_Series(7, 1, 5, ChartDashStyle.Dash, Color.Blue);
+
+            int row, column;
+            int bArea = 0;
+            int nArea;
+            int nSeries = 0;
+            
+            for (int i = 0; i < 20; i++)
+            {
+                aAreaSel[i] = 0;
+            }
+            for (row = 0; row < 5; row++)
+            {
+                for (column = 0; column < 8; column++)
+                {
+                    if (boxes[row, column].Checked == true)
+                    {
+                        aAreaSel[nSeries] = column;
+                        nSeries++;
+                        bArea |= (0x01 << column);
+                    }
+                }
+            }
+            nArea = countSetBits(bArea);
+            Chart1_Area(nArea);
+
+            for (int i = 0; i < nSeries; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        Chart1_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, Color.Red);
+                        break;
+                    case 1:
+                        Chart1_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, Color.Green);
+                        break;
+                    case 2:
+                        Chart1_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, Color.Blue);
+                        break;
+                    case 3:
+                        Chart1_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, Color.Cyan);
+                        break;
+                    default:
+                        Chart1_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, Color.Cyan);
+                        break;
+                }
+            }
             chart1_x = 0;
         }
         private void Chart1_Area(int count)
         {
-            float yPos = 0;
-            float xPos = 0;
-            int quotient = count / 2;
-            int remainder = count % 2;
-            int nLine = quotient + remainder;
             for (int i = 0; i < count; i++)
             {
                 string strArea = "Chart Area ";
                 strArea += Convert.ToString(i);
+                chart1.BackColor = Color.Black; // ###GUN
                 chart1.ChartAreas.Add(strArea);
-                chart1.ChartAreas[i].BackColor = Color.FromArgb(0, 0, 0);
-                chart1.ChartAreas[i].BackSecondaryColor = Color.FromArgb(0, 0, 0);
+                chart1.ChartAreas[i].BackColor = Color.Black;
+                chart1.ChartAreas[i].BackSecondaryColor = Color.Black;
                 chart1.ChartAreas[i].CursorX.IsUserSelectionEnabled = true;
                 chart1.ChartAreas[i].CursorX.AutoScroll = true;
                 chart1.ChartAreas[i].CursorY.AutoScroll = true;
+                chart1.ChartAreas[i].AxisX.LabelStyle.Format = "#.##";
+                chart1.ChartAreas[i].AxisY.LabelStyle.Format = "0.00";  // ###GUN
                 chart1.ChartAreas[i].AxisX.ScaleView.Zoomable = true;
                 chart1.ChartAreas[i].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.DashDot;
                 chart1.ChartAreas[i].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.DashDot;
@@ -91,34 +185,28 @@ namespace GunUtility
                 chart1.ChartAreas[i].AxisX.MajorGrid.Enabled = true;
                 chart1.ChartAreas[i].AxisX.MajorGrid.LineColor = Color.FromArgb(100, 100, 100);
                 chart1.ChartAreas[i].AxisX.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisX.LabelStyle.ForeColor = Color.FromArgb(255, 255, 255);
+                chart1.ChartAreas[i].AxisX.LabelStyle.ForeColor = Color.White;
                 chart1.ChartAreas[i].AxisY.Minimum = AXIS_Y_MIN;
                 chart1.ChartAreas[i].AxisY.Maximum = AXIS_Y_MAX;
                 chart1.ChartAreas[i].AxisY.LineColor = Color.FromArgb(100, 100, 100);
                 chart1.ChartAreas[i].AxisY.MajorGrid.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisY.LabelStyle.ForeColor = Color.FromArgb(255, 255, 255);
+                chart1.ChartAreas[i].AxisY.LabelStyle.ForeColor = Color.White;
+                chart1.ChartAreas[i].AxisY.Enabled = AxisEnabled.True;
                 chart1.ChartAreas[i].AlignWithChartArea = strArea;
                 chart1.ChartAreas[i].AlignmentStyle = AreaAlignmentStyles.Position;
-                chart1.ChartAreas[i].AlignmentOrientation = AreaAlignmentOrientations.Horizontal;
+                chart1.ChartAreas[i].AlignmentOrientation = AreaAlignmentOrientations.Vertical;
             }
-            chart1.Legends.Clear();
-            chart1.ChartAreas[0].AxisX.LabelStyle.Format = ".##";
-            chart1.ChartAreas[0].Position.Height = 100;
-            chart1.ChartAreas[0].Position.Width = 80;
-            chart1.ChartAreas[0].Position.X = 0;
-            chart1.ChartAreas[0].Position.Y = 0;
-            chart1.ChartAreas[1].AxisX.LabelStyle.Format = ".##";
-            chart1.ChartAreas[1].Position.Height = 100;
-            chart1.ChartAreas[1].Position.Width = 20;
-            chart1.ChartAreas[1].Position.X = 80;
-            chart1.ChartAreas[1].Position.Y = 0;
-            chart1.ChartAreas[1].AxisY.Enabled = AxisEnabled.False;
-            chart1.ChartAreas[1].AxisX.Minimum = -2;
-            chart1.ChartAreas[1].AxisX.Maximum = 2;
-            chart1.ChartAreas[1].AxisY.Minimum = -2;
-            chart1.ChartAreas[1].AxisY.Maximum = 2;
-            chart1.BackColor = Color.FromArgb(0, 0, 0);
-            chart1.BackSecondaryColor = Color.FromArgb(0, 0, 0);
+
+            // ###GUN
+            float currentHeight = 0;
+            foreach (var itm in chart1.ChartAreas)
+            {
+                itm.Position.Height = 100 / chart1.ChartAreas.Count; // Note: the valus are in percenteges and not absolute pixels
+                itm.Position.Y = currentHeight;
+                itm.Position.X = 5;
+                itm.Position.Width = 95;
+                currentHeight += 100 / chart1.ChartAreas.Count;
+            }
         }
         private void Chart1_Series(int series_idx, int area_idx, int marker_size, ChartDashStyle dash, Color color)
         {
@@ -132,11 +220,13 @@ namespace GunUtility
             chart1.Series[series_idx].XValueType = ChartValueType.Double;
             chart1.Series[series_idx].YValueType = ChartValueType.Double;
             chart1.Series[series_idx].MarkerSize = marker_size;
-            chart1.Series[series_idx].MarkerStyle = MarkerStyle.Circle;
+            chart1.Series[series_idx].MarkerStyle = MarkerStyle.None;    // ###GUN
             chart1.Series[series_idx].BorderWidth = 1;
             chart1.Series[series_idx].BorderDashStyle = dash;
             chart1.Series[series_idx].Color = color;
+            chart1.Series[series_idx].IsVisibleInLegend = false;
         }
+        
         private void DrawChart1(double[] buffer, int size)
         {
             if (chart1.InvokeRequired)
@@ -145,80 +235,140 @@ namespace GunUtility
                 chart1.Invoke(del, new object[] { buffer, size });
             }
             else
-            {
-                /*
-                 * CHART 1 : Area-0
-                 */
-                double Chart1_Y0 = buffer[0];
-                chart1.Series[0].Points.AddXY(chart1_x, Chart1_Y0);
-                if (chart1.ChartAreas[0].AxisY.Minimum > Chart1_Y0) chart1.ChartAreas[0].AxisY.Minimum = Chart1_Y0;
-                if (chart1.ChartAreas[0].AxisY.Maximum < Chart1_Y0) chart1.ChartAreas[0].AxisY.Maximum = Chart1_Y0;
-                double Chart1_Y1 = buffer[1];
-                chart1.Series[1].Points.AddXY(chart1_x, Chart1_Y1);
-                if (chart1.ChartAreas[0].AxisY.Minimum > Chart1_Y1) chart1.ChartAreas[0].AxisY.Minimum = Chart1_Y1;
-                if (chart1.ChartAreas[0].AxisY.Maximum < Chart1_Y1) chart1.ChartAreas[0].AxisY.Maximum = Chart1_Y1;
-                double Chart1_Y2 = buffer[2];
-                chart1.Series[2].Points.AddXY(chart1_x, Chart1_Y2);
-                if (chart1.ChartAreas[0].AxisY.Minimum > Chart1_Y2) chart1.ChartAreas[0].AxisY.Minimum = Chart1_Y2;
-                if (chart1.ChartAreas[0].AxisY.Maximum < Chart1_Y2) chart1.ChartAreas[0].AxisY.Maximum = Chart1_Y2;
-                double Chart1_Y3 = buffer[3];
-                chart1.Series[3].Points.AddXY(chart1_x, Chart1_Y3);
-                if (chart1.ChartAreas[0].AxisY.Minimum > Chart1_Y3) chart1.ChartAreas[0].AxisY.Minimum = Chart1_Y3;
-                if (chart1.ChartAreas[0].AxisY.Maximum < Chart1_Y3) chart1.ChartAreas[0].AxisY.Maximum = Chart1_Y3;
+            {             
+                double area_0 = buffer[0];
+                chart1.Series[0].Points.AddXY(chart1_x, area_0);
+                if (chart1.ChartAreas[aAreaSel[0]].AxisY.Minimum > area_0) chart1.ChartAreas[aAreaSel[0]].AxisY.Minimum = area_0;
+                if (chart1.ChartAreas[aAreaSel[0]].AxisY.Maximum < area_0) chart1.ChartAreas[aAreaSel[0]].AxisY.Maximum = area_0;
                 if (chart1.Series[0].Points.Count > 100)
                 {
                     chart1.Series[0].Points.RemoveAt(0);
+                }
+                chart1.ChartAreas[aAreaSel[0]].AxisX.Minimum = chart1.Series[0].Points[0].XValue;
+                chart1.ChartAreas[aAreaSel[0]].AxisX.Maximum = chart1_x;
+                chart1_x++;
+
+                double area_1 = buffer[1];
+                chart1.Series[1].Points.AddXY(chart1_x, area_1);
+                if (chart1.ChartAreas[aAreaSel[1]].AxisY.Minimum > area_1) chart1.ChartAreas[aAreaSel[1]].AxisY.Minimum = area_1;
+                if (chart1.ChartAreas[aAreaSel[1]].AxisY.Maximum < area_1) chart1.ChartAreas[aAreaSel[1]].AxisY.Maximum = area_1;
+                if (chart1.Series[1].Points.Count > 100)
+                {
                     chart1.Series[1].Points.RemoveAt(0);
+                }
+                chart1.ChartAreas[aAreaSel[1]].AxisX.Minimum = chart1.Series[1].Points[0].XValue;
+                chart1.ChartAreas[aAreaSel[1]].AxisX.Maximum = chart1_x;
+                //chart1_x++;
+
+                double area_2 = buffer[2];
+                chart1.Series[2].Points.AddXY(chart1_x, area_2);
+                if (chart1.ChartAreas[aAreaSel[2]].AxisY.Minimum > area_2) chart1.ChartAreas[aAreaSel[2]].AxisY.Minimum = area_2;
+                if (chart1.ChartAreas[aAreaSel[2]].AxisY.Maximum < area_2) chart1.ChartAreas[aAreaSel[2]].AxisY.Maximum = area_2;
+                if (chart1.Series[2].Points.Count > 100)
+                {
                     chart1.Series[2].Points.RemoveAt(0);
+                }
+                chart1.ChartAreas[aAreaSel[2]].AxisX.Minimum = chart1.Series[2].Points[0].XValue;
+                chart1.ChartAreas[aAreaSel[2]].AxisX.Maximum = chart1_x;
+                //chart1_x++;
+
+                double area_3 = buffer[3];
+                chart1.Series[3].Points.AddXY(chart1_x, area_3);
+                if (chart1.ChartAreas[aAreaSel[3]].AxisY.Minimum > area_3) chart1.ChartAreas[aAreaSel[3]].AxisY.Minimum = area_3;
+                if (chart1.ChartAreas[aAreaSel[3]].AxisY.Maximum < area_3) chart1.ChartAreas[aAreaSel[3]].AxisY.Maximum = area_3;
+                if (chart1.Series[3].Points.Count > 100)
+                {
                     chart1.Series[3].Points.RemoveAt(0);
                 }
-                chart1.ChartAreas[0].AxisX.Minimum = chart1.Series[0].Points[0].XValue;
-                chart1.ChartAreas[0].AxisX.Maximum = chart1_x;
-                chart1_x++;
-                /*
-                 * CHART 1 : Area-1
-                 */
-                double Chart1_X0 = buffer[4];
-                chart1.Series[4].Points.Clear();
-                chart1.Series[4].Points.AddXY(0, 0);
-                chart1.Series[4].Points.AddXY(Chart1_X0, Chart1_Y0);
-                chart1.Series[4].Points.AddXY(-2, Chart1_Y0);
-                double Chart1_X1 = buffer[5];
-                chart1.Series[5].Points.Clear();
-                chart1.Series[5].Points.AddXY(0, 0);
-                chart1.Series[5].Points.AddXY(Chart1_X1, Chart1_Y1);
-                chart1.Series[5].Points.AddXY(-2, Chart1_Y1);
-                double Chart1_X2 = buffer[5];
-                chart1.Series[6].Points.Clear();
-                chart1.Series[6].Points.AddXY(0, 0);
-                chart1.Series[6].Points.AddXY(Chart1_X2, Chart1_Y2);
-                chart1.Series[6].Points.AddXY(-2, Chart1_Y2);
-                chart1.ChartAreas[1].AxisY.Minimum = chart1.ChartAreas[0].AxisY.Minimum;
-                chart1.ChartAreas[1].AxisY.Maximum = chart1.ChartAreas[0].AxisY.Maximum;
+                chart1.ChartAreas[aAreaSel[3]].AxisX.Minimum = chart1.Series[3].Points[0].XValue;
+                chart1.ChartAreas[aAreaSel[3]].AxisX.Maximum = chart1_x;
+                //chart1_x++;
             }
+        }
+        private double calcStrMath(string math)
+        {
+            string name = math;
+            /* " " -> "" */
+            name = name.Replace(" ", "");
+
+            /* x^2 -> *x */
+            name = name.Replace("^2", "*x");
+            int i = 1;
+            foreach (Match match in Regex.Matches(name, @"\d[x|\(]", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
+            {
+                //Console.WriteLine("Found '{0}' at position {1}", match.Value, match.Index);
+                name = name.Insert(match.Index + i++, "*");
+            }
+
+            /* sin, COS, pi -> Sin, Cos, PI */
+            name = Regex.Replace(name, "sin", "Sin", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "cos", "Cos", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "pi", "PI", RegexOptions.IgnoreCase);
+
+            /* x -> xIndx */
+            if ((name.IndexOf("Sin") != -1) || (name.IndexOf("Cos") != -1))
+            {
+                name = name.Replace("x", "2*PI*x/" + textBox_Samples.Text);
+            }
+            name = name.Replace("x", Convert.ToString(xIndx));
+
+            xIndx++;
+
+            /* 12Sin -> 12*Sin */
+            i = 1;
+            /*  MatchCollection mc = Regex.Matches(name, @"\d(Sin|Cos)", RegexOptions.None, TimeSpan.FromSeconds(1));
+            foreach (Match match in mc) */
+            foreach (Match match in Regex.Matches(name, @"\d(Sin|Cos)", RegexOptions.None, TimeSpan.FromSeconds(1)))
+            {
+                Console.WriteLine("Found '{0}' at position {1}", match.Value, match.Index);
+                name = name.Insert(match.Index + i++, "*");
+            }
+
+            MatchCollection mc = Regex.Matches(name, @"(Sin|Cos)\([^\(]+\)", RegexOptions.None, TimeSpan.FromSeconds(1));
+            DataTable dt = new DataTable();
+            for (int j = 0; j < mc.Count; j++)
+            {
+                string strIn = mc[mc.Count - j - 1].Value.Substring(mc[mc.Count - j - 1].Value.IndexOf("(") + 1, mc[mc.Count - j - 1].Value.IndexOf(")") - 1 - mc[mc.Count - j - 1].Value.IndexOf("("));
+                strIn = strIn.Replace("PI", "3.1415926535897931");
+                double dblIn = Convert.ToDouble(dt.Compute(strIn, ""));
+
+                double dblSin = 0;
+                if (mc[mc.Count - j - 1].Value.IndexOf("Sin") != -1)
+                {
+                    dblSin = Math.Sin(dblIn);
+                }
+                if (mc[mc.Count - j - 1].Value.IndexOf("Cos") != -1)
+                {
+                    dblSin = Math.Cos(dblIn);
+                }
+                name = name.Replace(mc[mc.Count - j - 1].Value, "");
+                name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
+            }
+
+            double Q = Convert.ToDouble(dt.Compute(name, ""));
+
+            //Q = Math.Round(Q, 2);     // 소수세짜리 반올림 ###GUN
+            //Q = Math.Ceiling(Q);      // 소수첫짜리 올림
+            //Q = Math.Truncate(Q);     // 소수첫짜리 버림
+            //Q = Math.Round(Q, 1);     // 소수둘째자리 반올림
+
+            return Q;           
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            t1++;
-            double Amp1 = 2;
-            double[] dblData1 = new double[10];
-            dblData1[0] = (double)t1;
-            dblData1[1] = Amp1 * Math.Sin((2 * Math.PI / 30) * t1 + (Math.PI / 4));
-            dblData1[1] = dblData1[0] * Math.Sin((2 * Math.PI / 30) * t1);
-            dblData1[2] = dblData1[0] * Math.Cos((2 * Math.PI / 30) * t1);
-            dblData1[3] = dblData1[1] + dblData1[2];
-            dblData1[4] = Amp1 * Math.Cos((2 * Math.PI / 30) * t1 + (Math.PI / 4));
-            dblData1[5] = dblData1[0] * Math.Cos((2 * Math.PI / 30) * t1);
-            dblData1[6] = dblData1[1] * Math.Sin((2 * Math.PI / 30) * t1);
-            dblData1[7] = dblData1[1] * Math.Cos((2 * Math.PI / 30) * t1);
-            dblData1[0] = Math.Round(dblData1[0], 2);
-            dblData1[1] = Math.Round(dblData1[1], 2);
-            dblData1[2] = Math.Round(dblData1[2], 2);
-            dblData1[3] = Math.Round(dblData1[3], 2);
-            dblData1[4] = Math.Round(dblData1[4], 2);
-            dblData1[5] = Math.Round(dblData1[5], 2);
-            DrawChart1(dblData1, 6);
+            double[] item = new double[10];
+            item[0] = calcStrMath(textBox0.Text);
+            item[1] = calcStrMath(textBox1.Text);
+            item[2] = calcStrMath(textBox2.Text);
+            item[3] = calcStrMath(textBox3.Text);
+
+            //Chart1_Series(0, 0, 5, ChartDashStyle.Solid, Color.Red);
+            //Chart1_Series(1, 0, 5, ChartDashStyle.Solid, Color.Green);
+            //Chart1_Series(2, 0, 5, ChartDashStyle.Solid, Color.Blue);
+            //Chart1_Series(3, 0, 5, ChartDashStyle.Solid, Color.Cyan);
+            DrawChart1(item, 4);
         }
+
         private void button3_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < chart1.Series.Count; i++)
@@ -316,48 +466,37 @@ namespace GunUtility
             string result3 = Regex.Replace(strExample1, pattern2, replacement2);
             while (true) ;
         }
-        private void checkBox_S0A0_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox_S0A0.Checked == true)
-            {
-                chart1.ChartAreas.Add("ChartArea0");
-            }
-            else
-            {
-                chart1.ChartAreas.Remove(chart1.ChartAreas[chart1.ChartAreas.IndexOf("ChartArea0")]);
-            }
-        }
+        
         private void button5_Click(object sender, EventArgs e)
         {
-            string input = "12 * Sin(5x + PI/4) + 10";
-            string inputQ = input.Replace(" ", "");                                     /* 12*Sin(5x+PI/4)+10 */
-            string pattern = @"[\*|\+|\-|\/]?(sin|cos|tan)(\d*[x|X]|\(\d*[x|X].*\))";
-            Match m = Regex.Match(inputQ, pattern, RegexOptions.IgnoreCase);            /* *Sin(5x+PI/4) */
-            string Form = inputQ.Replace(m.Value, "");                                  /* 12+10 */
-            if (m.Success)
+            xIndx = 0;
+
+            if (bTog == false)
             {
-                string Fx = m.Value;
-                Fx = Fx.ToLower();                                                      /* *sin(5x+PI/4) */
-                if ((Fx.Substring(0, 3) == "sin") || (Fx.Substring(0, 1) == "cos") || (Fx.Substring(0, 1) == "tan"))
-                {
-                    Form = Form.Insert(m.Index, "*");                                   /* 12*+10 */
-                }
-                else
-                {
-                    Form = Form.Insert(m.Index, Fx.Substring(0, 1));                    /* 12*+10 */
-                    Fx = Fx.Substring(1, Fx.Length - 1);                                /* sin(5x+PI/4) */
-                }
-                string sinVal = Fx.Substring(Fx.IndexOf("(")+1, Fx.IndexOf(")") - Fx.IndexOf("(")-1);
-                DataTable dt_1 = new DataTable();
-                var sinIn = dt_1.Compute(sinVal, "");
-                while (true) ;
+                //chart1.Series[0].Points.Clear();
+                //chart1.Series[1].Points.Clear();
+                //chart1.Series[2].Points.Clear();
+                //chart1.Series[3].Points.Clear();
+                //
+                //chart1.ChartAreas[0].AxisX.Minimum = 0;
+                //chart1.ChartAreas[0].AxisX.Maximum = 0.1;
+                //chart1.ChartAreas[0].AxisY.Minimum = 0;
+                //chart1.ChartAreas[0].AxisY.Maximum = 0.1;
+
+
+                Chart1_Set();
+                splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN
+                splitContainer2.FixedPanel = FixedPanel.Panel2;
+
+                timer1.Start();
+                bTog = true;
             }
-            else
+            else 
             {
+                timer1.Stop();
+                bTog = false;
             }
-            DataTable dt = new DataTable();
-            var v = dt.Compute(Form, "");
-            while (true) ;
         }
+
     }
 }
