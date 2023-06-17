@@ -26,6 +26,8 @@ namespace GunUtility
         public const double AXIS_Y_MAX = Double.NaN;
         public const double FREQ = 100.0;
         public const double TICK = 100.0;
+        public const int ROW_N = 5;
+        public const int COLUMN_N = 8;
  //       public const double PI = 3.1415926535897931;
         double chart1_x = 0;
         double chart2_x = 0;
@@ -117,8 +119,8 @@ namespace GunUtility
 
             int row, column;
             int bArea = 0;
-            int nArea;
             int nSeries = 0;
+            int nEmptyCol = 0;
             
             for (int i = 0; i < 20; i++)
             {
@@ -126,18 +128,29 @@ namespace GunUtility
             }
             for (row = 0; row < 5; row++)
             {
+                nEmptyCol = 0;
                 for (column = 0; column < 8; column++)
                 {
+                    nEmptyCol++;
+                    for (int rowForEmpty = 0; rowForEmpty < 5; rowForEmpty++)
+                    {
+                        if (boxes[rowForEmpty, column].Checked == true)
+                        {
+                            nEmptyCol--;
+                            break;
+                        }
+                    }                    
+
                     if (boxes[row, column].Checked == true)
                     {
-                        aAreaSel[nSeries] = column;
+                        aAreaSel[nSeries] = column - nEmptyCol;
                         nSeries++;
                         bArea |= (0x01 << column);
+                        break;
                     }
                 }
             }
-            nArea = countSetBits(bArea);
-            Chart1_Area(nArea);
+            Chart1_setArea(bArea);
 
             for (int i = 0; i < nSeries; i++)
             {
@@ -162,9 +175,32 @@ namespace GunUtility
             }
             chart1_x = 0;
         }
-        private void Chart1_Area(int count)
+
+        private int indexSetBits(int bArea, int order)
         {
-            for (int i = 0; i < count; i++)
+            int bitIndx = 0;
+            int count = 0;
+
+            while (bArea > 0)
+            {
+                if ((bArea & 1) == 1)
+                {
+                    if (count == order)
+                    {
+                        return bitIndx;
+                    }
+                    count++;
+                }
+                bArea >>= 1;
+                bitIndx++;
+            }
+
+            return bitIndx;
+        }
+
+        private void Chart1_setArea(int bArea)
+        {
+            for (int i = 0; i < countSetBits(bArea); i++)
             {
                 string strArea = "Chart Area ";
                 strArea += Convert.ToString(i);
@@ -362,12 +398,10 @@ namespace GunUtility
             item[2] = calcStrMath(textBox2.Text);
             item[3] = calcStrMath(textBox3.Text);
 
-            //Chart1_Series(0, 0, 5, ChartDashStyle.Solid, Color.Red);
-            //Chart1_Series(1, 0, 5, ChartDashStyle.Solid, Color.Green);
-            //Chart1_Series(2, 0, 5, ChartDashStyle.Solid, Color.Blue);
-            //Chart1_Series(3, 0, 5, ChartDashStyle.Solid, Color.Cyan);
             DrawChart1(item, 4);
         }
+
+        
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -498,5 +532,23 @@ namespace GunUtility
             }
         }
 
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = (CheckBox)sender;
+            for (int i = 0; i <= ROW_N*COLUMN_N; i++)
+            {
+                if (cb.Name == "checkBox" + Convert.ToString(i+1))
+                {
+                    if (cb.Checked == true)
+                    {
+                        for (int j = 0; j < 8; j++)
+                        {
+                            if (j != i % 8)
+                                boxes[i / 8, j].Checked = false;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
