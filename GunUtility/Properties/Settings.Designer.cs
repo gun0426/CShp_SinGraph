@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GunUtility.Properties
+namespace Chart_Project.Properties
 {
 
 
