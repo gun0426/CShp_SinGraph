@@ -28,7 +28,10 @@ namespace GunUtility
         public const double TICK = 100.0;
         public const int ROW_N = 5;
         public const int COLUMN_N = 8;
- //       public const double PI = 3.1415926535897931;
+        public const int COLOR_R = 0x20;
+        public const int COLOR_G = 0x20;
+        public const int COLOR_B = 0x20;
+        //       public const double PI = 3.1415926535897931;
         double chart1_x = 0;
         double chart2_x = 0;
         double chart3_x = 0;
@@ -37,12 +40,37 @@ namespace GunUtility
         bool bS0 = false;
         int xIndx = 0;
         bool bTog = false;
-        CheckBox[,] boxes = new CheckBox[5, 8];
+        CheckBox[,] checks = new CheckBox[5, 8];
+        TextBox[] texts = new TextBox[5];
         int[] aAreaSel = new int[20];
         int nSeries = 0;
         public Form1()
         {
             InitializeComponent();
+
+            tabControl1.TabPages[0].UseVisualStyleBackColor = true;
+            tabControl1.TabPages[1].UseVisualStyleBackColor = true;
+
+            tabControl1.TabPages[0].BackColor = Color.FromArgb(COLOR_R+20, COLOR_G+50, COLOR_B+50);
+            tabControl1.TabPages[1].BackColor = Color.FromArgb(COLOR_R+100, COLOR_G, COLOR_B);
+            chart1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer1.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer1.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+
+
+            splitContainer2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer2.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer2.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer3.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer3.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer3.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B); 
+            splitContainer6.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer6.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer6.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+
+
+
             /* Timer1 @Timer */
             timer1.Interval = (int)TICK;
             timer1.Tick += new EventHandler(timer1_Tick);
@@ -56,51 +84,58 @@ namespace GunUtility
             textBox4.Text = "";
             textBox_Samples.Text = "50";
 
-            boxes[0, 0] = checkBox1;
-            boxes[0, 1] = checkBox2;
-            boxes[0, 2] = checkBox3;
-            boxes[0, 3] = checkBox4;
-            boxes[0, 4] = checkBox5;
-            boxes[0, 5] = checkBox6;
-            boxes[0, 6] = checkBox7;
-            boxes[0, 7] = checkBox8;
-            boxes[1, 0] = checkBox9;
-            boxes[1, 1] = checkBox10;
-            boxes[1, 2] = checkBox11;
-            boxes[1, 3] = checkBox12;
-            boxes[1, 4] = checkBox13;
-            boxes[1, 5] = checkBox14;
-            boxes[1, 6] = checkBox15;
-            boxes[1, 7] = checkBox16;
-            boxes[2, 0] = checkBox17;
-            boxes[2, 1] = checkBox18;
-            boxes[2, 2] = checkBox19;
-            boxes[2, 3] = checkBox20;
-            boxes[2, 4] = checkBox21;
-            boxes[2, 5] = checkBox22;
-            boxes[2, 6] = checkBox23;
-            boxes[2, 7] = checkBox24;
-            boxes[3, 0] = checkBox25;
-            boxes[3, 1] = checkBox26;
-            boxes[3, 2] = checkBox27;
-            boxes[3, 3] = checkBox28;
-            boxes[3, 4] = checkBox29;
-            boxes[3, 5] = checkBox30;
-            boxes[3, 6] = checkBox31;
-            boxes[3, 7] = checkBox32;
-            boxes[4, 0] = checkBox33;
-            boxes[4, 1] = checkBox34;
-            boxes[4, 2] = checkBox35;
-            boxes[4, 3] = checkBox36;
-            boxes[4, 4] = checkBox37;
-            boxes[4, 5] = checkBox38;
-            boxes[4, 6] = checkBox39;
-            boxes[4, 7] = checkBox40;
+            checks[0, 0] = checkBox1;
+            checks[0, 1] = checkBox2;
+            checks[0, 2] = checkBox3;
+            checks[0, 3] = checkBox4;
+            checks[0, 4] = checkBox5;
+            checks[0, 5] = checkBox6;
+            checks[0, 6] = checkBox7;
+            checks[0, 7] = checkBox8;
+            checks[1, 0] = checkBox9;
+            checks[1, 1] = checkBox10;
+            checks[1, 2] = checkBox11;
+            checks[1, 3] = checkBox12;
+            checks[1, 4] = checkBox13;
+            checks[1, 5] = checkBox14;
+            checks[1, 6] = checkBox15;
+            checks[1, 7] = checkBox16;
+            checks[2, 0] = checkBox17;
+            checks[2, 1] = checkBox18;
+            checks[2, 2] = checkBox19;
+            checks[2, 3] = checkBox20;
+            checks[2, 4] = checkBox21;
+            checks[2, 5] = checkBox22;
+            checks[2, 6] = checkBox23;
+            checks[2, 7] = checkBox24;
+            checks[3, 0] = checkBox25;
+            checks[3, 1] = checkBox26;
+            checks[3, 2] = checkBox27;
+            checks[3, 3] = checkBox28;
+            checks[3, 4] = checkBox29;
+            checks[3, 5] = checkBox30;
+            checks[3, 6] = checkBox31;
+            checks[3, 7] = checkBox32;
+            checks[4, 0] = checkBox33;
+            checks[4, 1] = checkBox34;
+            checks[4, 2] = checkBox35;
+            checks[4, 3] = checkBox36;
+            checks[4, 4] = checkBox37;
+            checks[4, 5] = checkBox38;
+            checks[4, 6] = checkBox39;
+            checks[4, 7] = checkBox40;
 
-            boxes[0, 0].Checked = true;
-            boxes[1, 0].Checked = true;
-            boxes[2, 0].Checked = true;
-            boxes[3, 0].Checked = true;
+            
+
+            texts[0] = textBox0;
+            texts[1] = textBox1;
+            texts[2] = textBox2;
+            texts[3] = textBox3;
+            texts[4] = textBox4;
+
+            Chart1_Init();
+
+            
         }
 
         static int countSetBits(int n)
@@ -112,6 +147,22 @@ namespace GunUtility
                 n >>= 1;
             }
             return count;
+        }
+        private void Chart1_Init()
+        {
+            checks[0, 0].Checked = true;
+            checks[1, 0].Checked = true;
+            checks[2, 0].Checked = true;
+            checks[3, 0].Checked = true;
+            Chart1_Set();
+
+            double[] item = new double[4];
+            item[0] = 0;
+            item[1] = 0;
+            item[2] = 0;
+            item[3] = 0;
+
+            DrawChart1(item, nSeries);
         }
         private void Chart1_Set()
         {
@@ -136,14 +187,14 @@ namespace GunUtility
                     nEmptyCol++;
                     for (int rowForEmpty = 0; rowForEmpty < 5; rowForEmpty++)
                     {
-                        if (boxes[rowForEmpty, column].Checked == true)
+                        if (checks[rowForEmpty, column].Checked == true)
                         {
                             nEmptyCol--;
                             break;
                         }
                     }                    
 
-                    if (boxes[row, column].Checked == true)
+                    if (checks[row, column].Checked == true)
                     {
                         aAreaSel[nSeries] = column - nEmptyCol;
                         nSeries++;
@@ -206,10 +257,10 @@ namespace GunUtility
             {
                 string strArea = "Chart Area ";
                 strArea += Convert.ToString(i);
-                chart1.BackColor = Color.Black; // ###GUN
+                chart1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B); ; // ###GUN
                 chart1.ChartAreas.Add(strArea);
-                chart1.ChartAreas[i].BackColor = Color.Black;
-                chart1.ChartAreas[i].BackSecondaryColor = Color.Black;
+                chart1.ChartAreas[i].BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+                chart1.ChartAreas[i].BackSecondaryColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
                 chart1.ChartAreas[i].CursorX.IsUserSelectionEnabled = true;
                 chart1.ChartAreas[i].CursorX.AutoScroll = true;
                 chart1.ChartAreas[i].CursorY.AutoScroll = true;
@@ -233,6 +284,12 @@ namespace GunUtility
                 chart1.ChartAreas[i].AlignWithChartArea = strArea;
                 chart1.ChartAreas[i].AlignmentStyle = AreaAlignmentStyles.Position;
                 chart1.ChartAreas[i].AlignmentOrientation = AreaAlignmentOrientations.Vertical;
+
+
+                //chart1.ChartAreas[i].Position.X = 0;
+                //chart1.ChartAreas[i].Position.Width = 100;
+                //chart1.ChartAreas[i].Position.Height = 100;
+                //chart1.ChartAreas[i].Position.Y = 0;
             }
 
             // ###GUN
@@ -310,7 +367,10 @@ namespace GunUtility
             name = Regex.Replace(name, "cos", "Cos", RegexOptions.IgnoreCase);
             name = Regex.Replace(name, "pi", "PI", RegexOptions.IgnoreCase);
 
-            /* x -> xIndx */
+            /* 
+             * x -> 2*PI*xIndx/samples (Sin함수)
+             * x -> xIndx (일반다항식)
+             */
             if ((name.IndexOf("Sin") != -1) || (name.IndexOf("Cos") != -1))
             {
                 name = name.Replace("x", "2*PI*x/" + textBox_Samples.Text);
@@ -346,7 +406,12 @@ namespace GunUtility
                 {
                     dblSin = Math.Cos(dblIn);
                 }
-                name = name.Replace(mc[mc.Count - j - 1].Value, "");
+                //name = name.Replace(mc[mc.Count - j - 1].Value, "");
+                name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
+
+                
+
+          
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
             }
 
@@ -362,10 +427,29 @@ namespace GunUtility
         private void timer1_Tick(object sender, EventArgs e)
         {
             double[] item = new double[10];
-            item[0] = calcStrMath(textBox0.Text);
-            item[1] = calcStrMath(textBox1.Text);
-            item[2] = calcStrMath(textBox2.Text);
-            item[3] = calcStrMath(textBox3.Text);
+            //item[0] = calcStrMath(textBox0.Text);
+            //item[1] = calcStrMath(textBox1.Text);
+            //item[2] = calcStrMath(textBox2.Text);
+            //item[3] = calcStrMath(textBox3.Text);
+
+
+            int indx = 0;
+
+            for (int row = 0; row < ROW_N; row ++)
+            {
+                for (int column = 0; column < COLUMN_N; column ++)
+                {
+                    if (checks[row, column].Checked == true)
+                    {
+                        item[indx++] = calcStrMath(texts[row].Text);
+                        if (indx == nSeries)
+                        {
+                            DrawChart1(item, nSeries);
+                            return;
+                        }
+                    }
+                }
+            }
 
             DrawChart1(item, 4);
         }
@@ -401,19 +485,19 @@ namespace GunUtility
             }
             return;
         }
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            if (button1.Text == "Start")
-            {
-                timer1.Start();
-                button1.Text = "Stop";
-            }
-            else
-            {
-                timer1.Stop();
-                button1.Text = "Start";
-            }
-        }
+//       private void button1_Click_1(object sender, EventArgs e)
+//       {
+//           if (button1.Text == "Start")
+//           {
+//               timer1.Start();
+//               button1.Text = "Stop";
+//           }
+//           else
+//           {
+//               timer1.Stop();
+//               button1.Text = "Start";
+//           }
+//       }
         private void button2_Click(object sender, EventArgs e)
         {
             List<ChartArea> Areas = new List<ChartArea>();
@@ -442,12 +526,7 @@ namespace GunUtility
                 currentHeight += 100 / numberOfAreas;
             }
         }
-        private void chart1_Click(object sender, EventArgs e)
-        {
-        }
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-        }
+
         private void button_F0_Click(object sender, EventArgs e)
         {
             string targetStr = "7,873,330원(문자열 추출 테스트)";
@@ -476,17 +555,6 @@ namespace GunUtility
 
             if (bTog == false)
             {
-                //chart1.Series[0].Points.Clear();
-                //chart1.Series[1].Points.Clear();
-                //chart1.Series[2].Points.Clear();
-                //chart1.Series[3].Points.Clear();
-                //
-                //chart1.ChartAreas[0].AxisX.Minimum = 0;
-                //chart1.ChartAreas[0].AxisX.Maximum = 0.1;
-                //chart1.ChartAreas[0].AxisY.Minimum = 0;
-                //chart1.ChartAreas[0].AxisY.Maximum = 0.1;
-
-
                 Chart1_Set();
                 splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN
                 splitContainer2.FixedPanel = FixedPanel.Panel2;
@@ -513,7 +581,7 @@ namespace GunUtility
                         for (int j = 0; j < 8; j++)
                         {
                             if (j != i % 8)
-                                boxes[i / 8, j].Checked = false;
+                                checks[i / 8, j].Checked = false;
                         }
                     }
                 }
