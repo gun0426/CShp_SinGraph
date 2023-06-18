@@ -33,11 +33,11 @@ namespace GunUtility
         public const int COLOR_B = 0x20;
         //       public const double PI = 3.1415926535897931;
         double chart1_x = 0;
-        double chart2_x = 0;
-        double chart3_x = 0;
-        double chart4_x = 0;
-        int t1 = 0;
-        bool bS0 = false;
+        //double chart2_x = 0;
+        //double chart3_x = 0;
+        //double chart4_x = 0;
+        //int t1 = 0;
+        //bool bS0 = false;
         int xIndx = 0;
         bool bTog = false;
         CheckBox[,] checks = new CheckBox[5, 8];
@@ -48,28 +48,27 @@ namespace GunUtility
         {
             InitializeComponent();
 
-            tabControl1.TabPages[0].UseVisualStyleBackColor = true;
-            tabControl1.TabPages[1].UseVisualStyleBackColor = true;
-
-            tabControl1.TabPages[0].BackColor = Color.FromArgb(COLOR_R+20, COLOR_G+50, COLOR_B+50);
-            tabControl1.TabPages[1].BackColor = Color.FromArgb(COLOR_R+100, COLOR_G, COLOR_B);
             chart1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
-            splitContainer1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            splitContainer1.BackColor = Color.FromArgb(COLOR_R+20, COLOR_G+20, COLOR_B+20);
             splitContainer1.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer1.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
-
-
             splitContainer2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer2.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer2.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer3.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer3.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
             splitContainer3.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B); 
-            splitContainer6.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
-            splitContainer6.Panel1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
-            splitContainer6.Panel2.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+            
+
+            splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN           
+            splitContainer2.FixedPanel = FixedPanel.Panel2;
+            splitContainer3.FixedPanel = FixedPanel.Panel2;
 
 
+            //splitContainer1.Panel1.Enabled = false;
+            //splitContainer1.Panel2.Enabled = false;
+
+          
 
             /* Timer1 @Timer */
             timer1.Interval = (int)TICK;
@@ -257,40 +256,58 @@ namespace GunUtility
             {
                 string strArea = "Chart Area ";
                 strArea += Convert.ToString(i);
-                chart1.BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B); ; // ###GUN
+               
                 chart1.ChartAreas.Add(strArea);
-                chart1.ChartAreas[i].BackColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
-                chart1.ChartAreas[i].BackSecondaryColor = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+                
                 chart1.ChartAreas[i].CursorX.IsUserSelectionEnabled = true;
                 chart1.ChartAreas[i].CursorX.AutoScroll = true;
                 chart1.ChartAreas[i].CursorY.AutoScroll = true;
                 chart1.ChartAreas[i].AxisX.LabelStyle.Format = "#.##";
                 chart1.ChartAreas[i].AxisY.LabelStyle.Format = "0.00";  // ###GUN
-                chart1.ChartAreas[i].AxisX.ScaleView.Zoomable = true;
-                chart1.ChartAreas[i].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.DashDot;
-                chart1.ChartAreas[i].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.DashDot;
+                chart1.ChartAreas[i].AxisX.ScaleView.Zoomable = true;                
                 chart1.ChartAreas[i].AxisX.Interval = 10;
                 chart1.ChartAreas[i].AxisX.MajorGrid.Interval = 0;
                 chart1.ChartAreas[i].AxisX.MajorGrid.Enabled = true;
-                chart1.ChartAreas[i].AxisX.MajorGrid.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisX.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisX.LabelStyle.ForeColor = Color.White;
+
+                chart1.BackColor                                    = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B); ; // ###GUN
+                chart1.ChartAreas[i].BackColor                      = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+                chart1.ChartAreas[i].BackSecondaryColor             = Color.FromArgb(COLOR_R, COLOR_G, COLOR_B);
+                chart1.ChartAreas[i].AxisX.LineColor                = Color.FromArgb(150, 150, 150);
+                chart1.ChartAreas[i].AxisY.LineColor                = Color.FromArgb(150, 150, 150);
+                chart1.ChartAreas[i].AxisX.LabelStyle.ForeColor     = Color.FromArgb(255, 255, 255);
+                chart1.ChartAreas[i].AxisY.LabelStyle.ForeColor     = Color.FromArgb(255, 255, 255);
+                chart1.ChartAreas[i].AxisX.MajorGrid.LineColor      = Color.FromArgb(100, 100, 100);
+                chart1.ChartAreas[i].AxisY.MajorGrid.LineColor      = Color.FromArgb(100, 100, 100);               
+                chart1.ChartAreas[i].AxisX.MajorTickMark.LineColor  = Color.FromArgb(100, 100, 100);    // ###GUN
+                chart1.ChartAreas[i].AxisY.MajorTickMark.LineColor  = Color.FromArgb(100, 100, 100);                
+                chart1.ChartAreas[i].AxisX.MinorTickMark.LineColor  = Color.FromArgb(100, 100, 100);
+                chart1.ChartAreas[i].AxisY.MinorTickMark.LineColor  = Color.FromArgb(100, 100, 100);
+
+                chart1.ChartAreas[i].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+                chart1.ChartAreas[i].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+
                 chart1.ChartAreas[i].AxisY.Minimum = AXIS_Y_MIN;
                 chart1.ChartAreas[i].AxisY.Maximum = AXIS_Y_MAX;
-                chart1.ChartAreas[i].AxisY.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisY.MajorGrid.LineColor = Color.FromArgb(100, 100, 100);
-                chart1.ChartAreas[i].AxisY.LabelStyle.ForeColor = Color.White;
+                
                 chart1.ChartAreas[i].AxisY.Enabled = AxisEnabled.True;
                 chart1.ChartAreas[i].AlignWithChartArea = strArea;
                 chart1.ChartAreas[i].AlignmentStyle = AreaAlignmentStyles.Position;
                 chart1.ChartAreas[i].AlignmentOrientation = AreaAlignmentOrientations.Vertical;
 
-
                 //chart1.ChartAreas[i].Position.X = 0;
                 //chart1.ChartAreas[i].Position.Width = 100;
                 //chart1.ChartAreas[i].Position.Height = 100;
                 //chart1.ChartAreas[i].Position.Y = 0;
+
+
+                
             }
+
+            
+
+            //ChartArea CA = chart1.ChartAreas[0];
+            //CA.Position = new ElementPosition(0, 0, 100, 100);
+            //CA.InnerPlotPosition = new ElementPosition(4, 4, 92, 90);
 
             // ###GUN
             float currentHeight = 0;
@@ -556,9 +573,6 @@ namespace GunUtility
             if (bTog == false)
             {
                 Chart1_Set();
-                splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN
-                splitContainer2.FixedPanel = FixedPanel.Panel2;
-
                 timer1.Start();
                 bTog = true;
             }
@@ -586,6 +600,11 @@ namespace GunUtility
                     }
                 }
             }
+        }
+
+        private void splitContainer6_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
