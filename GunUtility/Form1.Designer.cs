@@ -125,6 +125,7 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.textBox_SampleN = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -251,6 +252,7 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.splitContainer1.Panel1.Controls.Add(this.textBox_SampleN);
             this.splitContainer1.Panel1.Controls.Add(this.button_Color4);
             this.splitContainer1.Panel1.Controls.Add(this.button_Color3);
             this.splitContainer1.Panel1.Controls.Add(this.button_Color2);
@@ -475,9 +477,10 @@
             // 
             this.button_Start.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_Start.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.button_Start.Location = new System.Drawing.Point(20, 287);
+            this.button_Start.Location = new System.Drawing.Point(19, 292);
+            this.button_Start.Margin = new System.Windows.Forms.Padding(0);
             this.button_Start.Name = "button_Start";
-            this.button_Start.Size = new System.Drawing.Size(128, 30);
+            this.button_Start.Size = new System.Drawing.Size(129, 30);
             this.button_Start.TabIndex = 11;
             this.button_Start.Text = "Start";
             this.button_Start.UseVisualStyleBackColor = true;
@@ -677,10 +680,11 @@
             // 
             // textBox_Samples
             // 
-            this.textBox_Samples.Location = new System.Drawing.Point(138, 143);
+            this.textBox_Samples.Location = new System.Drawing.Point(136, 145);
             this.textBox_Samples.Name = "textBox_Samples";
-            this.textBox_Samples.Size = new System.Drawing.Size(28, 21);
+            this.textBox_Samples.Size = new System.Drawing.Size(33, 21);
             this.textBox_Samples.TabIndex = 12;
+            this.textBox_Samples.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // checkBox8
             // 
@@ -1039,7 +1043,6 @@
             legend2.Name = "Legend1";
             this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(3, 0);
-            this.chart1.Margin = new System.Windows.Forms.Padding(0);
             this.chart1.Name = "chart1";
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
@@ -1069,6 +1072,14 @@
             this.textBox5.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox5.Size = new System.Drawing.Size(1058, 25);
             this.textBox5.TabIndex = 0;
+            // 
+            // textBox_SampleN
+            // 
+            this.textBox_SampleN.Location = new System.Drawing.Point(19, 337);
+            this.textBox_SampleN.Name = "textBox_SampleN";
+            this.textBox_SampleN.Size = new System.Drawing.Size(58, 21);
+            this.textBox_SampleN.TabIndex = 16;
+            this.textBox_SampleN.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Form1
             // 
@@ -1197,6 +1208,7 @@
         private System.Windows.Forms.Button button_ColorS1;
         private System.Windows.Forms.Button button_ColorS0;
         private System.Windows.Forms.Button button_ColorS4;
+        private System.Windows.Forms.TextBox textBox_SampleN;
     }
 }
 

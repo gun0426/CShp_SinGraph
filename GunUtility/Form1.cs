@@ -32,6 +32,7 @@ namespace Chart_Project
         public const int COLOR_R = 0x20;
         public const int COLOR_G = 0x20;
         public const int COLOR_B = 0x20;
+        public const int SAMPLE_N = 200;
         //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         //double chart2_x = 0;
@@ -67,6 +68,8 @@ namespace Chart_Project
             splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN           
             splitContainer2.FixedPanel = FixedPanel.Panel2;
             splitContainer3.FixedPanel = FixedPanel.Panel2;
+
+            textBox_SampleN.Text = Convert.ToString(SAMPLE_N);
 
             /* Timer1 @Timer */
             timer1.Interval = (int)TICK;
@@ -280,10 +283,15 @@ namespace Chart_Project
                 chart1.ChartAreas[i].CursorX.IsUserSelectionEnabled = true;
                 chart1.ChartAreas[i].CursorX.AutoScroll = true;
                 chart1.ChartAreas[i].CursorY.AutoScroll = true;
-                chart1.ChartAreas[i].AxisX.LabelStyle.Format = "0.00";  // "#.##"
+                chart1.ChartAreas[i].AxisX.LabelStyle.Format = "0.0";  // "#.##"
+                chart1.ChartAreas[i].AxisX.LabelStyle.Enabled = true;
+                chart1.ChartAreas[i].AxisX.LabelStyle.Angle = 0;
+                chart1.ChartAreas[i].AxisX.LabelStyle.IsEndLabelVisible = false;    // ###GUN!!!
+
                 chart1.ChartAreas[i].AxisY.LabelStyle.Format = "0.00";  // ###GUN
                 chart1.ChartAreas[i].AxisX.ScaleView.Zoomable = true;                
                 chart1.ChartAreas[i].AxisX.Interval = 0.5;
+                //chart1.ChartAreas[i].AxisX.IntervalOffset = -1;
                 chart1.ChartAreas[i].AxisX.MajorGrid.Interval = 0;
                 chart1.ChartAreas[i].AxisX.MajorGrid.Enabled = true;
 
@@ -305,10 +313,10 @@ namespace Chart_Project
 
                 //chart1.ChartAreas[i].AxisX.Title = "PI(π)";
                 chart1.ChartAreas[i].AxisY.Title = "Value" + Convert.ToString(i);
-                chart1.ChartAreas[i].AxisX.TitleFont = new System.Drawing.Font("Consolas", 9, System.Drawing.FontStyle.Bold);               
+                chart1.ChartAreas[i].AxisX.TitleFont = new System.Drawing.Font("Consolas", 9, System.Drawing.FontStyle.Bold); // ###GUN              
                 chart1.ChartAreas[i].AxisX.TitleForeColor = Color.White;
                 chart1.ChartAreas[i].AxisY.TitleForeColor = Color.White;
-                chart1.ChartAreas[i].AxisX.TitleAlignment = StringAlignment.Far; // 가운데 -> 오른쪽 끝
+                chart1.ChartAreas[i].AxisX.TitleAlignment = StringAlignment.Far; // ###GUN 가운데 -> 오른쪽 끝
                 //chart1.ChartAreas[i].AxisX.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto;   // X축 이름 회전
                 //chart1.ChartAreas[i].AxisX.IsReversed = true;   // ###GUN : 그래프 이동 방향 우에서 좌로
                 //chart1.ChartAreas[i].AxisY.IsReversed = true;   // ###GUN : 그래프 이동 방향 위에서 아래로       
@@ -327,7 +335,7 @@ namespace Chart_Project
             }
             chart1.ChartAreas[Count_SetBit(column) - 1].AxisX.Title = "PI(π)";
 
-            // ###GUN
+            // ###GUN En:4 x 1, Dis:2 x 2
             float currentHeight = 0;
             foreach (var itm in chart1.ChartAreas)
             {
@@ -374,12 +382,13 @@ namespace Chart_Project
                     if (bFirstDraw == true)
                     {
                         chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum = yData;
-                        chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData+1; // ###GUN
+                        chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData + 0.00001; // ###GUN
                     }
 
                     if (chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum > yData) chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum = yData;
                     if (chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum < yData) chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData;
-                    if (chart1.Series[i].Points.Count > 100)
+
+                    if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_SampleN.Text))
                     {
                         chart1.Series[i].Points.RemoveAt(0);
                     }
