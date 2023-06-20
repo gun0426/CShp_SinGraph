@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -344,7 +344,7 @@
             // 
             // trackBar_DrawSpeed
             // 
-            this.trackBar_DrawSpeed.Location = new System.Drawing.Point(18, 603);
+            this.trackBar_DrawSpeed.Location = new System.Drawing.Point(18, 493);
             this.trackBar_DrawSpeed.Maximum = 1000;
             this.trackBar_DrawSpeed.Minimum = 10;
             this.trackBar_DrawSpeed.Name = "trackBar_DrawSpeed";
@@ -356,7 +356,7 @@
             // 
             // textBox_DrawTick
             // 
-            this.textBox_DrawTick.Location = new System.Drawing.Point(202, 577);
+            this.textBox_DrawTick.Location = new System.Drawing.Point(202, 467);
             this.textBox_DrawTick.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_DrawTick.Name = "textBox_DrawTick";
             this.textBox_DrawTick.Size = new System.Drawing.Size(46, 28);
@@ -366,7 +366,7 @@
             // 
             // textBox_SampleN
             // 
-            this.textBox_SampleN.Location = new System.Drawing.Point(202, 507);
+            this.textBox_SampleN.Location = new System.Drawing.Point(202, 432);
             this.textBox_SampleN.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_SampleN.Name = "textBox_SampleN";
             this.textBox_SampleN.Size = new System.Drawing.Size(46, 28);
@@ -534,10 +534,10 @@
             // 
             this.button_Start.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.button_Start.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.button_Start.Location = new System.Drawing.Point(27, 438);
+            this.button_Start.Location = new System.Drawing.Point(118, 563);
             this.button_Start.Margin = new System.Windows.Forms.Padding(0);
             this.button_Start.Name = "button_Start";
-            this.button_Start.Size = new System.Drawing.Size(184, 45);
+            this.button_Start.Size = new System.Drawing.Size(92, 45);
             this.button_Start.TabIndex = 11;
             this.button_Start.Text = "Start";
             this.button_Start.UseVisualStyleBackColor = true;
@@ -1093,22 +1093,22 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 517);
+            this.label3.Location = new System.Drawing.Point(24, 442);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 18);
+            this.label3.Size = new System.Drawing.Size(139, 18);
             this.label3.TabIndex = 9;
-            this.label3.Text = "Count";
+            this.label3.Text = "Max Data Count";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 580);
+            this.label2.Location = new System.Drawing.Point(24, 470);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 18);
+            this.label2.Size = new System.Drawing.Size(96, 18);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Speed";
+            this.label2.Text = "Speed(ms)";
             // 
             // label13
             // 
@@ -1171,24 +1171,24 @@
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(4, 0);
             this.chart1.Margin = new System.Windows.Forms.Padding(4);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chart1.Series.Add(series3);
             this.chart1.Size = new System.Drawing.Size(1507, 831);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
-            title1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title1.Name = "Title1";
-            this.chart1.Titles.Add(title1);
+            title3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title3.Name = "Title1";
+            this.chart1.Titles.Add(title3);
             // 
             // splitter1
             // 
