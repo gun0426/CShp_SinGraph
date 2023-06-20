@@ -33,6 +33,7 @@ namespace Chart_Project
         public const int COLOR_G = 0x20;
         public const int COLOR_B = 0x20;
         public const int SAMPLE_N = 200;
+        public const int DRAW_TICK = 100;  
         //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         //double chart2_x = 0;
@@ -71,8 +72,15 @@ namespace Chart_Project
 
             textBox_SampleN.Text = Convert.ToString(SAMPLE_N);
 
+            /* trackBar */
+            //this.TopMost = true;
+            //trackBar_DrawSpeed.BringToFront();
+            trackBar_DrawSpeed.Minimum = 10;
+            trackBar_DrawSpeed.Maximum = 1000;
+            textBox_DrawTick.Text = "100";
+            trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
             /* Timer1 @Timer */
-            timer1.Interval = (int)TICK;
+            timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Stop();
             /* Chart1 @Chart */
@@ -207,31 +215,35 @@ namespace Chart_Project
                     }
                 }
             }
-            Set_Area(vArea);
 
-            for (int i = 0; i < nSeries; i++)
+            if (nSeries != 0)
             {
-                switch (i)
+                Set_Area(vArea);
+
+                for (int i = 0; i < nSeries; i++)
                 {
-                    case 0:
-                        Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[0]);
-                        break;
-                    case 1:
-                        Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[1]);
-                        break;
-                    case 2:
-                        Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[2]);
-                        break;
-                    case 3:
-                        Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[3]);
-                        break;
-                    default:
-                        Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[4]);
-                        break;
+                    switch (i)
+                    {
+                        case 0:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[0]);
+                            break;
+                        case 1:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[1]);
+                            break;
+                        case 2:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[2]);
+                            break;
+                        case 3:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[3]);
+                            break;
+                        default:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[4]);
+                            break;
+                    }
                 }
+                xIndx = 0;
+                bFirstDraw = true;
             }
-            xIndx = 0;
-            bFirstDraw = true;
         }
 
 
@@ -569,6 +581,7 @@ namespace Chart_Project
             if (startToggle == false)
             {
                 Set_Chart1();
+                timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                 timer1.Start();
                 button_Start.Text = "Stop";
                 for (int i = 0; i < ROW_N; i++)
@@ -718,6 +731,25 @@ namespace Chart_Project
                 colors[4] = button_Color4.BackColor;
                 Set_Chart1();
             }
+        }
+
+        private void textBox_DrawTick_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            //숫자만 입력되도록 필터링             
+            if (!(char.IsDigit(e.KeyChar) || e.KeyChar == Convert.ToChar(Keys.Back)))    //숫자와 백스페이스를 제외한 나머지를 바로 처리             
+            {
+                e.Handled = true;
+            }
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
+            }
+        }
+
+        private void trackBar_DrawSpeed_Scroll(object sender, EventArgs e)
+        {
+            textBox_DrawTick.Text = Convert.ToString(trackBar_DrawSpeed.Value);
+            timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
         }
     }
 }
