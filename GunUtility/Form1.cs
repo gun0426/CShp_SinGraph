@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 /**********************************************
 *
@@ -34,13 +35,16 @@ namespace Chart_Project
         public const int BACK_COLOR_G = 0x20;
         public const int BACK_COLOR_B = 0x20;
         public const int SAMPLE_N = 200;
-        public const int DRAW_TICK = 100;  
+        public const int DRAW_TICK = 100;
+        public const int TEXT_FUNC_N = 5;
         //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         bool startToggle = false;
         CheckBox[,] checks = new CheckBox[5, 8];
-        TextBox[] texts = new TextBox[5];
-        Color[] colors = new Color[5];
+        TextBox[] textFunc = new TextBox[TEXT_FUNC_N];
+        Button[] btnColor = new Button[TEXT_FUNC_N];
+        Button[] btnColorS = new Button[TEXT_FUNC_N];
+        string[] textDisp = new string[TEXT_FUNC_N];
         int[] aAreaSel = new int[20];
         int nSeries = 0;
         int nArea = 0;
@@ -136,18 +140,29 @@ namespace Chart_Project
             checks[4, 6] = checkBox39;
             checks[4, 7] = checkBox40;
 
-            texts[0] = textBox0;
-            texts[1] = textBox1;
-            texts[2] = textBox2;
-            texts[3] = textBox3;
-            texts[4] = textBox4;
+            textFunc[0] = textBox0;
+            textFunc[1] = textBox1;
+            textFunc[2] = textBox2;
+            textFunc[3] = textBox3;
+            textFunc[4] = textBox4;
 
-            colors[0] = button_Color0.BackColor;
-            colors[1] = button_Color1.BackColor;
-            colors[2] = button_Color2.BackColor;
-            colors[3] = button_Color3.BackColor;
-            colors[4] = button_Color4.BackColor;
+            textDisp[0] = textFunc[0].Text;
+            textDisp[1] = textFunc[1].Text;
+            textDisp[2] = textFunc[2].Text;
+            textDisp[3] = textFunc[3].Text;
+            textDisp[4] = textFunc[4].Text;
 
+            btnColor[0] = button_Color0;
+            btnColor[1] = button_Color1;
+            btnColor[2] = button_Color2;
+            btnColor[3] = button_Color3;
+            btnColor[4] = button_Color4;
+
+            btnColorS[0] = button_ColorS0;
+            btnColorS[1] = button_ColorS1;
+            btnColorS[2] = button_ColorS2;
+            btnColorS[3] = button_ColorS3;
+            btnColorS[4] = button_ColorS4;
 
             //Graphics graphics = CreateGraphics();
             //Pen pen = new Pen(Color.Black);
@@ -218,7 +233,7 @@ namespace Chart_Project
                     if (checks[row, column].Checked == true)
                     {
                         aAreaSel[nSeries] = column - nEmptyCol;
-                        sColor[nSeries] = colors[row];
+                        sColor[nSeries] = btnColor[row].BackColor;
                         nSeries++;
                         vArea |= (0x01 << column);
                         break;
@@ -504,7 +519,7 @@ namespace Chart_Project
                 {
                     if (checks[row, column].Checked == true)
                     {
-                        item[indx++] = Calc_StrMath(texts[row].Text);
+                        item[indx++] = Calc_StrMath(textDisp[row]);
                         if (indx == nSeries)
                         {
                             Draw_Chart1(item, nSeries);
@@ -594,10 +609,6 @@ namespace Chart_Project
                 timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                 timer1.Start();
                 button_Start.Text = "Stop";
-                for (int i = 0; i < ROW_N; i++)
-                {
-                    texts[i].Enabled = false;
-                }
                 startToggle = true;
                 bMouseMoveReady = true;
             }
@@ -605,10 +616,6 @@ namespace Chart_Project
             {
                 timer1.Stop();
                 button_Start.Text = "Start";
-                for (int i = 0; i < ROW_N; i++)
-                {
-                    texts[i].Enabled = true;
-                }
                 startToggle = false;
             }
         }
@@ -633,113 +640,36 @@ namespace Chart_Project
             Set_Chart1();
         }
 
-        /* ###GUN : 나중에 위와 같이 이벤트 그룹으로 변경할 것! */
-        private void button_Color0_Click(object sender, EventArgs e)
+        private void button_Color_Click(object sender, EventArgs e)
         {
+            Button btn = (Button)sender;
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                button_Color0.BackColor = colorDialog1.Color;
-                button_ColorS0.BackColor = colorDialog1.Color;
-                colors[0] = button_Color0.BackColor;
+                for (int i = 0; i < TEXT_FUNC_N; i++)
+                {
+                    if (btn.Name == "button_Color" + Convert.ToString(i))
+                    {
+                        btnColor[i].BackColor = colorDialog1.Color;
+                        btnColorS[i].BackColor = colorDialog1.Color;
+                    }
+                }
                 Set_Chart1();
             }
         }
 
-        private void button_Color1_Click(object sender, EventArgs e)
+        private void button_ColorS_Click(object sender, EventArgs e)
         {
+            Button btn = (Button)sender;
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                button_Color1.BackColor = colorDialog1.Color;
-                button_ColorS1.BackColor = colorDialog1.Color;
-                colors[1] = button_Color1.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_Color2_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color2.BackColor = colorDialog1.Color;
-                button_ColorS2.BackColor = colorDialog1.Color;
-                colors[2] = button_Color2.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_Color3_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color3.BackColor = colorDialog1.Color;
-                button_ColorS3.BackColor = colorDialog1.Color;
-                colors[3] = button_Color3.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_Color4_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color4.BackColor = colorDialog1.Color;
-                button_ColorS4.BackColor = colorDialog1.Color;
-                colors[4] = button_Color4.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_ColorS0_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color0.BackColor = colorDialog1.Color;
-                button_ColorS0.BackColor = colorDialog1.Color;
-                colors[0] = button_Color0.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_ColorS1_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color1.BackColor = colorDialog1.Color;
-                button_ColorS1.BackColor = colorDialog1.Color;
-                colors[1] = button_Color1.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_ColorS2_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color2.BackColor = colorDialog1.Color;
-                button_ColorS2.BackColor = colorDialog1.Color;
-                colors[2] = button_Color2.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_ColorS3_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color3.BackColor = colorDialog1.Color;
-                button_ColorS3.BackColor = colorDialog1.Color;
-                colors[3] = button_Color3.BackColor;
-                Set_Chart1();
-            }
-        }
-
-        private void button_ColorS4_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-            {
-                button_Color4.BackColor = colorDialog1.Color;
-                button_ColorS4.BackColor = colorDialog1.Color;
-                colors[4] = button_Color4.BackColor;
+                for (int i = 0; i < TEXT_FUNC_N; i++)
+                {
+                    if (btn.Name == "button_ColorS" + Convert.ToString(i))
+                    {
+                        btnColor[i].BackColor = colorDialog1.Color;
+                        btnColorS[i].BackColor = colorDialog1.Color;
+                    }
+                }
                 Set_Chart1();
             }
         }
@@ -768,51 +698,66 @@ namespace Chart_Project
         {
             if (bMouseMoveReady == true)
             {
-                int minX, maxX, minY, maxY;
-                for (int i = 0; i < nArea; i++)
+                //int minX, maxX, minY, maxY;
+                //for (int i = 0; i < nArea; i++)
+                //{
+                //    minX = (int)(chart1.ChartAreas[i].Position.X);
+                //    maxX = (int)(chart1.ChartAreas[i].Position.X + chart1.ChartAreas[i].Position.Width);// * chart1.Width / 100);
+                //    minY = (int)(chart1.ChartAreas[i].Position.Y);
+                //    maxY = (int)(chart1.ChartAreas[i].Position.Y + chart1.ChartAreas[i].Position.Height);// * chart1.Height / 100);
+
+                //    Point posChart = new Point(e.X, e.Y); //Position of the mouse respect to the chart
+                //    if (posChart.X >= minX && posChart.X <= maxX && posChart.Y >= minY && posChart.Y <= maxY)
+                //    {
+                //        //The mouse is inside the given area
+                //        //Conversion of the mouse position to the ChartArea reference system, with the corresponding "inversion" of the Y values
+                //        ////Point posChartArea = new Point(posChart.X - minX, Math.Abs((posChart.Y - minY) - maxY));
+
+                //        textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
+                //        double x = (double)chart1.ChartAreas[i].AxisX.PixelPositionToValue(e.Location.X);
+                //        double y = (double)chart1.ChartAreas[i].AxisY.PixelPositionToValue(e.Location.Y);
+
+                //        x = Math.Round(x, 1);
+                //        y = Math.Round(y, 2);
+
+                //        string str = "";
+                //        str = Convert.ToString(x);
+                //        str += "/";
+                //        str += Convert.ToString(y);
+                //        textBox_MousePoint.Text = str;
+                //    }
+                //}
+
+
+
+
+                 textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
+                 double x = (double)chart1.ChartAreas[0].AxisX.PixelPositionToValue(e.Location.X);
+                 double y = (double)chart1.ChartAreas[0].AxisY.PixelPositionToValue(e.Location.Y);
+ 
+                 x = Math.Round(x, 1);
+                 y = Math.Round(y, 2);
+ 
+                 string str = "";
+                 str = Convert.ToString(x);
+                 str += "/";
+                 str += Convert.ToString(y);
+                 textBox_MousePoint.Text = str;
+            }
+        }
+
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+            {
+                TextBox tb = (TextBox)sender;
+                for (int i = 0; i < TEXT_FUNC_N; i++)
                 {
-                    minX = (int)(chart1.ChartAreas[i].Position.X);
-                    maxX = (int)(chart1.ChartAreas[i].Position.X + chart1.ChartAreas[i].Position.Width);// * chart1.Width / 100);
-                    minY = (int)(chart1.ChartAreas[i].Position.Y);
-                    maxY = (int)(chart1.ChartAreas[i].Position.Y + chart1.ChartAreas[i].Position.Height);// * chart1.Height / 100);
-
-                    Point posChart = new Point(e.X, e.Y); //Position of the mouse respect to the chart
-                    if (posChart.X >= minX && posChart.X <= maxX && posChart.Y >= minY && posChart.Y <= maxY)
+                    if (tb.Name == "textBox" + Convert.ToString(i))
                     {
-                        //The mouse is inside the given area
-                        //Conversion of the mouse position to the ChartArea reference system, with the corresponding "inversion" of the Y values
-                        ////Point posChartArea = new Point(posChart.X - minX, Math.Abs((posChart.Y - minY) - maxY));
-
-                        textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
-                        double x = (double)chart1.ChartAreas[i].AxisX.PixelPositionToValue(e.Location.X);
-                        double y = (double)chart1.ChartAreas[i].AxisY.PixelPositionToValue(e.Location.Y);
-
-                        x = Math.Round(x, 1);
-                        y = Math.Round(y, 2);
-
-                        string str = "";
-                        str = Convert.ToString(x);
-                        str += "/";
-                        str += Convert.ToString(y);
-                        textBox_MousePoint.Text = str;
+                        textDisp[i] = textFunc[i].Text;
                     }
                 }
-
-
-
-
-                //textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
-                //double x = (double)chart1.ChartAreas[0].AxisX.PixelPositionToValue(e.Location.X);
-                //double y = (double)chart1.ChartAreas[0].AxisY.PixelPositionToValue(e.Location.Y);
-                //
-                //x = Math.Round(x, 1);
-                //y = Math.Round(y, 2);
-                //
-                //string str = "";
-                //str = Convert.ToString(x);
-                //str += "/";
-                //str += Convert.ToString(y);
-                //textBox_MousePoint.Text = str;
             }
         }
     }
