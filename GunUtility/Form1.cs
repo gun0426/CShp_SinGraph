@@ -694,55 +694,55 @@ namespace Chart_Project
             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
         }
 
+
+        /*
+         *  The InnerPlotPosition property 
+         *      defines the rectangle within a chart area element that is used for plotting data; it excludes tick marks, axis labels, and so forth.
+         *  ChartArea.Position property 
+         *      defines the position of a ChartArea object within the Chart, and includes tick marks, axis labels, and so forth.
+         *  Axis.PixelPositionToValue()  
+         *      해당 윈도우 기준의 '절대적 pixel 값'을 axis 값으로 변환한다. 
+         *  Axis.ValueToPosition()
+         *      axis 값을 '상대값 (0 ~ 100%)'으로 변환한다. 
+         *  ElementPosition : 상대좌표(0, 0) ~ (100, 100) 사이값을 가짐.
+         *      ChartAreas[0].Position.X
+         *      ChartAreas[0].InnerPlotPosition.X;
+                ChartAreas[0].InnerPlotPosition.Width;
+        */
         private void chart1_MouseMove(object sender, MouseEventArgs e)
         {
             if (bMouseMoveReady == true)
             {
-                //int minX, maxX, minY, maxY;
-                //for (int i = 0; i < nArea; i++)
-                //{
-                //    minX = (int)(chart1.ChartAreas[i].Position.X);
-                //    maxX = (int)(chart1.ChartAreas[i].Position.X + chart1.ChartAreas[i].Position.Width);// * chart1.Width / 100);
-                //    minY = (int)(chart1.ChartAreas[i].Position.Y);
-                //    maxY = (int)(chart1.ChartAreas[i].Position.Y + chart1.ChartAreas[i].Position.Height);// * chart1.Height / 100);
+                for (int i = 0; i < chart1.ChartAreas.Count; i++)
+                {
+                    //Point mousePoint = new Point(e.X, e.Y);
+                    //chart1.ChartAreas[i].CursorX.SetCursorPixelPosition(mousePoint, false);
+                    //chart1.ChartAreas[i].CursorY.SetCursorPixelPosition(mousePoint, false);
 
-                //    Point posChart = new Point(e.X, e.Y); //Position of the mouse respect to the chart
-                //    if (posChart.X >= minX && posChart.X <= maxX && posChart.Y >= minY && posChart.Y <= maxY)
-                //    {
-                //        //The mouse is inside the given area
-                //        //Conversion of the mouse position to the ChartArea reference system, with the corresponding "inversion" of the Y values
-                //        ////Point posChartArea = new Point(posChart.X - minX, Math.Abs((posChart.Y - minY) - maxY));
+                    Point mousePoint = new Point(e.X, e.Y);
+                    chart1.ChartAreas[i].CursorX.SetCursorPixelPosition(mousePoint, true);
+                    chart1.ChartAreas[i].CursorY.SetCursorPixelPosition(mousePoint, true);
 
-                //        textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
-                //        double x = (double)chart1.ChartAreas[i].AxisX.PixelPositionToValue(e.Location.X);
-                //        double y = (double)chart1.ChartAreas[i].AxisY.PixelPositionToValue(e.Location.Y);
+                    //chart1.ChartAreas[i].CursorX.LineColor = Color.White;
+                    //chart1.ChartAreas[i].CursorY.LineColor = Color.White;
 
-                //        x = Math.Round(x, 1);
-                //        y = Math.Round(y, 2);
+                    double x = chart1.ChartAreas[i].AxisX.PixelPositionToValue(e.X);
+                    double y = chart1.ChartAreas[i].AxisY.PixelPositionToValue(e.Y);
+                    x = Math.Round(x, 1); /* 반올림 */
+                    y = Math.Round(y, 2); /* 반올림 */
 
-                //        string str = "";
-                //        str = Convert.ToString(x);
-                //        str += "/";
-                //        str += Convert.ToString(y);
-                //        textBox_MousePoint.Text = str;
-                //    }
-                //}
-
-
-
-
-                 textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
-                 double x = (double)chart1.ChartAreas[0].AxisX.PixelPositionToValue(e.Location.X);
-                 double y = (double)chart1.ChartAreas[0].AxisY.PixelPositionToValue(e.Location.Y);
- 
-                 x = Math.Round(x, 1);
-                 y = Math.Round(y, 2);
- 
-                 string str = "";
-                 str = Convert.ToString(x);
-                 str += "/";
-                 str += Convert.ToString(y);
-                 textBox_MousePoint.Text = str;
+                    if ((y <= chart1.ChartAreas[i].AxisY.Maximum) && (y >= chart1.ChartAreas[i].AxisY.Minimum) &&
+                        (x <= chart1.ChartAreas[i].AxisX.Maximum) && (x >= chart1.ChartAreas[i].AxisX.Minimum)
+                        )
+                    {
+                        textBox_MousePoint.Location = new Point(e.X + 20, e.Y);
+                        string str = "";
+                        str = Convert.ToString(x);
+                        str += "/";
+                        str += Convert.ToString(y);
+                        textBox_MousePoint.Text = str;
+                    }
+                }
             }
         }
 
