@@ -791,6 +791,8 @@ namespace Chart_Project
                 {
                     string lastLine = textBox_Cmd.Lines[textBox_Cmd.Lines.Length - 1];
                     lastLine = lastLine.ToLower();
+                    lastLine = lastLine.Replace("-", "");
+                    lastLine = lastLine.Replace(" ", "");
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
                     if (lastLine.IndexOf("clear") != -1)
                     {
@@ -804,45 +806,85 @@ namespace Chart_Project
                     {
                         timer1.Stop();
                     }
+                    else if (lastLine.IndexOf("uncheckall") != -1)   // check(1,2)
+                    {                       
+                        for (int i = 0; i < ROW_N; i++)
+                        {
+                            for (int j = 0; j < COLUMN_N; j++)
+                            {
+                                checks[i, j].Checked = false;
+                            }
+                        }
+                    }
+                    else if (lastLine.IndexOf("uncheck") != -1)   // check(1,2)
+                    {
+                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        if (mc.Count != 0)
+                        {
+                            string[] strValue = new string[mc.Count];
+                            for (int i = 0; i < mc.Count; i++)
+                            {
+                                strValue[i] = mc[i].Value;
+                            }
+                            int row = Convert.ToInt32(strValue[0]);
+                            for (int i = 0; i < COLUMN_N; i++)
+                            {
+                                checks[row, i].Checked = false;
+                            }
+                        }
+                    }
+                    else if (lastLine.IndexOf("checkalld") != -1)   // check(1,2)
+                    {
+                        for (int i = 0; i < ROW_N; i++)
+                        {
+                            for (int j = 0; j < COLUMN_N; j++)
+                            {
+                                checks[i, j].Checked = false;
+                            }
+                        }
+                        for (int i = 0; i < ROW_N; i++)
+                        {
+                            for (int j = 0; j < COLUMN_N; j++)
+                            {
+                                if (i == j)
+                                {
+                                    checks[i, j].Checked = true;
+                                }
+                            }
+                        }
+                    }
+                    else if (lastLine.IndexOf("checkall") != -1)   // check(1,2)
+                    {
+                        for (int i = 0; i < ROW_N; i++)
+                        {
+                            for (int j = 0; j < COLUMN_N; j++)
+                            {
+                                checks[i, j].Checked = false;
+                            }
+                        }
+                        for (int i = 0; i < ROW_N; i++)
+                        {
+                            checks[i, 0].Checked = true;
+                        }
+                    }
                     else if (lastLine.IndexOf("check") != -1)   // check(1,2)
                     {
-                        lastLine = lastLine.Replace(" ", "");
-
-                        //string[] strValue = new string[10];
-                        //int i = 0;
-                        //foreach (Match match in Regex.Matches(lastLine, @"\d+", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
-                        //{
-                        //    //Console.WriteLine("Found '{0}' at position {1}", match.Value, match.Index);
-                        //    ttt[i] = (string)match.Value;
-                        //    Console.WriteLine("{0}", ttt[i]);
-                        //    i++;
-                        //}
-
                         MatchCollection mc = Regex.Matches(lastLine, @"\d+");
-                        string[] strValue = new string[mc.Count];
-                        for (int i = 0; i < mc.Count; i++)
+                        if (mc.Count != 0)
                         {
-                            strValue[i] = mc[i].Value;
+                            string[] strValue = new string[mc.Count];
+                            for (int i = 0; i < mc.Count; i++)
+                            {
+                                strValue[i] = mc[i].Value;
+                            }
+                            int row = Convert.ToInt32(strValue[0]);
+                            int col = Convert.ToInt32(strValue[1]);
+                            for (int i = 0; i < COLUMN_N; i++)
+                            {
+                                checks[row, i].Checked = false;
+                            }
+                            checks[row, col].Checked = true;
                         }
-                        //for (int i = 0; i < lastLine.Length; i++)
-                        //{
-                        //    lastLine.Substring(i, i + 1)
-                        //    if (lastLine.Substring(i,i+1) >= "0" && lastLine.Substring(i, i + 1) <= "9")
-                        //    {
-                        //    }
-
-                        //    string[] strings = new string[] { "1", "2", "3" };
-
-                        //    int[] ints = Array.ConvertAll(strings, s => int.Parse(s));
-                        //    Console.WriteLine(String.Join(",", ints));
-                        //}
-                        //int row, column;
-                        //for (int i = 0; i < COLUMN_N; i++)
-                        //{
-                        //    checks[row, i].Checked = false;
-                        //}
-                        //checks[row, column].Checked = true;
-                        //timer1.Stop();
                     }
                     else
                     {
