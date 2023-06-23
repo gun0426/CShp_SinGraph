@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -24,10 +23,9 @@ namespace Chart_Project
     {
         private delegate void Draw_Chart1Delegate(double[] buffer, int size);
         private delegate void DrawChart2Delegate(double[] buffer, int size);
- //       public delegate void KeyPressEventHandler(object sender, KeyPressEventArgs e);
         public const double AXIS_Y_MIN = Double.NaN;
         public const double AXIS_Y_MAX = Double.NaN;
- //     public const double FREQ = 100.0;
+        //     public const double FREQ = 100.0;
         public const double TICK = 100.0;
         public const int SAMPLES_N = 50;
         public const int ROW_N = 5;
@@ -61,7 +59,7 @@ namespace Chart_Project
             //Pen RefPen = new Pen(Color.Red, 3);
 
             chart1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
-            splitContainer1.BackColor = Color.FromArgb(BACK_COLOR_R+20, BACK_COLOR_G+20, BACK_COLOR_B+20);
+            splitContainer1.BackColor = Color.FromArgb(BACK_COLOR_R + 20, BACK_COLOR_G + 20, BACK_COLOR_B + 20);
             splitContainer1.Panel1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             splitContainer1.Panel2.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             splitContainer2.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
@@ -69,11 +67,14 @@ namespace Chart_Project
             splitContainer2.Panel2.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             splitContainer3.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             splitContainer3.Panel1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
-            splitContainer3.Panel2.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B); 
-            
+            splitContainer3.Panel2.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+
             splitContainer1.FixedPanel = FixedPanel.Panel1; // ###GUN           
             splitContainer2.FixedPanel = FixedPanel.Panel2;
             splitContainer3.FixedPanel = FixedPanel.Panel2;
+            textBox_Cmd.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+            textBox_Cmd.ForeColor = Color.FromArgb(BACK_COLOR_R+100, BACK_COLOR_G+100, BACK_COLOR_B+100);
+
 
             textBox_SampleN.Text = Convert.ToString(SAMPLE_N);
             textBox_MousePoint.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
@@ -165,8 +166,6 @@ namespace Chart_Project
             btnColorS[4] = button_ColorS4;
 
             Init_Chart1();
-
-            KeyPreview = true;
         }
 
         private void Init_Chart1()
@@ -192,7 +191,7 @@ namespace Chart_Project
             item[0] = -1;
             item[1] = 0;
             item[2] = 1;
-            item[3] = 2;            
+            item[3] = 2;
 
             Draw_Chart1(item, nSeries);
             Draw_Chart1(item, nSeries);  // ###GUN : 최소 두개의 데이타
@@ -203,7 +202,7 @@ namespace Chart_Project
             chart1.Series.Clear();
 
             int row, column;
-            int vArea = 0;           
+            int vArea = 0;
             int nEmptyCol = 0;
 
             nSeries = 0;
@@ -224,7 +223,7 @@ namespace Chart_Project
                             nEmptyCol--;
                             break;
                         }
-                    }                    
+                    }
 
                     if (checks[row, column].Checked == true)
                     {
@@ -269,7 +268,7 @@ namespace Chart_Project
                 for (int i = 0; i < ROW_N; i++)
                 {
                     textDisp[i] = textFunc[i].Text;
-                }  
+                }
             }
         }
 
@@ -350,7 +349,7 @@ namespace Chart_Project
                 chart1.ChartAreas[i].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
                 chart1.ChartAreas[i].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
 
-                chart1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B); ; // ###GUN
+                chart1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B); // ###GUN
                 chart1.ChartAreas[i].BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
                 chart1.ChartAreas[i].BackSecondaryColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
 
@@ -358,7 +357,7 @@ namespace Chart_Project
                 chart1.ChartAreas[i].AxisY.MajorTickMark.LineColor = Color.FromArgb(100, 100, 100);
                 chart1.ChartAreas[i].AxisX.MinorTickMark.LineColor = Color.FromArgb(100, 100, 100);
                 chart1.ChartAreas[i].AxisY.MinorTickMark.LineColor = Color.FromArgb(100, 100, 100);
-               
+
                 //chart1.ChartAreas[i].AxisX.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto;   // X축 이름 회전
                 //chart1.ChartAreas[i].AxisX.IsReversed = true;   // ###GUN : 그래프 이동 방향 우에서 좌로
                 //chart1.ChartAreas[i].AxisY.IsReversed = true;   // ###GUN : 그래프 이동 방향 위에서 아래로       
@@ -414,7 +413,7 @@ namespace Chart_Project
             chart1.Series[series_idx].Color = color;
             chart1.Series[series_idx].IsVisibleInLegend = false;
         }
-        
+
         private void Draw_Chart1(double[] buffer, int size)
         {
             if (chart1.InvokeRequired)
@@ -444,7 +443,7 @@ namespace Chart_Project
                     {
                         chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData;// + delta * 1.2;
                     }
-                
+
                     if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_SampleN.Text))
                     {
                         chart1.Series[i].Points.RemoveAt(0);
@@ -527,7 +526,7 @@ namespace Chart_Project
                 //name = name.Replace(mc[mc.Count - j - 1].Value, "");
                 name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
-            }   
+            }
             double Q = Convert.ToDouble(dt.Compute(name, ""));
 
             //Q = Math.Round(Q, 2);     // 소수세짜리 반올림 ###GUN
@@ -535,17 +534,17 @@ namespace Chart_Project
             //Q = Math.Truncate(Q);     // 소수첫짜리 버림
             //Q = Math.Round(Q, 1);     // 소수둘째자리 반올림
 
-            return Q;           
+            return Q;
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
             double[] item = new double[10];
-            
+
             int indx = 0;
 
-            for (int row = 0; row < ROW_N; row ++)
+            for (int row = 0; row < ROW_N; row++)
             {
-                for (int column = 0; column < COLUMN_N; column ++)
+                for (int column = 0; column < COLUMN_N; column++)
                 {
                     if (checks[row, column].Checked == true)
                     {
@@ -559,24 +558,24 @@ namespace Chart_Project
                 }
             }
         }
-   
-        private void keyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                Debug.WriteLine("Enter !");
-                if (textBox1.Text.ToLower() == "sinx")
-                {
-                    Debug.WriteLine("sinx !");
-                }
-                if (textBox1.Text.ToLower() == "cosx")
-                {
-                    Debug.WriteLine("cosx !");
-                }
-                textBox1.Text = "";
-            }
-            return;
-        }
+
+ //       private void keyDown(object sender, KeyEventArgs e)
+ //       {
+ //           if (e.KeyCode == Keys.Enter)
+ //           {
+ //               Debug.WriteLine("Enter !");
+ //               if (textBox1.Text.ToLower() == "sinx")
+ //               {
+ //                   Debug.WriteLine("sinx !");
+ //               }
+ //               if (textBox1.Text.ToLower() == "cosx")
+ //               {
+ //                   Debug.WriteLine("cosx !");
+ //               }
+ //               textBox1.Text = "";
+ //           }
+ //           return;
+ //       }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -626,9 +625,9 @@ namespace Chart_Project
             string pattern2 = @"([\s\[\{\(\<]+)" + @"([0-9]+)" + @"([\s\]\}\)\>]+)";
             string replacement2 = @"$1X$3";
             string result3 = Regex.Replace(strExample1, pattern2, replacement2);
-            //while (true) ;
+            while (true) ;
         }
-        
+
         private void button_Start_Click(object sender, EventArgs e)
         {
             xIndx = 0;
@@ -653,9 +652,9 @@ namespace Chart_Project
         private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (CheckBox)sender;
-            for (int i = 0; i <= ROW_N*COLUMN_N; i++)
+            for (int i = 0; i <= ROW_N * COLUMN_N; i++)
             {
-                if (cb.Name == "checkBox" + Convert.ToString(i+1))
+                if (cb.Name == "checkBox" + Convert.ToString(i + 1))
                 {
                     if (cb.Checked == true)
                     {
@@ -757,7 +756,7 @@ namespace Chart_Project
                         (x <= chart1.ChartAreas[i].AxisX.Maximum) && (x >= chart1.ChartAreas[i].AxisX.Minimum)
                         )
                     {
-                        textBox_MousePoint.Location = new Point(e.X + 20, e.Y+5);
+                        textBox_MousePoint.Location = new Point(e.X + 20, e.Y + 5);
                         string str = "";
                         //str = Convert.ToString(x);
                         //str += "/";
@@ -780,21 +779,85 @@ namespace Chart_Project
                         textDisp[i] = textFunc[i].Text;
                     }
                 }
+                e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
             }
-            e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
         }
 
-        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBox_Cmd_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == Convert.ToChar(Keys.D6))
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                if (timer1.Enabled == true)
+                if (textBox_Cmd.Lines.Length > 0)
                 {
-                    timer1.Stop();
-                }
-                else
-                {
-                    timer1.Start();
+                    string lastLine = textBox_Cmd.Lines[textBox_Cmd.Lines.Length - 1];
+                    lastLine = lastLine.ToLower();
+                    //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
+                    if (lastLine.IndexOf("clear") != -1)
+                    {
+                        Set_Chart1();
+                    }
+                    else if (lastLine.IndexOf("start") != -1)
+                    {
+                        timer1.Start();
+                    }
+                    else if (lastLine.IndexOf("stop") != -1)
+                    {
+                        timer1.Stop();
+                    }
+                    else if (lastLine.IndexOf("check") != -1)   // check(1,2)
+                    {
+                        lastLine = lastLine.Replace(" ", "");
+
+                        //string[] strValue = new string[10];
+                        //int i = 0;
+                        //foreach (Match match in Regex.Matches(lastLine, @"\d+", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
+                        //{
+                        //    //Console.WriteLine("Found '{0}' at position {1}", match.Value, match.Index);
+                        //    ttt[i] = (string)match.Value;
+                        //    Console.WriteLine("{0}", ttt[i]);
+                        //    i++;
+                        //}
+
+                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        string[] strValue = new string[mc.Count];
+                        for (int i = 0; i < mc.Count; i++)
+                        {
+                            strValue[i] = mc[i].Value;
+                        }
+                        //for (int i = 0; i < lastLine.Length; i++)
+                        //{
+                        //    lastLine.Substring(i, i + 1)
+                        //    if (lastLine.Substring(i,i+1) >= "0" && lastLine.Substring(i, i + 1) <= "9")
+                        //    {
+                        //    }
+
+                        //    string[] strings = new string[] { "1", "2", "3" };
+
+                        //    int[] ints = Array.ConvertAll(strings, s => int.Parse(s));
+                        //    Console.WriteLine(String.Join(",", ints));
+                        //}
+                        //int row, column;
+                        //for (int i = 0; i < COLUMN_N; i++)
+                        //{
+                        //    checks[row, i].Checked = false;
+                        //}
+                        //checks[row, column].Checked = true;
+                        //timer1.Stop();
+                    }
+                    else
+                    {
+                        /* sin, COS, pi -> Sin, Cos, PI */
+                        lastLine = Regex.Replace(lastLine, "sin", "sin", RegexOptions.IgnoreCase);
+                        lastLine = Regex.Replace(lastLine, "cos", "cos", RegexOptions.IgnoreCase);
+                        lastLine = Regex.Replace(lastLine, "tan", "tan", RegexOptions.IgnoreCase);
+                        if ((lastLine.IndexOf("sin") != -1) || (lastLine.IndexOf("cos") != -1) || (lastLine.IndexOf("tan") != -1))
+                        {
+                            //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
+                            textBox4.Text = lastLine;
+                            textDisp[4] = textFunc[4].Text;
+
+                        }
+                    }
                 }
             }
         }

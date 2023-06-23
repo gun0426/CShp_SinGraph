@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title6 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -129,7 +129,7 @@
             this.textBox_MousePoint = new System.Windows.Forms.TextBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox_Cmd = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -1097,9 +1097,9 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.splitContainer3.Panel2.Controls.Add(this.textBox5);
+            this.splitContainer3.Panel2.Controls.Add(this.textBox_Cmd);
             this.splitContainer3.Size = new System.Drawing.Size(1058, 584);
-            this.splitContainer3.SplitterDistance = 551;
+            this.splitContainer3.SplitterDistance = 555;
             this.splitContainer3.TabIndex = 2;
             // 
             // textBox_MousePoint
@@ -1112,42 +1112,45 @@
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea6.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea6);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            legend6.Name = "Legend1";
+            this.chart1.Legends.Add(legend6);
             this.chart1.Location = new System.Drawing.Point(3, 0);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(1055, 551);
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "Series1";
+            this.chart1.Series.Add(series6);
+            this.chart1.Size = new System.Drawing.Size(1055, 555);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
-            title1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title1.Name = "Title1";
-            this.chart1.Titles.Add(title1);
+            title6.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title6.Name = "Title1";
+            this.chart1.Titles.Add(title6);
             this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
             // 
             // splitter1
             // 
             this.splitter1.Location = new System.Drawing.Point(0, 0);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 551);
+            this.splitter1.Size = new System.Drawing.Size(3, 555);
             this.splitter1.TabIndex = 1;
             this.splitter1.TabStop = false;
             // 
-            // textBox5
+            // textBox_Cmd
             // 
-            this.textBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox5.Location = new System.Drawing.Point(0, 0);
-            this.textBox5.Multiline = true;
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox5.Size = new System.Drawing.Size(1058, 29);
-            this.textBox5.TabIndex = 0;
+            this.textBox_Cmd.BackColor = System.Drawing.Color.White;
+            this.textBox_Cmd.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox_Cmd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_Cmd.Location = new System.Drawing.Point(0, 0);
+            this.textBox_Cmd.Multiline = true;
+            this.textBox_Cmd.Name = "textBox_Cmd";
+            this.textBox_Cmd.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox_Cmd.Size = new System.Drawing.Size(1058, 25);
+            this.textBox_Cmd.TabIndex = 0;
+            this.textBox_Cmd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_Cmd_KeyPress);
             // 
             // Form1
             // 
@@ -1162,7 +1165,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Sine Function";
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1267,7 +1269,7 @@
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox_Cmd;
         private System.Windows.Forms.Button button_Color3;
         private System.Windows.Forms.Button button_Color2;
         private System.Windows.Forms.Button button_Color1;
