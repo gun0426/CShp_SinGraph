@@ -96,7 +96,7 @@ namespace Chart_Project
             textBox0.Text = "sin(x)";
             textBox1.Text = "cos(x)";
             textBox2.Text = "sin(x)+cos(x)";
-            textBox3.Text = "sin(x)+sin(2x)+sin(3x)";
+            textBox3.Text = "sin(x)+sin(2x)";
             textBox4.Text = "";
             textBox_Samples.Text = Convert.ToString(SAMPLES_N);
 
@@ -446,7 +446,8 @@ namespace Chart_Project
 
                     if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_SampleN.Text))
                     {
-                        chart1.Series[i].Points.RemoveAt(0);
+                        for (int j = 0; j < chart1.Series[i].Points.Count - Convert.ToInt32(textBox_SampleN.Text); j++)
+                            chart1.Series[i].Points.RemoveAt(0);
                     }
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = chart1.Series[i].Points[0].XValue;
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Maximum = xData;
@@ -455,6 +456,13 @@ namespace Chart_Project
                 xIndx++;
             }
         }
+
+        /* 
+         * 3sin(2x+pi/4) + x^2 + 10x+ 2 
+         * -> 3*Sin(2*x+PI/4)+x*x+10*x+2
+         * 
+         * 
+         */
         private double Calc_StrMath(string math)
         {
             string name = math;
@@ -467,10 +475,11 @@ namespace Chart_Project
             /* " " -> "" */
             name = name.Replace(" ", "");
 
-            /* x^2 -> *x */
-            name = name.Replace("^2", "*x");
+            /* x^2 -> x * x */
+            name = name.Replace("^2", "*x");   
             int i = 1;
-            foreach (Match match in Regex.Matches(name, @"\d[x|\(]", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1)))
+            /* 10x -> 10 * x */
+            foreach (Match match in Regex.Matches(name, @"\d[x|\(]", RegexOptions.IgnoreCase))//, TimeSpan.FromSeconds(1)))
             {
                 //Console.WriteLine("Found '{0}' at position {1}", match.Value, match.Index);
                 name = name.Insert(match.Index + i++, "*");
@@ -527,6 +536,7 @@ namespace Chart_Project
                 name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
             }
+            name = name.TrimEnd('+','-','*','/');
             double Q = Convert.ToDouble(dt.Compute(name, ""));
 
             //Q = Math.Round(Q, 2);     // 소수세짜리 반올림 ###GUN
@@ -796,6 +806,7 @@ namespace Chart_Project
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
                     if (lastLine.IndexOf("clear") != -1)
                     {
+                        textBox_Cmd.Text = "";
                         Set_Chart1();
                     }
                     else if (lastLine.IndexOf("start") != -1)
@@ -833,7 +844,7 @@ namespace Chart_Project
                             }
                         }
                     }
-                    else if (lastLine.IndexOf("checkalld") != -1)   // check(1,2)
+                    else if (lastLine.IndexOf("checkalld") != -1)   
                     {
                         for (int i = 0; i < ROW_N; i++)
                         {
@@ -853,7 +864,7 @@ namespace Chart_Project
                             }
                         }
                     }
-                    else if (lastLine.IndexOf("checkall") != -1)   // check(1,2)
+                    else if (lastLine.IndexOf("checkall") != -1)   
                     {
                         for (int i = 0; i < ROW_N; i++)
                         {
@@ -886,18 +897,46 @@ namespace Chart_Project
                             checks[row, col].Checked = true;
                         }
                     }
+                    else if (lastLine.IndexOf("datacount") != -1)   
+                    {
+                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        if (mc.Count != 0)
+                        {
+                            string[] strValue = new string[mc.Count];
+                            for (int i = 0; i < mc.Count; i++)
+                            {
+                                strValue[i] = mc[i].Value;
+                            }
+                            textBox_SampleN.Text = strValue[0];
+                        }
+                    }
+                    else if (lastLine.IndexOf("tick") != -1)   
+                    {
+                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        if (mc.Count != 0)
+                        {
+                            string[] strValue = new string[mc.Count];
+                            for (int i = 0; i < mc.Count; i++)
+                            {
+                                strValue[i] = mc[i].Value;
+                            }
+                            textBox_DrawTick.Text = strValue[0];
+                            trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
+                            timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
+                        }
+                    }
                     else
                     {
                         /* sin, COS, pi -> Sin, Cos, PI */
-                        lastLine = Regex.Replace(lastLine, "sin", "sin", RegexOptions.IgnoreCase);
-                        lastLine = Regex.Replace(lastLine, "cos", "cos", RegexOptions.IgnoreCase);
-                        lastLine = Regex.Replace(lastLine, "tan", "tan", RegexOptions.IgnoreCase);
-                        if ((lastLine.IndexOf("sin") != -1) || (lastLine.IndexOf("cos") != -1) || (lastLine.IndexOf("tan") != -1))
+                        //lastLine = Regex.Replace(lastLine, "sin", "sin", RegexOptions.IgnoreCase);
+                        //lastLine = Regex.Replace(lastLine, "cos", "cos", RegexOptions.IgnoreCase);
+                        //lastLine = Regex.Replace(lastLine, "tan", "tan", RegexOptions.IgnoreCase);
+                        //if ((lastLine.IndexOf("sin") != -1) || (lastLine.IndexOf("cos") != -1) || (lastLine.IndexOf("tan") != -1))
                         {
                             //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
-                            textBox4.Text = lastLine;
+                            textFunc[4].Text = textBox_Cmd.Text;
+                            textFunc[4].Text = textFunc[4].Text.Replace("\r\n", "");
                             textDisp[4] = textFunc[4].Text;
-
                         }
                     }
                 }
