@@ -27,19 +27,19 @@ namespace Chart_Project
         public const double AXIS_Y_MAX = Double.NaN;
         //     public const double FREQ = 100.0;
         public const double TICK = 100.0;
-        public const int SAMPLES_N = 50;
-        public const int ROW_N = 5;
+        public const int PERIOD_COUNT = 50;
+        public const int ROW_N = 8;
         public const int COLUMN_N = 8;
         public const int BACK_COLOR_R = 0x20;
         public const int BACK_COLOR_G = 0x20;
         public const int BACK_COLOR_B = 0x20;
         public const int SAMPLE_N = 200;
         public const int DRAW_TICK = 100;
-        public const int TEXT_FUNC_N = 5;
+        public const int TEXT_FUNC_N = 8;
         //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         bool startToggle = false;
-        CheckBox[,] checks = new CheckBox[5, 8];
+        CheckBox[,] checks = new CheckBox[8, 8];
         TextBox[] textFunc = new TextBox[TEXT_FUNC_N];
         Button[] btnColor = new Button[TEXT_FUNC_N];
         Button[] btnColorS = new Button[TEXT_FUNC_N];
@@ -50,6 +50,11 @@ namespace Chart_Project
         Color[] sColor = new Color[20];
         bool bMinMaxInit = true;
         bool bMouseMoveReady = false;
+        string strCmd = "";
+        string strThis = "";
+        int preIndex = 0;
+        bool bChartVertical = false;
+        int textFuncIndex = 0;
 
         public Form1()
         {
@@ -92,14 +97,33 @@ namespace Chart_Project
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Stop();
             /* Chart1 @Chart */
-            /* Chart2 @Chart */
-            textBox0.Text = "sin(x)";
-            textBox1.Text = "cos(x)";
-            textBox2.Text = "sin(x)+cos(x)";
-            textBox3.Text = "sin(x)+sin(2x)";
-            textBox4.Text = "";
-            textBox_Samples.Text = Convert.ToString(SAMPLES_N);
+            textBox_PeriodCount.Text = Convert.ToString(PERIOD_COUNT);
+            textFunc[0] = textBox0;
+            textFunc[1] = textBox1;
+            textFunc[2] = textBox2;
+            textFunc[3] = textBox3;
+            textFunc[4] = textBox4;
+            textFunc[5] = textBox5;
+            textFunc[6] = textBox6;
+            textFunc[7] = textBox7;
+            textFunc[0].Text = "";
+            textFunc[1].Text = "";
+            textFunc[2].Text = "";
+            textFunc[3].Text = "";
+            textFunc[4].Text = "";
+            textFunc[5].Text = "";
+            textFunc[6].Text = "";
+            textFunc[7].Text = "";
 
+            textDisp[0] = textFunc[0].Text;
+            textDisp[1] = textFunc[1].Text;
+            textDisp[2] = textFunc[2].Text;
+            textDisp[3] = textFunc[3].Text;
+            textDisp[4] = textFunc[4].Text;
+            textDisp[5] = textFunc[5].Text;
+            textDisp[6] = textFunc[6].Text;
+            textDisp[7] = textFunc[7].Text;
+                        
             checks[0, 0] = checkBox1;
             checks[0, 1] = checkBox2;
             checks[0, 2] = checkBox3;
@@ -140,30 +164,48 @@ namespace Chart_Project
             checks[4, 5] = checkBox38;
             checks[4, 6] = checkBox39;
             checks[4, 7] = checkBox40;
-
-            textFunc[0] = textBox0;
-            textFunc[1] = textBox1;
-            textFunc[2] = textBox2;
-            textFunc[3] = textBox3;
-            textFunc[4] = textBox4;
-
-            textDisp[0] = textFunc[0].Text;
-            textDisp[1] = textFunc[1].Text;
-            textDisp[2] = textFunc[2].Text;
-            textDisp[3] = textFunc[3].Text;
-            textDisp[4] = textFunc[4].Text;
+            checks[5, 0] = checkBox41;
+            checks[5, 1] = checkBox42;
+            checks[5, 2] = checkBox43;
+            checks[5, 3] = checkBox44;
+            checks[5, 4] = checkBox45;
+            checks[5, 5] = checkBox46;
+            checks[5, 6] = checkBox47;
+            checks[5, 7] = checkBox48;
+            checks[6, 0] = checkBox49;
+            checks[6, 1] = checkBox50;
+            checks[6, 2] = checkBox51;
+            checks[6, 3] = checkBox52;
+            checks[6, 4] = checkBox53;
+            checks[6, 5] = checkBox54;
+            checks[6, 6] = checkBox55;
+            checks[6, 7] = checkBox56;
+            checks[7, 0] = checkBox57;
+            checks[7, 1] = checkBox58;
+            checks[7, 2] = checkBox59;
+            checks[7, 3] = checkBox60;
+            checks[7, 4] = checkBox61;
+            checks[7, 5] = checkBox62;
+            checks[7, 6] = checkBox63;
+            checks[7, 7] = checkBox64;
 
             btnColor[0] = button_Color0;
             btnColor[1] = button_Color1;
             btnColor[2] = button_Color2;
             btnColor[3] = button_Color3;
             btnColor[4] = button_Color4;
+            btnColor[5] = button_Color5;
+            btnColor[6] = button_Color6;
+            btnColor[7] = button_Color7;
 
             btnColorS[0] = button_ColorS0;
             btnColorS[1] = button_ColorS1;
             btnColorS[2] = button_ColorS2;
             btnColorS[3] = button_ColorS3;
             btnColorS[4] = button_ColorS4;
+            btnColorS[5] = button_ColorS5;
+            btnColorS[6] = button_ColorS6;
+            btnColorS[7] = button_ColorS7;
 
             Init_Chart1();
         }
@@ -175,23 +217,38 @@ namespace Chart_Project
             button_ColorS2.BackColor = button_Color2.BackColor;
             button_ColorS3.BackColor = button_Color3.BackColor;
             button_ColorS4.BackColor = button_Color4.BackColor;
+            button_ColorS5.BackColor = button_Color5.BackColor;
+            button_ColorS6.BackColor = button_Color6.BackColor;
+            button_ColorS7.BackColor = button_Color7.BackColor;
+
             sColor[0] = button_Color0.BackColor;
             sColor[1] = button_Color1.BackColor;
             sColor[2] = button_Color2.BackColor;
             sColor[3] = button_Color3.BackColor;
             sColor[4] = button_Color4.BackColor;
+            sColor[5] = button_Color5.BackColor;
+            sColor[6] = button_Color6.BackColor;
+            sColor[7] = button_Color7.BackColor;
 
             checks[0, 0].Checked = true;
             checks[1, 0].Checked = true;
             checks[2, 0].Checked = true;
             checks[3, 0].Checked = true;
+            checks[4, 0].Checked = true;
+            checks[5, 0].Checked = true;
+            checks[6, 0].Checked = true;
+            checks[7, 0].Checked = true;
             Set_Chart1();
 
-            double[] item = new double[4];
-            item[0] = -1;
-            item[1] = 0;
-            item[2] = 1;
-            item[3] = 2;
+            double[] item = new double[8];
+            item[0] = -3;
+            item[1] = -2;
+            item[2] = -1;
+            item[3] = 0;
+            item[4] = 1;
+            item[5] = 2;
+            item[6] = 3;
+            item[7] = 4;
 
             Draw_Chart1(item, nSeries);
             Draw_Chart1(item, nSeries);  // ###GUN : 최소 두개의 데이타
@@ -257,18 +314,31 @@ namespace Chart_Project
                         case 3:
                             Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[3]);
                             break;
-                        default:
+                        case 4:
                             Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[4]);
+                            break;
+                        case 5:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[5]);
+                            break;
+                        case 6:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[6]);
+                            break;
+                        case 7:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[7]);
+                            break;
+                        default:
+                            Set_Series(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[7]);
                             break;
                     }
                 }
                 xIndx = 0;
                 bMinMaxInit = true;
 
-                for (int i = 0; i < ROW_N; i++)
-                {
-                    textDisp[i] = textFunc[i].Text;
-                }
+                Apply_textBoxData();
+
+                strThis = "";
+                //preIndex = 0;
+                //textFuncIndex = 0;
             }
         }
 
@@ -378,18 +448,23 @@ namespace Chart_Project
                 chart1.ChartAreas[i].CursorY.LineDashStyle = ChartDashStyle.Dot;
                 chart1.ChartAreas[i].CursorX.Interval = 0;  // ###GUN
                 chart1.ChartAreas[i].CursorY.Interval = 0;
+
+                chart1.ChartAreas[i].AxisX.Title = "PI(π)";
             }
-            chart1.ChartAreas[n_area - 1].AxisX.Title = "PI(π)";
+            //chart1.ChartAreas[n_area - 1].AxisX.Title = "PI(π)";
 
             // ###GUN En:4 x 1, Dis:2 x 2
-            float currentHeight = 0;
-            foreach (var itm in chart1.ChartAreas)
+            if (bChartVertical == true)
             {
-                itm.Position.Height = 100 / chart1.ChartAreas.Count; // Note: the valus are in percenteges and not absolute pixels
-                itm.Position.Y = currentHeight;
-                itm.Position.X = 5;
-                itm.Position.Width = 95;
-                currentHeight += 100 / chart1.ChartAreas.Count;
+                float currentHeight = 0;
+                foreach (var itm in chart1.ChartAreas)
+                {
+                    itm.Position.Height = 100 / chart1.ChartAreas.Count; // Note: the valus are in percenteges and not absolute pixels
+                    itm.Position.Y = currentHeight;
+                    itm.Position.X = 5;
+                    itm.Position.Width = 95;
+                    currentHeight += 100 / chart1.ChartAreas.Count;
+                }
             }
         }
 
@@ -426,7 +501,7 @@ namespace Chart_Project
                 for (int i = 0; i < nSeries; i++)
                 {
                     double yData = buffer[i];
-                    double xData = 2 * xIndx / SAMPLES_N;  // (2*pi/SAMPLES_N) * xIndx
+                    double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
                     chart1.Series[i].Points.AddXY(xData, yData);
 
                     if (bMinMaxInit == true)
@@ -441,7 +516,7 @@ namespace Chart_Project
                     }
                     if (yData > chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum)
                     {
-                        chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData;// + delta * 1.2;
+                        chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData;// + delta * 1.2
                     }
 
                     if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_SampleN.Text))
@@ -466,6 +541,9 @@ namespace Chart_Project
         private double Calc_StrMath(string math)
         {
             string name = math;
+
+
+            //Match mcChar = Regex.Match(name, @"[^sincostanx]");
 
             if (name == "")
             {
@@ -497,7 +575,7 @@ namespace Chart_Project
              */
             if ((name.IndexOf("Sin") != -1) || (name.IndexOf("Cos") != -1) || (name.IndexOf("Tan") != -1))
             {
-                name = name.Replace("x", "2*PI*x/" + textBox_Samples.Text);
+                name = name.Replace("x", "2*PI*x/" + textBox_PeriodCount.Text);
             }
             name = name.Replace("x", Convert.ToString(xIndx));
 
@@ -536,15 +614,23 @@ namespace Chart_Project
                 name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
             }
-            name = name.TrimEnd('+','-','*','/');
-            double Q = Convert.ToDouble(dt.Compute(name, ""));
+          
+            Match mmm = Regex.Match(name, @"[^\d\.\+\-\*\/]");
+            if (mmm.Value == "")
+            {
+                name = name.TrimEnd('+', '-', '*', '/');   // 0.1234+ -> 0.1234
+                double Q = Convert.ToDouble(dt.Compute(name, ""));
+                //Q = Math.Round(Q, 2);     // 소수세짜리 반올림 ###GUN
+                //Q = Math.Ceiling(Q);      // 소수첫짜리 올림
+                //Q = Math.Truncate(Q);     // 소수첫짜리 버림
+                //Q = Math.Round(Q, 1);     // 소수둘째자리 반올림
 
-            //Q = Math.Round(Q, 2);     // 소수세짜리 반올림 ###GUN
-            //Q = Math.Ceiling(Q);      // 소수첫짜리 올림
-            //Q = Math.Truncate(Q);     // 소수첫짜리 버림
-            //Q = Math.Round(Q, 1);     // 소수둘째자리 반올림
-
-            return Q;
+                return Q;
+            }
+            else
+            {
+                return 0;
+            }
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -561,12 +647,14 @@ namespace Chart_Project
                         item[indx++] = Calc_StrMath(textDisp[row]);
                         if (indx == nSeries)
                         {
+bMouseMoveReady = true;
                             Draw_Chart1(item, nSeries);
                             return;
                         }
                     }
                 }
             }
+ 
         }
 
  //       private void keyDown(object sender, KeyEventArgs e)
@@ -684,6 +772,7 @@ namespace Chart_Project
             Button btn = (Button)sender;
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
+bMouseMoveReady = false;
                 for (int i = 0; i < TEXT_FUNC_N; i++)
                 {
                     if (btn.Name == "button_Color" + Convert.ToString(i))
@@ -701,6 +790,7 @@ namespace Chart_Project
             Button btn = (Button)sender;
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
+bMouseMoveReady = false;
                 for (int i = 0; i < TEXT_FUNC_N; i++)
                 {
                     if (btn.Name == "button_ColorS" + Convert.ToString(i))
@@ -785,7 +875,7 @@ namespace Chart_Project
                 for (int i = 0; i < TEXT_FUNC_N; i++)
                 {
                     if (tb.Name == "textBox" + Convert.ToString(i))
-                    {
+                    {                 
                         textDisp[i] = textFunc[i].Text;
                     }
                 }
@@ -793,32 +883,66 @@ namespace Chart_Project
             }
         }
 
+        private void Apply_textBoxData()
+        {
+            for (int i = 0; i < ROW_N; i++)
+            {
+                textDisp[i] = textFunc[i].Text;
+            }          
+        }
+        
         private void textBox_Cmd_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //string tmp1;
+            //string tmp2;
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
                 if (textBox_Cmd.Lines.Length > 0)
                 {
+                    e.Handled = true;
                     string lastLine = textBox_Cmd.Lines[textBox_Cmd.Lines.Length - 1];
                     lastLine = lastLine.ToLower();
                     lastLine = lastLine.Replace("-", "");
                     lastLine = lastLine.Replace(" ", "");
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
-                    if (lastLine.IndexOf("clear") != -1)
+                    if (lastLine.IndexOf("init") != -1)
                     {
+                        textFunc[0].Text = "";
+                        textFunc[1].Text = "";
+                        textFunc[2].Text = "";
+                        textFunc[3].Text = "";
+                        textFunc[4].Text = "";
+                        textFunc[5].Text = "";
+                        textFunc[6].Text = "";
+                        textFunc[7].Text = "";
                         textBox_Cmd.Text = "";
+                        textFuncIndex = 0;
+                        Set_Chart1();
+                    }
+                    else if (lastLine.IndexOf("clear") != -1)
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("clear"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         Set_Chart1();
                     }
                     else if (lastLine.IndexOf("start") != -1)
                     {
-                        timer1.Start();
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("start"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        //timer1.Start();
+                        button_Start_Click(sender, e);
                     }
                     else if (lastLine.IndexOf("stop") != -1)
                     {
-                        timer1.Stop();
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("stop"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        //timer1.Stop();
+                        button_Start_Click(sender, e);
                     }
                     else if (lastLine.IndexOf("uncheckall") != -1)   // check(1,2)
-                    {                       
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheckall"));   // cos(x)uncheckall -> cos(x)
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;                               // cursor 마지막으로 
                         for (int i = 0; i < ROW_N; i++)
                         {
                             for (int j = 0; j < COLUMN_N; j++)
@@ -829,7 +953,10 @@ namespace Chart_Project
                     }
                     else if (lastLine.IndexOf("uncheck") != -1)   // check(1,2)
                     {
-                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheck"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("uncheck"), lastLine.Length - lastLine.IndexOf("uncheck"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
                             string[] strValue = new string[mc.Count];
@@ -846,41 +973,84 @@ namespace Chart_Project
                     }
                     else if (lastLine.IndexOf("checkalld") != -1)   
                     {
-                        for (int i = 0; i < ROW_N; i++)
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("checkalld"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("checkalld"), lastLine.Length - lastLine.IndexOf("checkalld"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
+                        if (mc.Count != 0)
                         {
-                            for (int j = 0; j < COLUMN_N; j++)
+                            for (int i = 0; i < ROW_N; i++)
                             {
-                                checks[i, j].Checked = false;
-                            }
-                        }
-                        for (int i = 0; i < ROW_N; i++)
-                        {
-                            for (int j = 0; j < COLUMN_N; j++)
-                            {
-                                if (i == j)
+                                if (i < Convert.ToInt32(mc[0].Value) % ROW_N)
                                 {
-                                    checks[i, j].Checked = true;
+                                    checks[i, i].Checked = true;
+                                }
+                                else
+                                {
+                                    for (int k = 0; k < COLUMN_N; k++)
+                                    {
+                                        checks[i, k].Checked = false;
+                                    }
+                                }
+                            }
+                            checks[ROW_N-1, COLUMN_N-1].Checked = true;
+                        }
+                        else
+                        {
+                            for (int i = 0; i < ROW_N; i++)
+                            {
+                                for (int j = 0; j < COLUMN_N; j++)
+                                {
+                                    if (i == j)
+                                    {
+                                        checks[i, j].Checked = true;
+                                    }
+                                    else
+                                    {
+                                        checks[i, j].Checked = false;
+                                    }
                                 }
                             }
                         }
                     }
                     else if (lastLine.IndexOf("checkall") != -1)   
                     {
-                        for (int i = 0; i < ROW_N; i++)
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("checkall"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("checkall"), lastLine.Length - lastLine.IndexOf("checkall"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
+                        if (mc.Count != 0)
                         {
-                            for (int j = 0; j < COLUMN_N; j++)
+                            for (int i = 0; i < ROW_N; i++)
                             {
-                                checks[i, j].Checked = false;
+                                if (i < Convert.ToInt32(mc[0].Value) % ROW_N)
+                                {
+                                    checks[i, 0].Checked = true;
+                                }
+                                else
+                                {
+                                    for (int k = 0; k < COLUMN_N; k++)
+                                    {
+                                        checks[i, k].Checked = false;
+                                    }
+                                }
                             }
+                            checks[ROW_N - 1, 0].Checked = true;
                         }
-                        for (int i = 0; i < ROW_N; i++)
+                        else
                         {
-                            checks[i, 0].Checked = true;
+                            for (int i = 0; i < ROW_N; i++)
+                            {
+                                checks[i, 0].Checked = true;
+                            }
                         }
                     }
                     else if (lastLine.IndexOf("check") != -1)   // check(1,2)
                     {
-                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("check"), lastLine.Length - lastLine.IndexOf("check"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
                             string[] strValue = new string[mc.Count];
@@ -899,7 +1069,10 @@ namespace Chart_Project
                     }
                     else if (lastLine.IndexOf("datacount") != -1)   
                     {
-                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("datacount"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("datacount"), lastLine.Length - lastLine.IndexOf("datacount"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
                             string[] strValue = new string[mc.Count];
@@ -912,7 +1085,10 @@ namespace Chart_Project
                     }
                     else if (lastLine.IndexOf("tick") != -1)   
                     {
-                        MatchCollection mc = Regex.Matches(lastLine, @"\d+");
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("tick"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("tick"), lastLine.Length - lastLine.IndexOf("tick"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
                             string[] strValue = new string[mc.Count];
@@ -925,6 +1101,37 @@ namespace Chart_Project
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                         }
                     }
+                    else if (lastLine.IndexOf("vertical") != -1)
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("vertical"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("vertical"), lastLine.Length - lastLine.IndexOf("vertical"));
+                        MatchCollection mc = Regex.Matches(str, @"\d+");
+                        if (mc.Count != 0)
+                        {
+                            string[] strValue = new string[mc.Count];
+                            for (int i = 0; i < mc.Count; i++)
+                            {
+                                strValue[i] = mc[i].Value;
+                            }
+                            if (Convert.ToInt32(strValue[0]) != 0)
+                            {
+                                if (bChartVertical == false)
+                                {
+                                    bChartVertical = true;
+                                    Set_Chart1();
+                                }
+                            }
+                            else
+                            {
+                                if (bChartVertical == true)
+                                {
+                                    bChartVertical = false;
+                                    Set_Chart1();
+                                }
+                            }
+                        }
+                    }
                     else
                     {
                         /* sin, COS, pi -> Sin, Cos, PI */
@@ -932,15 +1139,95 @@ namespace Chart_Project
                         //lastLine = Regex.Replace(lastLine, "cos", "cos", RegexOptions.IgnoreCase);
                         //lastLine = Regex.Replace(lastLine, "tan", "tan", RegexOptions.IgnoreCase);
                         //if ((lastLine.IndexOf("sin") != -1) || (lastLine.IndexOf("cos") != -1) || (lastLine.IndexOf("tan") != -1))
-                        {
+                        {         
+                            textFunc[COLUMN_N-1].Text = textBox_Cmd.Text;
+                            textFunc[COLUMN_N-1].Text = textFunc[COLUMN_N - 1].Text.Replace("\r\n", "");
+                            textFunc[COLUMN_N-1].Text = textFunc[COLUMN_N - 1].Text.Replace(" ", "");
+
+                            textDisp[COLUMN_N-1] = textFunc[COLUMN_N - 1].Text;
                             //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
-                            textFunc[4].Text = textBox_Cmd.Text;
-                            textFunc[4].Text = textFunc[4].Text.Replace("\r\n", "");
-                            textDisp[4] = textFunc[4].Text;
+                            
+                            strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
+                            textFunc[textFuncIndex % (ROW_N-1)].Text = strThis;
+                            textFuncIndex++;
+                            preIndex = textFunc[COLUMN_N - 1].Text.Length;
+                            Apply_textBoxData();
+                            Console.WriteLine(strThis);
                         }
                     }
                 }
+                else
+                {
+                    textFunc[COLUMN_N-1].Text = textBox_Cmd.Text;
+                    textFunc[COLUMN_N-1].Text = textFunc[COLUMN_N-1].Text.Replace("\r\n", "");
+                    textDisp[COLUMN_N-1] = textFunc[COLUMN_N-1].Text;
+                }
             }
+            if (e.KeyChar == Convert.ToChar(Keys.Back))
+            {
+                //preIndex--;
+                Console.WriteLine("back");
+            }
+        }
+
+        private void initToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void check11ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkAll4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkAlldToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkAlld4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uncheck1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void vertical0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void vertical1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
