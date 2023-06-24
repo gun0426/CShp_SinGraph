@@ -1158,7 +1158,7 @@ bMouseMoveReady = false;
                 }
                 else
                 {
-                    textFunc[COLUMN_N-1].Text = textBox_Cmd.Text;
+                    textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
                     textFunc[COLUMN_N-1].Text = textFunc[COLUMN_N-1].Text.Replace("\r\n", "");
                     textDisp[COLUMN_N-1] = textFunc[COLUMN_N-1].Text;
                 }
@@ -1170,64 +1170,5 @@ bMouseMoveReady = false;
             }
         }
 
-        private void initToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void startToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void check11ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkAll4ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkAlldToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void checkAlld4ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void uncheck1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void vertical0ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void vertical1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

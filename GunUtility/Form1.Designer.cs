@@ -1,4 +1,6 @@
-﻿namespace Chart_Project
+﻿using System;
+
+namespace Chart_Project
 {
     partial class Form1
     {
@@ -29,10 +31,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -165,6 +167,20 @@
             this.button_RegEx = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
+            this.initToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.check11ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAlldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAll4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkAlld4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheck1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertical0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertical1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.datacount100ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tick100ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -230,6 +246,7 @@
             // 
             // toolStriptextBox0
             // 
+            this.toolStriptextBox0.Font = new System.Drawing.Font("맑은 고딕", 9F);
             this.toolStriptextBox0.Name = "toolStriptextBox0";
             this.toolStriptextBox0.Size = new System.Drawing.Size(100, 23);
             // 
@@ -261,6 +278,7 @@
             // 
             // toolStriptextBox1
             // 
+            this.toolStriptextBox1.Font = new System.Drawing.Font("맑은 고딕", 9F);
             this.toolStriptextBox1.Name = "toolStriptextBox1";
             this.toolStriptextBox1.Size = new System.Drawing.Size(100, 23);
             // 
@@ -278,6 +296,21 @@
             // 
             // toolStripMenuItem7
             // 
+            this.toolStripMenuItem7.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.initToolStripMenuItem,
+            this.clearToolStripMenuItem,
+            this.startToolStripMenuItem,
+            this.check11ToolStripMenuItem,
+            this.checkAllToolStripMenuItem,
+            this.checkAlldToolStripMenuItem,
+            this.checkAll4ToolStripMenuItem,
+            this.checkAlld4ToolStripMenuItem,
+            this.uncheck1ToolStripMenuItem,
+            this.uncheckAllToolStripMenuItem,
+            this.vertical0ToolStripMenuItem,
+            this.vertical1ToolStripMenuItem,
+            this.datacount100ToolStripMenuItem,
+            this.tick100ToolStripMenuItem});
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.Size = new System.Drawing.Size(76, 22);
             this.toolStripMenuItem7.Text = "Command";
@@ -1504,23 +1537,23 @@
             // 
             // chart1
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
+            chartArea4.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea4);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            legend4.Name = "Legend1";
+            this.chart1.Legends.Add(legend4);
             this.chart1.Location = new System.Drawing.Point(3, 0);
             this.chart1.Name = "chart1";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart1.Series.Add(series3);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(1055, 555);
             this.chart1.TabIndex = 2;
             this.chart1.Text = "chart1";
-            title3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title3.Name = "Title1";
-            this.chart1.Titles.Add(title3);
+            title4.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title4.Name = "Title1";
+            this.chart1.Titles.Add(title4);
             this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
             // 
             // splitter1
@@ -1554,6 +1587,90 @@
             this.button_RegEx.Text = "RegEx";
             this.button_RegEx.UseVisualStyleBackColor = true;
             this.button_RegEx.Click += new System.EventHandler(this.button_RegEx_Click);
+            // 
+            // initToolStripMenuItem
+            // 
+            this.initToolStripMenuItem.Name = "initToolStripMenuItem";
+            this.initToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.initToolStripMenuItem.Text = "init";
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearToolStripMenuItem.Text = "clear";
+            // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.startToolStripMenuItem.Text = "start";
+            // 
+            // check11ToolStripMenuItem
+            // 
+            this.check11ToolStripMenuItem.Name = "check11ToolStripMenuItem";
+            this.check11ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.check11ToolStripMenuItem.Text = "check(1,1)";
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAllToolStripMenuItem.Text = "check all";
+            // 
+            // checkAlldToolStripMenuItem
+            // 
+            this.checkAlldToolStripMenuItem.Name = "checkAlldToolStripMenuItem";
+            this.checkAlldToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAlldToolStripMenuItem.Text = "check all -d";
+            // 
+            // checkAll4ToolStripMenuItem
+            // 
+            this.checkAll4ToolStripMenuItem.Name = "checkAll4ToolStripMenuItem";
+            this.checkAll4ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAll4ToolStripMenuItem.Text = "check all 4";
+            // 
+            // checkAlld4ToolStripMenuItem
+            // 
+            this.checkAlld4ToolStripMenuItem.Name = "checkAlld4ToolStripMenuItem";
+            this.checkAlld4ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAlld4ToolStripMenuItem.Text = "check all -d 4";
+            // 
+            // uncheck1ToolStripMenuItem
+            // 
+            this.uncheck1ToolStripMenuItem.Name = "uncheck1ToolStripMenuItem";
+            this.uncheck1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uncheck1ToolStripMenuItem.Text = "uncheck 1";
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uncheckAllToolStripMenuItem.Text = "uncheck all";
+            // 
+            // vertical0ToolStripMenuItem
+            // 
+            this.vertical0ToolStripMenuItem.Name = "vertical0ToolStripMenuItem";
+            this.vertical0ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vertical0ToolStripMenuItem.Text = "vertical 0";
+            // 
+            // vertical1ToolStripMenuItem
+            // 
+            this.vertical1ToolStripMenuItem.Name = "vertical1ToolStripMenuItem";
+            this.vertical1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vertical1ToolStripMenuItem.Text = "vertical 1";
+            // 
+            // datacount100ToolStripMenuItem
+            // 
+            this.datacount100ToolStripMenuItem.Name = "datacount100ToolStripMenuItem";
+            this.datacount100ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.datacount100ToolStripMenuItem.Text = "datacount 100";
+            // 
+            // tick100ToolStripMenuItem
+            // 
+            this.tick100ToolStripMenuItem.Name = "tick100ToolStripMenuItem";
+            this.tick100ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tick100ToolStripMenuItem.Text = "tick 100";
             // 
             // Form1
             // 
@@ -1590,6 +1707,11 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void clearToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -1725,6 +1847,20 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem initToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem check11ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAlldToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAll4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkAlld4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheck1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vertical0ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vertical1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem datacount100ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tick100ToolStripMenuItem;
     }
 }
 
