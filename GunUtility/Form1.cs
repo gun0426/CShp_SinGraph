@@ -527,6 +527,7 @@ namespace Chart_Project
                     }
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = chart1.Series[i].Points[0].XValue;
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Maximum = xData;
+                    chart1.ChartAreas[aAreaSel[i]].AxisX.Interval = 0.5 * ((chart1.Series[i].Points.Count / 300)+1);
                 }
                 bMinMaxInit = false;
                 xIndx++;
