@@ -55,6 +55,7 @@ namespace Chart_Project
         int preIndex = 0;
         bool bChartVertical = false;
         int textFuncIndex = 0;
+        bool bClick = false;
 
         public Form1()
         {
@@ -783,9 +784,10 @@ bMouseMoveReady = false;
                     {
                         btnColor[i].BackColor = colorDialog1.Color;
                         btnColorS[i].BackColor = colorDialog1.Color;
+                        chart1.Series[i].Color = colorDialog1.Color;
                     }
                 }
-                Set_Chart1();
+                //Set_Chart1();
             }
         }
 
@@ -801,9 +803,10 @@ bMouseMoveReady = false;
                     {
                         btnColor[i].BackColor = colorDialog1.Color;
                         btnColorS[i].BackColor = colorDialog1.Color;
+                        chart1.Series[i].Color = colorDialog1.Color;
                     }
                 }
-                Set_Chart1();
+                //Set_Chart1();
             }
         }
 
@@ -921,6 +924,21 @@ bMouseMoveReady = false;
                         textFuncIndex = 0;
                         Set_Chart1();
                     }
+                    else if (lastLine.IndexOf("exam") != -1)
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("exam"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("exam"), lastLine.Length - lastLine.IndexOf("exam"));
+                        textBox0.Text = "sin(0)";
+                        textBox1.Text = "sin(x)";
+                        textBox2.Text = "cos(x)";
+                        textBox3.Text = "sin(2x)";
+                        textBox4.Text = "cos(2x)";
+                        textBox5.Text = "sin(3x)";
+                        textBox6.Text = "cos(3x)";
+                        textBox7.Text = "sin(0)+sin(x)+cos(x)+sin(2x)+cos(2x)+sin(3x)+cos(3x)";
+                        Set_Chart1();
+                    }
                     else if (lastLine.IndexOf("fsin") != -1)
                     {
                         /*
@@ -1029,6 +1047,7 @@ bMouseMoveReady = false;
                         textBox_Cmd.Text = strRepeat;
                         textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
                         Apply_textBoxData();
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                     }
                     else if (lastLine.IndexOf("clear") != -1)
                     {
@@ -1049,132 +1068,102 @@ bMouseMoveReady = false;
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         button_Start_Click(sender, e);
                     }
-                    else if (lastLine.IndexOf("uncheck-a") != -1)   // check(1,2)
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheck-a"));   // cos(x)uncheckall -> cos(x)
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;                               // cursor 마지막으로 
-                        for (int i = 0; i < ROW_N; i++)
-                        {
-                            for (int j = 0; j < COLUMN_N; j++)
-                            {
-                                checks[i, j].Checked = false;
-                            }
-                        }
-                    }
-                    else if (lastLine.IndexOf("uncheck") != -1)   // check(1,2)
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheck"));
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("uncheck"), lastLine.Length - lastLine.IndexOf("uncheck"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
-                        {
-                            string[] strValue = new string[mc.Count];
-                            for (int i = 0; i < mc.Count; i++)
-                            {
-                                strValue[i] = mc[i].Value;
-                            }
-                            int row = Convert.ToInt32(strValue[0]);
-                            for (int i = 0; i < COLUMN_N; i++)
-                            {
-                                checks[row, i].Checked = false;
-                            }
-                        }
-                    }
-                    else if (lastLine.IndexOf("check-a-d") != -1)   
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check-a-d"));
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("check-a-d"), lastLine.Length - lastLine.IndexOf("check-a-d"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
-                        {
-                            for (int i = 0; i < ROW_N; i++)
-                            {
-                                if (i < Convert.ToInt32(mc[0].Value) % ROW_N)
-                                {
-                                    checks[i, i].Checked = true;
-                                }
-                                else
-                                {
-                                    for (int k = 0; k < COLUMN_N; k++)
-                                    {
-                                        checks[i, k].Checked = false;
-                                    }
-                                }
-                            }
-                            checks[ROW_N-1, COLUMN_N-1].Checked = true;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < ROW_N; i++)
-                            {
-                                for (int j = 0; j < COLUMN_N; j++)
-                                {
-                                    if (i == j)
-                                    {
-                                        checks[i, j].Checked = true;
-                                    }
-                                    else
-                                    {
-                                        checks[i, j].Checked = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (lastLine.IndexOf("check-a") != -1)   
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check-a"));
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("check-a"), lastLine.Length - lastLine.IndexOf("check-a"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
-                        {
-                            for (int i = 0; i < ROW_N; i++)
-                            {
-                                if (i < Convert.ToInt32(mc[0].Value) % ROW_N)
-                                {
-                                    checks[i, 0].Checked = true;
-                                }
-                                else
-                                {
-                                    for (int k = 0; k < COLUMN_N; k++)
-                                    {
-                                        checks[i, k].Checked = false;
-                                    }
-                                }
-                            }
-                            checks[ROW_N - 1, 0].Checked = true;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < ROW_N; i++)
-                            {
-                                checks[i, 0].Checked = true;
-                            }
-                        }
-                    }
-                    else if (lastLine.IndexOf("check") != -1)   // check(1,2)
+                    else if (lastLine.IndexOf("check") != -1)
                     {
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("check"), lastLine.Length - lastLine.IndexOf("check"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
+
+                        Match mc = Regex.Match(str, @"\(\d+,\d+\)");
+                        if (mc.Success)
                         {
-                            string[] strValue = new string[mc.Count];
-                            for (int i = 0; i < mc.Count; i++)
+                            string strPart = mc.Value;
+                            int row, col;
+                            MatchCollection mcs = Regex.Matches(strPart, @"\d+");
+                            if (mcs.Count == 2)
                             {
-                                strValue[i] = mc[i].Value;
+                                row = Convert.ToInt32(mcs[0].Value);
+                                col = Convert.ToInt32(mcs[1].Value);
+                                if (checks[row, col].Checked == true)
+                                {
+                                    checks[row, col].Checked = false;
+                                }
+                                else
+                                {
+                                    checks[row, col].Checked = true;
+                                }
                             }
-                            int row = Convert.ToInt32(strValue[0]);
-                            int col = Convert.ToInt32(strValue[1]);
-                            for (int i = 0; i < COLUMN_N; i++)
+                        }
+                        mc = Regex.Match(str, @"-a\d*");
+                        if (mc.Success)
+                        {
+                            mc = Regex.Match(str, @"-a\d+");
+                            if (mc.Success)
                             {
-                                checks[row, i].Checked = false;
+                                int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
+                                mc = Regex.Match(str, @"-d");
+                                if (mc.Success)
+                                {
+                                    for (int i = 0; i < n; i++)
+                                    {
+                                        checks[i, i].Checked = true;
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < n; i++)
+                                    {
+                                        checks[i, 0].Checked = true;
+                                    }
+                                }
                             }
-                            checks[row, col].Checked = true;
+                            else
+                            {
+                                mc = Regex.Match(str, @"-d");
+                                if (mc.Success)
+                                {
+                                    for (int i = 0; i < ROW_N; i++)
+                                    {
+                                        checks[i, i].Checked = true;
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < ROW_N; i++)
+                                    {
+                                        checks[i, 0].Checked = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            mc = Regex.Match(str, @"-u\d*");
+                            if (mc.Success)
+                            {
+                                mc = Regex.Match(str, @"-u\d+");
+                                if (mc.Success)
+                                {
+                                    int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
+                                    for (int i = 0; i < n; i++)
+                                    {
+                                        for (int j = 0; j < COLUMN_N; j++)
+                                        {
+                                            checks[i, j].Checked = false;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < ROW_N; i++)
+                                    {
+                                        for (int j = 0; j < COLUMN_N; j++)
+                                        {
+                                            checks[i, j].Checked = false;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     else if (lastLine.IndexOf("disp") != -1)
@@ -1200,38 +1189,21 @@ bMouseMoveReady = false;
                             trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                         }
-                    }   
-                    else if (lastLine.IndexOf("vertical") != -1)
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("vertical"));
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("vertical"), lastLine.Length - lastLine.IndexOf("vertical"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
+                        mc = Regex.Match(str, @"-v\d+");
+                        if (mc.Success)
                         {
-                            string[] strValue = new string[mc.Count];
-                            for (int i = 0; i < mc.Count; i++)
+                            textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
+                            if (textBox_DrawTick.Text == "0")
                             {
-                                strValue[i] = mc[i].Value;
-                            }
-                            if (Convert.ToInt32(strValue[0]) != 0)
-                            {
-                                if (bChartVertical == false)
-                                {
-                                    bChartVertical = true;
-                                    Set_Chart1();
-                                }
+                                bChartVertical = false;
                             }
                             else
                             {
-                                if (bChartVertical == true)
-                                {
-                                    bChartVertical = false;
-                                    Set_Chart1();
-                                }
+                                bChartVertical = true;
                             }
+                            Set_Chart1();
                         }
-                    }
+                    }   
                     else
                     {
                         /* sin, COS, pi -> Sin, Cos, PI */
@@ -1273,6 +1245,18 @@ bMouseMoveReady = false;
                 Console.WriteLine("back");
             }
         }
-
+        private void chart1_Click(object sender, EventArgs e)
+        {
+            if (bClick == false)
+            {
+                bClick = true;
+                timer1.Stop();
+            }
+            else
+            {
+                bClick = false;
+                timer1.Start();
+            }
+        }
     }
 }
