@@ -81,7 +81,7 @@ namespace Chart_Project
             textBox_Cmd.ForeColor = Color.FromArgb(BACK_COLOR_R+100, BACK_COLOR_G+100, BACK_COLOR_B+100);
 
 
-            textBox_SampleN.Text = Convert.ToString(SAMPLE_N);
+            textBox_dispcount.Text = Convert.ToString(SAMPLE_N);
             textBox_MousePoint.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             textBox_MousePoint.ForeColor = Color.White;
 
@@ -97,7 +97,7 @@ namespace Chart_Project
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Stop();
             /* Chart1 @Chart */
-            textBox_PeriodCount.Text = Convert.ToString(PERIOD_COUNT);
+            textBox_resolution.Text = Convert.ToString(PERIOD_COUNT);
             textFunc[0] = textBox0;
             textFunc[1] = textBox1;
             textFunc[2] = textBox2;
@@ -519,9 +519,9 @@ namespace Chart_Project
                         chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = yData;// + delta * 1.2
                     }
 
-                    if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_SampleN.Text))
+                    if (chart1.Series[i].Points.Count > Convert.ToInt32(textBox_dispcount.Text))
                     {
-                        for (int j = 0; j < chart1.Series[i].Points.Count - Convert.ToInt32(textBox_SampleN.Text); j++)
+                        for (int j = 0; j < chart1.Series[i].Points.Count - Convert.ToInt32(textBox_dispcount.Text); j++)
                             chart1.Series[i].Points.RemoveAt(0);
                     }
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = chart1.Series[i].Points[0].XValue;
@@ -549,7 +549,6 @@ namespace Chart_Project
             {
                 return 0;
             }
-
             /* " " -> "" */
             name = name.Replace(" ", "");
 
@@ -575,7 +574,7 @@ namespace Chart_Project
              */
             if ((name.IndexOf("Sin") != -1) || (name.IndexOf("Cos") != -1) || (name.IndexOf("Tan") != -1))
             {
-                name = name.Replace("x", "2*PI*x/" + textBox_PeriodCount.Text);
+                name = name.Replace("x", "2*PI*x/" + textBox_resolution.Text);
             }
             name = name.Replace("x", Convert.ToString(xIndx));
 
@@ -591,13 +590,17 @@ namespace Chart_Project
 
             MatchCollection mc = Regex.Matches(name, @"(Sin|Cos|Tan)\([^\(]+\)", RegexOptions.None, TimeSpan.FromSeconds(1));
             DataTable dt = new DataTable();
+            string strIn;
+            double dblIn;
+            double dblSin;
             for (int j = 0; j < mc.Count; j++)
             {
-                string strIn = mc[mc.Count - j - 1].Value.Substring(mc[mc.Count - j - 1].Value.IndexOf("(") + 1, mc[mc.Count - j - 1].Value.IndexOf(")") - 1 - mc[mc.Count - j - 1].Value.IndexOf("("));
+                 strIn = mc[mc.Count - j - 1].Value.Substring(mc[mc.Count - j - 1].Value.IndexOf("(") + 1, mc[mc.Count - j - 1].Value.IndexOf(")") - 1 - mc[mc.Count - j - 1].Value.IndexOf("("));
                 strIn = strIn.Replace("PI", "3.1415926535897931");
-                double dblIn = Convert.ToDouble(dt.Compute(strIn, ""));
+                
+                 dblIn = Convert.ToDouble(dt.Compute(strIn, ""));
 
-                double dblSin = 0;
+                 dblSin = 0;
                 if (mc[mc.Count - j - 1].Value.IndexOf("Sin") != -1)
                 {
                     dblSin = Math.Sin(dblIn);
@@ -615,7 +618,7 @@ namespace Chart_Project
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
             }
           
-            Match mmm = Regex.Match(name, @"[^\d\.\+\-\*\/]");
+            Match mmm = Regex.Match(name, @"[^\d\.\+\-\*\/Ee]");
             if (mmm.Value == "")
             {
                 name = name.TrimEnd('+', '-', '*', '/');   // 0.1234+ -> 0.1234
@@ -629,6 +632,7 @@ namespace Chart_Project
             }
             else
             {
+                Console.WriteLine("Calc 0");
                 return 0;
             }
         }
@@ -893,8 +897,6 @@ bMouseMoveReady = false;
         
         private void textBox_Cmd_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //string tmp1;
-            //string tmp2;
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
                 if (textBox_Cmd.Lines.Length > 0)
@@ -902,7 +904,7 @@ bMouseMoveReady = false;
                     e.Handled = true;
                     string lastLine = textBox_Cmd.Lines[textBox_Cmd.Lines.Length - 1];
                     lastLine = lastLine.ToLower();
-                    lastLine = lastLine.Replace("-", "");
+                    //lastLine = lastLine.Replace("-", "");
                     lastLine = lastLine.Replace(" ", "");
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
                     if (lastLine.IndexOf("init") != -1)
@@ -919,29 +921,137 @@ bMouseMoveReady = false;
                         textFuncIndex = 0;
                         Set_Chart1();
                     }
+                    else if (lastLine.IndexOf("fsin") != -1)
+                    {
+                        /*
+                         * 이번 입력 전 문장(fsin 전까지) 백업 (수식만 입력 상태 유지를 위해)
+                         * 이번 입력 전 문장 끝에 입력이 가능하돍 cursor 마지막으로 이동 (수식만 입력 상태 유지를 위해)
+                         * 이번 입력 문장만 저장
+                         */
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("fsin"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        /*
+                         * 이번 입력 문장만 저장
+                         * 이번 입력 문장 분석([sct], -c:count, -i:interval, -m 2:1 :sin-sin-cos mix
+                         */
+                        string strThis = lastLine.Substring(lastLine.IndexOf("fsin"), lastLine.Length - lastLine.IndexOf("fsin"));
+                        string what = "";
+                        int count = 1;
+                        int intv = 1;
+                        int nMix1 = 1;
+                        int nMix2 = 0;
+
+                        Match mc = Regex.Match(strThis, @"\([sct]\)");
+                        if (mc.Success)
+                        {
+                            what = mc.Value.Substring(1, 1);
+                        }
+                        mc = Regex.Match(strThis, @"-c\d+");
+                        if (mc.Success)
+                        {
+                            count = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
+                        }
+                        mc = Regex.Match(strThis, @"-i\d+");
+                        if (mc.Success)
+                        {
+                            intv = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
+                        }
+                        mc = Regex.Match(strThis, @"-m\d+");
+                        if (mc.Success)
+                        {
+                            nMix1 = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
+                        }
+                        mc = Regex.Match(strThis, @":\d+");
+                        if (mc.Success)
+                        {
+                            nMix2 = Convert.ToInt32(mc.Value.Substring(1, mc.Value.Length - 1));
+                        }
+                        Console.WriteLine("count:{0}, intv:{1}, nMix1:{2}, nMix2:{3}", count, intv, nMix1, nMix2);                       
+
+                        string strRepeat = "";
+                        if ((nMix1 != 0) && (nMix2 != 0))
+                        {
+                            for (int i = 0; i < count; i++)
+                            {
+                                if (i % (nMix1 + nMix2) < nMix1)
+                                {
+                                    if (what == "s")
+                                    {
+                                        strRepeat += "sin(";
+                                    }
+                                    if (what == "c")
+                                    {
+                                        strRepeat += "cos(";
+                                    }
+                                }
+                                else
+                                {
+                                    if (what == "s")
+                                    {
+                                        strRepeat += "cos(";
+                                    }
+                                    if (what == "c")
+                                    {
+                                        strRepeat += "sin(";
+                                    }
+                                }
+                                if (intv != 0)
+                                {
+                                    strRepeat += Convert.ToString(intv * i);
+                                }
+                                strRepeat += "x)+";
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < count; i++)
+                            {
+                                if (what == "s")
+                                {
+                                    strRepeat += "sin(";
+                                }
+                                else if (what == "c")
+                                {
+                                    strRepeat += "cos(";
+                                }
+                                else if (what == "t")
+                                {
+                                    strRepeat += "tan(";
+                                }
+                                if (intv != 0)
+                                {
+                                    strRepeat += Convert.ToString(intv * i);
+                                }
+                                strRepeat += "x)+";
+                            }
+                        }
+                        strRepeat = strRepeat.Remove(strRepeat.Length - 1, 1);
+                        textBox_Cmd.Text = strRepeat;
+                        textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
+                        Apply_textBoxData();
+                    }
                     else if (lastLine.IndexOf("clear") != -1)
                     {
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("clear"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         Set_Chart1();
+                        //chart1.Series[0].Points.Clear();
                     }
                     else if (lastLine.IndexOf("start") != -1)
                     {
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("start"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        //timer1.Start();
                         button_Start_Click(sender, e);
                     }
                     else if (lastLine.IndexOf("stop") != -1)
                     {
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("stop"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        //timer1.Stop();
                         button_Start_Click(sender, e);
                     }
-                    else if (lastLine.IndexOf("uncheckall") != -1)   // check(1,2)
+                    else if (lastLine.IndexOf("uncheck-a") != -1)   // check(1,2)
                     {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheckall"));   // cos(x)uncheckall -> cos(x)
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("uncheck-a"));   // cos(x)uncheckall -> cos(x)
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;                               // cursor 마지막으로 
                         for (int i = 0; i < ROW_N; i++)
                         {
@@ -971,11 +1081,11 @@ bMouseMoveReady = false;
                             }
                         }
                     }
-                    else if (lastLine.IndexOf("checkalld") != -1)   
+                    else if (lastLine.IndexOf("check-a-d") != -1)   
                     {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("checkalld"));
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check-a-d"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("checkalld"), lastLine.Length - lastLine.IndexOf("checkalld"));
+                        string str = lastLine.Substring(lastLine.IndexOf("check-a-d"), lastLine.Length - lastLine.IndexOf("check-a-d"));
                         MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
@@ -1013,11 +1123,11 @@ bMouseMoveReady = false;
                             }
                         }
                     }
-                    else if (lastLine.IndexOf("checkall") != -1)   
+                    else if (lastLine.IndexOf("check-a") != -1)   
                     {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("checkall"));
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check-a"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("checkall"), lastLine.Length - lastLine.IndexOf("checkall"));
+                        string str = lastLine.Substring(lastLine.IndexOf("check-a"), lastLine.Length - lastLine.IndexOf("check-a"));
                         MatchCollection mc = Regex.Matches(str, @"\d+");
                         if (mc.Count != 0)
                         {
@@ -1067,40 +1177,30 @@ bMouseMoveReady = false;
                             checks[row, col].Checked = true;
                         }
                     }
-                    else if (lastLine.IndexOf("datacount") != -1)   
+                    else if (lastLine.IndexOf("disp") != -1)
                     {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("datacount"));
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("disp"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("datacount"), lastLine.Length - lastLine.IndexOf("datacount"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
+                        string str = lastLine.Substring(lastLine.IndexOf("disp"), lastLine.Length - lastLine.IndexOf("disp"));
+                        
+                        Match mc = Regex.Match(str, @"-c\d+");
+                        if (mc.Success)
                         {
-                            string[] strValue = new string[mc.Count];
-                            for (int i = 0; i < mc.Count; i++)
-                            {
-                                strValue[i] = mc[i].Value;
-                            }
-                            textBox_SampleN.Text = strValue[0];
+                            textBox_dispcount.Text = mc.Value.Substring(2, mc.Value.Length - 2);
                         }
-                    }
-                    else if (lastLine.IndexOf("tick") != -1)   
-                    {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("tick"));
-                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("tick"), lastLine.Length - lastLine.IndexOf("tick"));
-                        MatchCollection mc = Regex.Matches(str, @"\d+");
-                        if (mc.Count != 0)
+                        mc = Regex.Match(str, @"-r\d+");
+                        if (mc.Success)
                         {
-                            string[] strValue = new string[mc.Count];
-                            for (int i = 0; i < mc.Count; i++)
-                            {
-                                strValue[i] = mc[i].Value;
-                            }
-                            textBox_DrawTick.Text = strValue[0];
+                            textBox_resolution.Text = mc.Value.Substring(2, mc.Value.Length - 2);
+                        }
+                        mc = Regex.Match(str, @"-t\d+");
+                        if (mc.Success)
+                        {
+                            textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
                             trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                         }
-                    }
+                    }   
                     else if (lastLine.IndexOf("vertical") != -1)
                     {
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("vertical"));
@@ -1146,7 +1246,11 @@ bMouseMoveReady = false;
 
                             textDisp[COLUMN_N-1] = textFunc[COLUMN_N - 1].Text;
                             //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
-                            
+                            if (textFunc[COLUMN_N - 1].Text.Length < preIndex)
+                            {
+                                preIndex = 0;
+                                Console.WriteLine("preIndex error");
+                            }
                             strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
                             textFunc[textFuncIndex % (ROW_N-1)].Text = strThis;
                             textFuncIndex++;
