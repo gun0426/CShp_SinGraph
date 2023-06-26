@@ -911,6 +911,7 @@ bMouseMoveReady = false;
                     //lastLine = lastLine.Replace("-", "");
                     lastLine = lastLine.Replace(" ", "");
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
+                    Match mc;
                     if (lastLine.IndexOf("init") != -1)
                     {
                         textFunc[0].Text = "";
@@ -924,6 +925,50 @@ bMouseMoveReady = false;
                         textBox_Cmd.Text = "";
                         textFuncIndex = 0;
                         Set_Chart1();
+                    }
+                    else if (lastLine.IndexOf("chart") != -1)
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("chart"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("chart"), lastLine.Length - lastLine.IndexOf("chart"));
+                        mc = Regex.Match(str, @"-d[ftblr]");            // dock
+                        if (mc.Success)
+                        {
+                            if(mc.Value.Substring(2, 1) == "f")         // fill
+                            {
+                                chart1.Dock = DockStyle.Fill;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "t")   // top
+                            {
+                                chart1.Dock = DockStyle.Top;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "b")   // bottom
+                            {
+                                chart1.Dock = DockStyle.Bottom;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "l")   // left
+                            {
+                                chart1.Dock = DockStyle.Left;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "r")   // right
+                            {
+                                chart1.Dock = DockStyle.Right;
+                            }
+                        }
+                        mc = Regex.Match(str, @"-v\d+");                // vertical
+                        if (mc.Success)
+                        {
+                            textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
+                            if (textBox_DrawTick.Text == "0")           
+                            {
+                                bChartVertical = false;                 // off
+                            }
+                            else
+                            {
+                                bChartVertical = true;                  // on
+                            }
+                            Set_Chart1();
+                        }
                     }
                     else if (lastLine.IndexOf("exam") != -1)
                     {
@@ -960,22 +1005,22 @@ bMouseMoveReady = false;
                         int nMix1 = 1;
                         int nMix2 = 0;
 
-                        Match mc = Regex.Match(strThis, @"\([sct]\)");
+                        mc = Regex.Match(strThis, @"\([sct]\)");    // sin/cos/tan
                         if (mc.Success)
                         {
                             what = mc.Value.Substring(1, 1);
                         }
-                        mc = Regex.Match(strThis, @"-c\d+");
+                        mc = Regex.Match(strThis, @"-c\d+");        // count
                         if (mc.Success)
                         {
                             count = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
                         }
-                        mc = Regex.Match(strThis, @"-i\d+");
+                        mc = Regex.Match(strThis, @"-i\d+");        // interval
                         if (mc.Success)
                         {
                             intv = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
                         }
-                        mc = Regex.Match(strThis, @"-m\d+");
+                        mc = Regex.Match(strThis, @"-m\d+");        // mixed
                         if (mc.Success)
                         {
                             nMix1 = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
@@ -1075,7 +1120,7 @@ bMouseMoveReady = false;
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("check"), lastLine.Length - lastLine.IndexOf("check"));
 
-                        Match mc = Regex.Match(str, @"\(\d+,\d+\)");
+                        mc = Regex.Match(str, @"\(\d+,\d+\)");  // (1,2)
                         if (mc.Success)
                         {
                             string strPart = mc.Value;
@@ -1095,14 +1140,14 @@ bMouseMoveReady = false;
                                 }
                             }
                         }
-                        mc = Regex.Match(str, @"-a\d*");
+                        mc = Regex.Match(str, @"-a\d*");        // -a
                         if (mc.Success)
                         {
-                            mc = Regex.Match(str, @"-a\d+");
+                            mc = Regex.Match(str, @"-a\d+");    // -a4
                             if (mc.Success)
                             {
                                 int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
-                                mc = Regex.Match(str, @"-d");
+                                mc = Regex.Match(str, @"-d");   // distrbute
                                 if (mc.Success)
                                 {
                                     for (int i = 0; i < n; i++)
@@ -1120,7 +1165,7 @@ bMouseMoveReady = false;
                             }
                             else
                             {
-                                mc = Regex.Match(str, @"-d");
+                                mc = Regex.Match(str, @"-d");   // 
                                 if (mc.Success)
                                 {
                                     for (int i = 0; i < ROW_N; i++)
@@ -1139,7 +1184,7 @@ bMouseMoveReady = false;
                         }
                         else
                         {
-                            mc = Regex.Match(str, @"-u\d*");
+                            mc = Regex.Match(str, @"-u\d*");    // uncheck
                             if (mc.Success)
                             {
                                 mc = Regex.Match(str, @"-u\d+");
@@ -1173,7 +1218,7 @@ bMouseMoveReady = false;
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("disp"), lastLine.Length - lastLine.IndexOf("disp"));
                         
-                        Match mc = Regex.Match(str, @"-c\d+");
+                        mc = Regex.Match(str, @"-c\d+");
                         if (mc.Success)
                         {
                             textBox_dispcount.Text = mc.Value.Substring(2, mc.Value.Length - 2);
@@ -1189,20 +1234,6 @@ bMouseMoveReady = false;
                             textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
                             trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
-                        }
-                        mc = Regex.Match(str, @"-v\d+");
-                        if (mc.Success)
-                        {
-                            textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
-                            if (textBox_DrawTick.Text == "0")
-                            {
-                                bChartVertical = false;
-                            }
-                            else
-                            {
-                                bChartVertical = true;
-                            }
-                            Set_Chart1();
                         }
                     }   
                     else
@@ -1259,5 +1290,6 @@ bMouseMoveReady = false;
                 timer1.Start();
             }
         }
+
     }
 }
