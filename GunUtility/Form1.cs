@@ -85,6 +85,9 @@ namespace Chart_Project
             textBox_dispcount.Text = Convert.ToString(SAMPLE_N);
             textBox_MousePoint.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             textBox_MousePoint.ForeColor = Color.White;
+            textBox_UserTitle.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+            textBox_UserTitle.ForeColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B); //Color.White;
+            textBox_UserTitle.Text = "";
 
             /* trackBar */
             //this.TopMost = true;
@@ -1303,5 +1306,12 @@ bMouseMoveReady = false;
             }
         }
 
+        private void chart1_SizeChanged(object sender, EventArgs e)
+        {
+            int textWidth = textBox_UserTitle.Width;
+            int chartWidth = chart1.Width;
+            //textBox_UserTitle.Location = new Point(chart1.Location.X + (chartWidth / 2) - (textWidth / 2), chart1.Location.Y+20);
+            textBox_UserTitle.Location = new Point(chart1.Location.X, chart1.Location.Y);
+        }
     }
 }

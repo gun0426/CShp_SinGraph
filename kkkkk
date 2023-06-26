@@ -1,0 +1,170 @@
+[33mcommit d551e911faa8a335ed1aa393b14003820b57196f[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Mon Jun 26 23:08:57 2023 +0900
+
+    chart -window option 추가
+
+[33mcommit e256c4efac0fada546151d9a4669223e27997676[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Mon Jun 26 23:00:58 2023 +0900
+
+    chart dock option 추가
+
+[33mcommit e0be58ea2567c79315102fd46e8d8a4d1bd22c78[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Mon Jun 26 00:28:16 2023 +0900
+
+    .AxisX.Interval 자동 조절 추가
+
+[33mcommit e629c206f18085af40e0a83b6241f8e467208de4[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Sun Jun 25 23:57:32 2023 +0900
+
+    Command 수정
+    check -a4 -d
+    check(1,2)
+    ...
+
+[33mcommit a6946f6c27c527a93383e382ea251b3de48b7f9a[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Sun Jun 25 13:09:53 2023 +0900
+
+    fsin(s) -c -i -m  추가
+
+[33mcommit 67847ece2383fbea2fb0d097cdb1e8f9ac1b9a51[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Sat Jun 24 22:09:59 2023 +0900
+
+    Command Tab 추가 +
+
+[33mcommit 5062a98557e4b52a706e0f08b86f4c915ad4a8ff[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Sat Jun 24 21:52:04 2023 +0900
+
+    Command 로 제어 1차 완료
+
+[33mcommit 19cd498f7dd3a41d7cc3cd466cd96dc43d236754[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Sat Jun 24 01:33:00 2023 +0900
+
+    textBox_Cmd : Clear/Check(4,4)/Check all/Check all -d/Uncheck 2
+    /Uncheck all/Formula Accumulate
+
+[33mcommit c02c18f721ea99d7519f732d9a1095b4caa9979c[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Fri Jun 23 09:38:38 2023 +0900
+
+    Text Command
+
+[33mcommit f84638d6fb86aab935971c8b24dbbaf7fc40f0c3[m
+Author: gun0426-bit <gun0426@gmail.com>
+Date:   Fri Jun 23 09:01:53 2023 +0900
+
+    MatchCollection mc = Regex.Match(string, @"\d+")
+
+[33mcommit a3ae8d848589f97986f7eae1f87b56f8ca5cca50[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Fri Jun 23 00:05:03 2023 +0900
+
+    Space Graph Stop 진행 중
+
+[33mcommit f4cbcfc5d37b932960a80c4671a0a2daeb7adfd8[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Thu Jun 22 00:43:44 2023 +0900
+
+    Cursor 완료(Cursor.Interval = 0)
+
+[33mcommit 78da9a7722017d3dd3331183edcc61cebb4d99c0[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Wed Jun 21 17:11:52 2023 +0900
+
+    각 Area에서의 Value 출력
+
+[33mcommit 3cef3c984ab173c44176866a27d420e93db1b7fa[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Wed Jun 21 12:54:30 2023 +0900
+
+    동일구조의 이벤트 처리함수들 하나의 함수로 처리
+    컨트롤 배열로 할당
+
+[33mcommit 4946f84df922533237e84389a3f9dea63ebb9bf8[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Wed Jun 21 01:34:33 2023 +0900
+
+    MouseMove Event 작성 중
+
+[33mcommit 553e83cdc4aaf2ff753062e45941948546849dd4[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Tue Jun 20 17:43:06 2023 +0900
+
+    230620 Company 최종
+
+[33mcommit 4798ea18a213c2c9fd16cd852754d9ae27304717[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Tue Jun 20 17:33:03 2023 +0900
+
+    trackBar 추가
+
+[33mcommit 044ec613a7696a3ce9487e87f8552966e17f3141[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Tue Jun 20 00:26:17 2023 +0900
+
+    X축 Stagger 현상 해결
+    IsEndLabelVisible = false;
+
+[33mcommit d550416a6ede8aa799d2ba575416b713c6d391a8[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Mon Jun 19 02:58:49 2023 +0900
+
+    Graph Min/Max 문제 해결
+    1차완료
+
+[33mcommit 2bcdc7ee78725a3ab2e4c0534db9373f7b424589[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sun Jun 18 23:14:21 2023 +0900
+
+    CheckBox Color 변경 반영
+
+[33mcommit 6dd2e1e3e70aa68a2c006c575a0b1c5e9dbb72de[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sun Jun 18 16:27:52 2023 +0900
+
+    Tab 삭제
+    AxisY.MajorTickMark.LineColor  적용
+
+[33mcommit a53752c707ef8c30b5a0da585d4deb0d7a3cbae6[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sun Jun 18 14:41:04 2023 +0900
+
+    sin(x)+sin(x) 동일한 수식 공존 시 문제 해결
+    UI 백업
+
+[33mcommit 258c72acaa833c03e141542a7309a1f7c69a5f45[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sun Jun 18 02:05:25 2023 +0900
+
+    Series 4개 고정에서 CheckBox에 체크한 수만큼 Graph 출력
+
+[33mcommit 657ba0f748dade834979a3a9d78d140f2ef51511[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sun Jun 18 01:41:34 2023 +0900
+
+    CheckBox 에 다른 Graph Area 할당 문제 해결
+
+[33mcommit ed8b05436d7c3de8fad55623539ffc3087dc1ce3[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Sat Jun 17 23:23:07 2023 +0900
+
+    calcStrMath 구현, Grasph Area 조작
+
+[33mcommit c2191d064ce2480a3e7c782f6d274c55d5a1efbe[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Mon Jun 12 22:13:25 2023 +0900
+
+    2nd
+
+[33mcommit 80c0e6701747fcf6ef7346be313863e959052193[m
+Author: gun0426 <gun0426@naver.com>
+Date:   Mon Jun 12 22:05:02 2023 +0900
+
+    1st

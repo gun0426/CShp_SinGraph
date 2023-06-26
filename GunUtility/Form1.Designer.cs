@@ -31,10 +31,10 @@ namespace Chart_Project
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title3 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title7 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -59,6 +59,7 @@ namespace Chart_Project
             this.dispcount100ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fsinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chartdfv1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -178,7 +179,7 @@ namespace Chart_Project
             this.button_RegEx = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
-            this.chartdfv1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBox_UserTitle = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -251,7 +252,7 @@ namespace Chart_Project
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(157, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // toolStripMenuItem3
             // 
@@ -311,31 +312,31 @@ namespace Chart_Project
             // initToolStripMenuItem
             // 
             this.initToolStripMenuItem.Name = "initToolStripMenuItem";
-            this.initToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.initToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.initToolStripMenuItem.Text = "init";
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "clear";
             // 
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.startToolStripMenuItem.Text = "start";
             // 
             // check11ToolStripMenuItem
             // 
             this.check11ToolStripMenuItem.Name = "check11ToolStripMenuItem";
-            this.check11ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.check11ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.check11ToolStripMenuItem.Text = "check(1,1)";
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.checkAllToolStripMenuItem.Text = "check -a -d";
             // 
             // dispcount100ToolStripMenuItem
@@ -347,14 +348,20 @@ namespace Chart_Project
             // sinxToolStripMenuItem
             // 
             this.sinxToolStripMenuItem.Name = "sinxToolStripMenuItem";
-            this.sinxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sinxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.sinxToolStripMenuItem.Text = "sin(x)";
             // 
             // fsinsToolStripMenuItem
             // 
             this.fsinsToolStripMenuItem.Name = "fsinsToolStripMenuItem";
-            this.fsinsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fsinsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fsinsToolStripMenuItem.Text = "fsin(s)";
+            // 
+            // chartdfv1ToolStripMenuItem
+            // 
+            this.chartdfv1ToolStripMenuItem.Name = "chartdfv1ToolStripMenuItem";
+            this.chartdfv1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.chartdfv1ToolStripMenuItem.Text = "chart -df -v1 -wm";
             // 
             // splitContainer1
             // 
@@ -1586,6 +1593,7 @@ namespace Chart_Project
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.textBox_UserTitle);
             this.splitContainer3.Panel1.Controls.Add(this.textBox_MousePoint);
             this.splitContainer3.Panel1.Controls.Add(this.chart1);
             this.splitContainer3.Panel1.Controls.Add(this.splitter1);
@@ -1608,23 +1616,24 @@ namespace Chart_Project
             // 
             // chart1
             // 
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
+            chartArea7.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea7);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            legend7.Name = "Legend1";
+            this.chart1.Legends.Add(legend7);
             this.chart1.Location = new System.Drawing.Point(3, 0);
             this.chart1.Name = "chart1";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.chart1.Series.Add(series3);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.chart1.Series.Add(series7);
             this.chart1.Size = new System.Drawing.Size(1055, 555);
-            this.chart1.TabIndex = 2;
+            this.chart1.TabIndex = 19;
             this.chart1.Text = "chart1";
-            title3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title3.Name = "Title1";
-            this.chart1.Titles.Add(title3);
+            title7.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            title7.Name = "Title1";
+            this.chart1.Titles.Add(title7);
+            this.chart1.SizeChanged += new System.EventHandler(this.chart1_SizeChanged);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
             // 
@@ -1660,11 +1669,16 @@ namespace Chart_Project
             this.button_RegEx.UseVisualStyleBackColor = true;
             this.button_RegEx.Click += new System.EventHandler(this.button_RegEx_Click);
             // 
-            // chartdfv1ToolStripMenuItem
+            // textBox_UserTitle
             // 
-            this.chartdfv1ToolStripMenuItem.Name = "chartdfv1ToolStripMenuItem";
-            this.chartdfv1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.chartdfv1ToolStripMenuItem.Text = "chart -df -v1 -wm";
+            this.textBox_UserTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox_UserTitle.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_UserTitle.Location = new System.Drawing.Point(374, 16);
+            this.textBox_UserTitle.Name = "textBox_UserTitle";
+            this.textBox_UserTitle.ReadOnly = true;
+            this.textBox_UserTitle.Size = new System.Drawing.Size(10, 13);
+            this.textBox_UserTitle.TabIndex = 2;
+            this.textBox_UserTitle.Text = "T";
             // 
             // Form1
             // 
@@ -1853,6 +1867,7 @@ namespace Chart_Project
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripMenuItem chartdfv1ToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox_UserTitle;
     }
 }
 
