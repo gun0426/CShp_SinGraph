@@ -923,7 +923,7 @@ bMouseMoveReady = false;
                         textFunc[6].Text = "";
                         textFunc[7].Text = "";
                         textBox_Cmd.Text = "";
-                        textFuncIndex = 0;
+                        textFuncIndex = 0;                       
                         Set_Chart1();
                     }
                     else if (lastLine.IndexOf("chart") != -1)
@@ -968,6 +968,18 @@ bMouseMoveReady = false;
                                 bChartVertical = true;                  // on
                             }
                             Set_Chart1();
+                        }
+                        mc = Regex.Match(str, @"-w[mn]");                // vertical
+                        if (mc.Success)
+                        {
+                            if (mc.Value.Substring(2, 1) == "m")         // window maximized
+                            {
+                                WindowState = FormWindowState.Maximized;
+                            }
+                            if (mc.Value.Substring(2, 1) == "n")         // window normal
+                            {
+                                WindowState = FormWindowState.Normal;
+                            }
                         }
                     }
                     else if (lastLine.IndexOf("exam") != -1)
