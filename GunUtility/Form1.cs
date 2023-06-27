@@ -50,7 +50,7 @@ namespace Chart_Project
         Color[] sColor = new Color[20];
         bool bMinMaxInit = true;
         bool bMouseMoveReady = false;
-        string strCmd = "";
+        //string strCmd = "";
         string strThis = "";
         int preIndex = 0;
         bool bChartVertical = false;
@@ -1505,28 +1505,33 @@ bMouseMoveReady = false;
                         mc = Regex.Match(lastLine, @"[^sincostanx0-9\+\-\*\/\(\)]+");
                         if (mc.Success)
                         {
-                            Console.WriteLine("E");
+                            Console.WriteLine("E1");
+                            return;
                         }
-                        else
+                        mc = Regex.Match(lastLine, @"(s[^i\(]+|c[^o]+|t[^a]+|[^s]+i|[^c]+o|[^t]+a)");                       
+                        //mc = Regex.Match(lastLine, @"(s[^i\(]+|c[^o]+|t[^a]+)");
+                        if (mc.Success)
                         {
-                            textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
-                            textFunc[COLUMN_N - 1].Text = textFunc[COLUMN_N - 1].Text.Replace("\r\n", "");
-                            textFunc[COLUMN_N - 1].Text = textFunc[COLUMN_N - 1].Text.Replace(" ", "");
-
-                            textDisp[COLUMN_N - 1] = textFunc[COLUMN_N - 1].Text;
-                            //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
-                            if (textFunc[COLUMN_N - 1].Text.Length < preIndex)
-                            {
-                                preIndex = 0;
-                                Console.WriteLine("preIndex error");
-                            }
-                            strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
-                            textFunc[textFuncIndex % (ROW_N - 1)].Text = strThis;
-                            textFuncIndex++;
-                            preIndex = textFunc[COLUMN_N - 1].Text.Length;
-                            Update_textBox();
-                            Console.WriteLine(strThis);
+                            Console.WriteLine("E2");
+                            return;
                         }
+                        textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
+                        textFunc[COLUMN_N - 1].Text = textFunc[COLUMN_N - 1].Text.Replace("\r\n", "");
+                        textFunc[COLUMN_N - 1].Text = textFunc[COLUMN_N - 1].Text.Replace(" ", "");
+
+                        textDisp[COLUMN_N - 1] = textFunc[COLUMN_N - 1].Text;
+                        //e.Handled = true;   // ###GUN 이것이 없으면 경고음 발생
+                        if (textFunc[COLUMN_N - 1].Text.Length < preIndex)
+                        {
+                            preIndex = 0;
+                            Console.WriteLine("preIndex error");
+                        }
+                        strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
+                        textFunc[textFuncIndex % (ROW_N - 1)].Text = strThis;
+                        textFuncIndex++;
+                        preIndex = textFunc[COLUMN_N - 1].Text.Length;
+                        Update_textBox();
+                        Console.WriteLine(strThis);
                     }
                 }
                 else
