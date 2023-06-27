@@ -31,10 +31,12 @@ namespace Chart_Project
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title5 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -58,6 +60,7 @@ namespace Chart_Project
             this.dispcount100ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fsinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tb0sinxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -170,6 +173,8 @@ namespace Chart_Project
             this.checkBox29 = new System.Windows.Forms.CheckBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.textBox_UserTitle = new System.Windows.Forms.TextBox();
             this.textBox_MousePoint = new System.Windows.Forms.TextBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.splitter1 = new System.Windows.Forms.Splitter();
@@ -177,8 +182,6 @@ namespace Chart_Project
             this.button_RegEx = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
-            this.textBox_UserTitle = new System.Windows.Forms.TextBox();
-            this.tb0sinxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -193,6 +196,7 @@ namespace Chart_Project
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -251,7 +255,7 @@ namespace Chart_Project
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(157, 6);
             // 
             // toolStripMenuItem3
             // 
@@ -334,8 +338,8 @@ namespace Chart_Project
             // dispcount100ToolStripMenuItem
             // 
             this.dispcount100ToolStripMenuItem.Name = "dispcount100ToolStripMenuItem";
-            this.dispcount100ToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.dispcount100ToolStripMenuItem.Text = "disp -c -r -t -df -v -wm";
+            this.dispcount100ToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.dispcount100ToolStripMenuItem.Text = "disp -c -r -t -df -v -wm -p0";
             // 
             // sinxToolStripMenuItem
             // 
@@ -348,6 +352,12 @@ namespace Chart_Project
             this.fsinsToolStripMenuItem.Name = "fsinsToolStripMenuItem";
             this.fsinsToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
             this.fsinsToolStripMenuItem.Text = "fsin(s)";
+            // 
+            // tb0sinxToolStripMenuItem
+            // 
+            this.tb0sinxToolStripMenuItem.Name = "tb0sinxToolStripMenuItem";
+            this.tb0sinxToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.tb0sinxToolStripMenuItem.Text = "tb0:sin(x)";
             // 
             // splitContainer1
             // 
@@ -1582,6 +1592,7 @@ namespace Chart_Project
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.chart2);
             this.splitContainer3.Panel1.Controls.Add(this.textBox_UserTitle);
             this.splitContainer3.Panel1.Controls.Add(this.textBox_MousePoint);
             this.splitContainer3.Panel1.Controls.Add(this.chart1);
@@ -1595,6 +1606,35 @@ namespace Chart_Project
             this.splitContainer3.SplitterDistance = 555;
             this.splitContainer3.TabIndex = 2;
             // 
+            // chart2
+            // 
+            chartArea3.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea3);
+            this.chart2.Dock = System.Windows.Forms.DockStyle.Right;
+            legend3.Name = "Legend1";
+            this.chart2.Legends.Add(legend3);
+            this.chart2.Location = new System.Drawing.Point(506, 0);
+            this.chart2.Name = "chart2";
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.chart2.Series.Add(series3);
+            this.chart2.Size = new System.Drawing.Size(552, 555);
+            this.chart2.TabIndex = 20;
+            this.chart2.Text = "chart2";
+            this.chart2.Visible = false;
+            // 
+            // textBox_UserTitle
+            // 
+            this.textBox_UserTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox_UserTitle.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox_UserTitle.Location = new System.Drawing.Point(374, 16);
+            this.textBox_UserTitle.Name = "textBox_UserTitle";
+            this.textBox_UserTitle.ReadOnly = true;
+            this.textBox_UserTitle.Size = new System.Drawing.Size(10, 13);
+            this.textBox_UserTitle.TabIndex = 2;
+            this.textBox_UserTitle.Text = "T";
+            // 
             // textBox_MousePoint
             // 
             this.textBox_MousePoint.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1605,23 +1645,20 @@ namespace Chart_Project
             // 
             // chart1
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea5);
+            chartArea4.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea4);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend5.Name = "Legend1";
-            this.chart1.Legends.Add(legend5);
+            legend4.Name = "Legend1";
+            this.chart1.Legends.Add(legend4);
             this.chart1.Location = new System.Drawing.Point(3, 0);
             this.chart1.Name = "chart1";
-            series5.ChartArea = "ChartArea1";
-            series5.Legend = "Legend1";
-            series5.Name = "Series1";
-            this.chart1.Series.Add(series5);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(1055, 555);
             this.chart1.TabIndex = 19;
             this.chart1.Text = "chart1";
-            title5.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title5.Name = "Title1";
-            this.chart1.Titles.Add(title5);
             this.chart1.SizeChanged += new System.EventHandler(this.chart1_SizeChanged);
             this.chart1.Click += new System.EventHandler(this.chart1_Click);
             this.chart1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseMove);
@@ -1658,23 +1695,6 @@ namespace Chart_Project
             this.button_RegEx.UseVisualStyleBackColor = true;
             this.button_RegEx.Click += new System.EventHandler(this.button_RegEx_Click);
             // 
-            // textBox_UserTitle
-            // 
-            this.textBox_UserTitle.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox_UserTitle.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_UserTitle.Location = new System.Drawing.Point(374, 16);
-            this.textBox_UserTitle.Name = "textBox_UserTitle";
-            this.textBox_UserTitle.ReadOnly = true;
-            this.textBox_UserTitle.Size = new System.Drawing.Size(10, 13);
-            this.textBox_UserTitle.TabIndex = 2;
-            this.textBox_UserTitle.Text = "T";
-            // 
-            // tb0sinxToolStripMenuItem
-            // 
-            this.tb0sinxToolStripMenuItem.Name = "tb0sinxToolStripMenuItem";
-            this.tb0sinxToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.tb0sinxToolStripMenuItem.Text = "tb0:sin(x)";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -1706,6 +1726,7 @@ namespace Chart_Project
             this.splitContainer3.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1862,6 +1883,7 @@ namespace Chart_Project
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox_UserTitle;
         private System.Windows.Forms.ToolStripMenuItem tb0sinxToolStripMenuItem;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
     }
 }
 
