@@ -338,7 +338,7 @@ namespace Chart_Project
                 xIndx = 0;
                 bMinMaxInit = true;
 
-                Apply_textBoxData();
+                Update_textBox();
 
                 strThis = "";
                 //preIndex = 0;
@@ -894,7 +894,7 @@ bMouseMoveReady = false;
             }
         }
 
-        private void Apply_textBoxData()
+        private void Update_textBox()
         {
             for (int i = 0; i < ROW_N; i++)
             {
@@ -915,6 +915,7 @@ bMouseMoveReady = false;
                     lastLine = lastLine.Replace(" ", "");
                     //if (lastLine.Equals("Clear", StringComparison.OrdinalIgnoreCase))
                     Match mc;
+                    MatchCollection mcs;
                     if (lastLine.IndexOf("init") != -1)
                     {
                         textFunc[0].Text = "";
@@ -929,60 +930,17 @@ bMouseMoveReady = false;
                         textFuncIndex = 0;                       
                         Set_Chart1();
                     }
-                    else if (lastLine.IndexOf("chart") != -1)
+                    else if (lastLine.IndexOf("tb") != -1) // textbox number
                     {
-                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("chart"));
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("tb"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
-                        string str = lastLine.Substring(lastLine.IndexOf("chart"), lastLine.Length - lastLine.IndexOf("chart"));
-                        mc = Regex.Match(str, @"-d[ftblr]");            // dock
+                        string str = lastLine.Substring(lastLine.IndexOf("tb"), lastLine.Length - lastLine.IndexOf("tb"));
+                        mc = Regex.Match(str, @"\d+\:");            // dock
                         if (mc.Success)
                         {
-                            if(mc.Value.Substring(2, 1) == "f")         // fill
-                            {
-                                chart1.Dock = DockStyle.Fill;
-                            }
-                            else if (mc.Value.Substring(2, 1) == "t")   // top
-                            {
-                                chart1.Dock = DockStyle.Top;
-                            }
-                            else if (mc.Value.Substring(2, 1) == "b")   // bottom
-                            {
-                                chart1.Dock = DockStyle.Bottom;
-                            }
-                            else if (mc.Value.Substring(2, 1) == "l")   // left
-                            {
-                                chart1.Dock = DockStyle.Left;
-                            }
-                            else if (mc.Value.Substring(2, 1) == "r")   // right
-                            {
-                                chart1.Dock = DockStyle.Right;
-                            }
-                        }
-                        mc = Regex.Match(str, @"-v\d+");                // vertical
-                        if (mc.Success)
-                        {
-                            textBox_DrawTick.Text = mc.Value.Substring(2, mc.Value.Length - 2);
-                            if (textBox_DrawTick.Text == "0")           
-                            {
-                                bChartVertical = false;                 // off
-                            }
-                            else
-                            {
-                                bChartVertical = true;                  // on
-                            }
-                            Set_Chart1();
-                        }
-                        mc = Regex.Match(str, @"-w[mn]");                // vertical
-                        if (mc.Success)
-                        {
-                            if (mc.Value.Substring(2, 1) == "m")         // window maximized
-                            {
-                                WindowState = FormWindowState.Maximized;
-                            }
-                            if (mc.Value.Substring(2, 1) == "n")         // window normal
-                            {
-                                WindowState = FormWindowState.Normal;
-                            }
+                            int tbIndex = Convert.ToInt32(mc.Value.Substring(0, mc.Value.Length - 1));
+                            textFunc[tbIndex].Text = str.Substring(str.IndexOf(":")+1);
+                            Update_textBox();
                         }
                     }
                     else if (lastLine.IndexOf("exam") != -1)
@@ -990,15 +948,34 @@ bMouseMoveReady = false;
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("exam"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("exam"), lastLine.Length - lastLine.IndexOf("exam"));
-                        textBox0.Text = "sin(0)";
-                        textBox1.Text = "sin(x)";
-                        textBox2.Text = "cos(x)";
-                        textBox3.Text = "sin(2x)";
-                        textBox4.Text = "cos(2x)";
-                        textBox5.Text = "sin(3x)";
-                        textBox6.Text = "cos(3x)";
-                        textBox7.Text = "sin(0)+sin(x)+cos(x)+sin(2x)+cos(2x)+sin(3x)+cos(3x)";
+                        textBox0.Text = "sin(x)";
+                        textBox1.Text = "cos(x)";
+                        textBox2.Text = "sin(2x)";
+                        textBox3.Text = "cos(2x)";
+                        textBox4.Text = "sin(3x)";
+                        textBox5.Text = "cos(3x)";
+                        textBox6.Text = "sin(4x)";
+                        textBox7.Text = "sin(x)+cos(x)+sin(2x)+cos(2x)+sin(3x)+cos(3x)+sin(4x)";
                         Set_Chart1();
+                        startToggle = false;
+                        button_Start_Click(sender, e);
+                    }
+                    else if (lastLine.IndexOf("cp") != -1)
+                    {
+                        textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("cp"));
+                        textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
+                        string str = lastLine.Substring(lastLine.IndexOf("cp"), lastLine.Length - lastLine.IndexOf("cp"));
+                        mcs = Regex.Matches(str, @"\d+");
+                        if (mcs.Count == 1)
+                        {
+                            textFunc[Convert.ToInt32(mcs[0].Value)].Text = textFunc[7].Text;
+                            Update_textBox();
+                        }
+                        if (mcs.Count == 2)
+                        {
+                            textFunc[Convert.ToInt32(mcs[1].Value)].Text = textFunc[Convert.ToInt32(mcs[0].Value)].Text;
+                            Update_textBox();
+                        }
                     }
                     else if (lastLine.IndexOf("fsin") != -1)
                     {
@@ -1107,7 +1084,7 @@ bMouseMoveReady = false;
                         strRepeat = strRepeat.Remove(strRepeat.Length - 1, 1);
                         textBox_Cmd.Text = strRepeat;
                         textFunc[COLUMN_N - 1].Text = textBox_Cmd.Text;
-                        Apply_textBoxData();
+                        Update_textBox();
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                     }
                     else if (lastLine.IndexOf("clear") != -1)
@@ -1135,34 +1112,26 @@ bMouseMoveReady = false;
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("check"), lastLine.Length - lastLine.IndexOf("check"));
 
-                        mc = Regex.Match(str, @"\(\d+,\d+\)");  // (1,2)
-                        if (mc.Success)
+                        mcs = Regex.Matches(str, @"\(\d+,\d+\)");  // (1,2)
+                        if (mcs.Count == 2)
                         {
-                            string strPart = mc.Value;
-                            int row, col;
-                            MatchCollection mcs = Regex.Matches(strPart, @"\d+");
-                            if (mcs.Count == 2)
+                            if (checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked == true)
                             {
-                                row = Convert.ToInt32(mcs[0].Value);
-                                col = Convert.ToInt32(mcs[1].Value);
-                                if (checks[row, col].Checked == true)
-                                {
-                                    checks[row, col].Checked = false;
-                                }
-                                else
-                                {
-                                    checks[row, col].Checked = true;
-                                }
+                                checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = false;
+                            }
+                            else
+                            {
+                                checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = true;
                             }
                         }
-                        mc = Regex.Match(str, @"-a\d*");        // -a
+                        mc = Regex.Match(str, @"-a\d*");            // -a
                         if (mc.Success)
                         {
-                            mc = Regex.Match(str, @"-a\d+");    // -a4
+                            mc = Regex.Match(str, @"-a\d+");        // -a4
                             if (mc.Success)
                             {
                                 int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
-                                mc = Regex.Match(str, @"-d");   // distrbute
+                                mc = Regex.Match(str, @"-d");       // distrbute
                                 if (mc.Success)
                                 {
                                     for (int i = 0; i < n; i++)
@@ -1180,7 +1149,7 @@ bMouseMoveReady = false;
                             }
                             else
                             {
-                                mc = Regex.Match(str, @"-d");   // 
+                                mc = Regex.Match(str, @"-d");  
                                 if (mc.Success)
                                 {
                                     for (int i = 0; i < ROW_N; i++)
@@ -1197,20 +1166,54 @@ bMouseMoveReady = false;
                                 }
                             }
                         }
-                        else
+                        mc = Regex.Match(str, @"-u.*");        
+                        if (mc.Success)
                         {
-                            mc = Regex.Match(str, @"-u\d*");    // uncheck
+                            mc = Regex.Match(str, @"-u\d+");  // 개별적으로 uncheck
                             if (mc.Success)
                             {
-                                mc = Regex.Match(str, @"-u\d+");
-                                if (mc.Success)
+                                mcs = Regex.Matches(str, @"\d+");
+                                if (mcs.Count != 0)
                                 {
-                                    int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
-                                    for (int i = 0; i < n; i++)
+                                    for (int i = 0; i < mcs.Count; i++)
                                     {
                                         for (int j = 0; j < COLUMN_N; j++)
                                         {
-                                            checks[i, j].Checked = false;
+                                            if (Convert.ToInt32(mcs[i].Value) < ROW_N)
+                                            {
+                                                checks[Convert.ToInt32(mcs[i].Value), j].Checked = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                mc = Regex.Match(str, @"-u[hl]\d+");
+                                if (mc.Success)
+                                {
+                                    mc = Regex.Match(str, @"-uh\d+");
+                                    if (mc.Success)
+                                    {
+                                        int n = Convert.ToInt32(str.Substring(mc.Index + 3));
+                                        for (int i = 0; i < n; i++)
+                                        {
+                                            for (int j = 0; j < COLUMN_N; j++)
+                                            {
+                                                checks[i, j].Checked = false;
+                                            }
+                                        }
+                                    }
+                                    mc = Regex.Match(str, @"-ul\d+");
+                                    if (mc.Success)
+                                    {
+                                        int n = Convert.ToInt32(str.Substring(mc.Index + 3));
+                                        for (int i = 0; i < n; i++)
+                                        {
+                                            for (int j = 0; j < COLUMN_N; j++)
+                                            {
+                                                checks[ROW_N - 1 - i, j].Checked = false;
+                                            }
                                         }
                                     }
                                 }
@@ -1220,7 +1223,7 @@ bMouseMoveReady = false;
                                     {
                                         for (int j = 0; j < COLUMN_N; j++)
                                         {
-                                            checks[i, j].Checked = false;
+                                            checks[ROW_N - 1 + i, j].Checked = false;
                                         }
                                     }
                                 }
@@ -1250,6 +1253,55 @@ bMouseMoveReady = false;
                             trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                         }
+                        mc = Regex.Match(str, @"-d[ftblr]");            // dock
+                        if (mc.Success)
+                        {
+                            if (mc.Value.Substring(2, 1) == "f")         // fill
+                            {
+                                chart1.Dock = DockStyle.Fill;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "t")   // top
+                            {
+                                chart1.Dock = DockStyle.Top;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "b")   // bottom
+                            {
+                                chart1.Dock = DockStyle.Bottom;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "l")   // left
+                            {
+                                chart1.Dock = DockStyle.Left;
+                            }
+                            else if (mc.Value.Substring(2, 1) == "r")   // right
+                            {
+                                chart1.Dock = DockStyle.Right;
+                            }
+                        }
+                        mc = Regex.Match(str, @"-v");                   // vertical
+                        if (mc.Success)
+                        {
+                            if (bChartVertical == true)
+                            {
+                                bChartVertical = false;
+                            }
+                            else
+                            {
+                                bChartVertical = true;
+                            }
+                            Set_Chart1();
+                        }
+                        mc = Regex.Match(str, @"-wm");                // vertical
+                        if (mc.Success)
+                        {
+                            if (WindowState == FormWindowState.Maximized)
+                            {
+                                WindowState = FormWindowState.Normal;
+                            }
+                            else
+                            {
+                                WindowState = FormWindowState.Maximized;
+                            }
+                        }
                     }   
                     else
                     {
@@ -1274,7 +1326,7 @@ bMouseMoveReady = false;
                             textFunc[textFuncIndex % (ROW_N-1)].Text = strThis;
                             textFuncIndex++;
                             preIndex = textFunc[COLUMN_N - 1].Text.Length;
-                            Apply_textBoxData();
+                            Update_textBox();
                             Console.WriteLine(strThis);
                         }
                     }
