@@ -1111,17 +1111,20 @@ bMouseMoveReady = false;
                         textBox_Cmd.Text = textBox_Cmd.Text.Substring(0, lastLine.IndexOf("check"));
                         textBox_Cmd.SelectionStart = textBox_Cmd.Text.Length;
                         string str = lastLine.Substring(lastLine.IndexOf("check"), lastLine.Length - lastLine.IndexOf("check"));
-
-                        mcs = Regex.Matches(str, @"\(\d+,\d+\)");  // (1,2)
-                        if (mcs.Count == 2)
+                        mc = Regex.Match(str, @"\(\d+,\d+\)");  // (1,2)
+                        if (mc.Success)
                         {
-                            if (checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked == true)
+                            mcs = Regex.Matches(mc.Value, @"\d+");
+                            if (mcs.Count == 2)
                             {
-                                checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = false;
-                            }
-                            else
-                            {
-                                checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = true;
+                                if (checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked == true)
+                                {
+                                    checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = false;
+                                }
+                                else
+                                {
+                                    checks[Convert.ToInt32(mcs[0].Value), Convert.ToInt32(mcs[1].Value)].Checked = true;
+                                }
                             }
                         }
                         mc = Regex.Match(str, @"-a\d*");            // -a
@@ -1263,18 +1266,26 @@ bMouseMoveReady = false;
                             else if (mc.Value.Substring(2, 1) == "t")   // top
                             {
                                 chart1.Dock = DockStyle.Top;
+                                //this.splitContainer3.Panel1.Controls.Add(this.textBox8);
+                                //textBox8.Dock = DockStyle.Bottom;
                             }
                             else if (mc.Value.Substring(2, 1) == "b")   // bottom
                             {
                                 chart1.Dock = DockStyle.Bottom;
+                                //this.splitContainer3.Panel1.Controls.Add(this.textBox8);
+                                //textBox8.Dock = DockStyle.Top;
                             }
                             else if (mc.Value.Substring(2, 1) == "l")   // left
                             {
                                 chart1.Dock = DockStyle.Left;
+                                //this.splitContainer3.Panel1.Controls.Add(this.textBox8);
+                                //textBox8.Dock = DockStyle.Right;
                             }
                             else if (mc.Value.Substring(2, 1) == "r")   // right
                             {
                                 chart1.Dock = DockStyle.Right;
+                                //this.splitContainer3.Panel1.Controls.Add(this.textBox8);
+                                //textBox8.Dock = DockStyle.Left;
                             }
                         }
                         mc = Regex.Match(str, @"-v");                   // vertical
