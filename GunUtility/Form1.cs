@@ -22,7 +22,7 @@ namespace Chart_Project
     public partial class Form1 : Form
     {
         private delegate void Draw_Chart1Delegate(double[] buffer, int size);
-        private delegate void DrawChart2Delegate(double[] buffer, int size);
+        private delegate void Draw_Chart2Delegate(double[] buffer, int size);
         //public const double AXIS_Y_MIN = Double.NaN;
         //public const double AXIS_Y_MAX = Double.NaN;
         //     public const double FREQ = 100.0;
@@ -39,7 +39,7 @@ namespace Chart_Project
         //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         bool startToggle = false;
-        CheckBox[,] checks = new CheckBox[8, 8];
+        CheckBox[,] checks = new CheckBox[ROW_N, COLUMN_N];
         TextBox[] textFunc = new TextBox[TEXT_FUNC_N];
         Button[] btnColor = new Button[TEXT_FUNC_N];
         Button[] btnColorS = new Button[TEXT_FUNC_N];
@@ -48,7 +48,8 @@ namespace Chart_Project
         int nSeries = 0;
         int nArea = 0;
         Color[] sColor = new Color[20];
-        bool bMinMaxInit = true;
+        bool bMinMaxInit_1 = true;
+        bool bMinMaxInit_2 = true;
         bool bMouseMoveReady = false;
         //string strCmd = "";
         string strThis = "";
@@ -257,6 +258,7 @@ namespace Chart_Project
 
             Draw_Chart1(item, nSeries);
             Draw_Chart1(item, nSeries);  // ###GUN : 최소 두개의 데이타
+            xIndx++;
         }
         private void Set_Chart1()
         {
@@ -307,7 +309,7 @@ namespace Chart_Project
                     Set_Series1(i, aAreaSel[i], 5, ChartDashStyle.Solid, sColor[i]);
                 }
                 xIndx = 0;
-                bMinMaxInit = true;
+                bMinMaxInit_1 = true;
 
                 Update_textBox();
 
@@ -359,6 +361,7 @@ namespace Chart_Project
                     }
                 }
             }
+            bMinMaxInit_2 = true;
         }
 
         static int Count_SetBit(int n)
@@ -541,8 +544,8 @@ namespace Chart_Project
                 //chart1.ChartAreas[i].AxisX.TextOrientation = System.Windows.Forms.DataVisualization.Charting.TextOrientation.Auto;   // X축 이름 회전
                 //chart1.ChartAreas[i].AxisX.IsReversed = true;   // ###GUN : 그래프 이동 방향 우에서 좌로
                 //chart1.ChartAreas[i].AxisY.IsReversed = true;   // ###GUN : 그래프 이동 방향 위에서 아래로       
-                //chart1.ChartAreas[i].AxisY.Minimum = AXIS_Y_MIN;
-                //chart1.ChartAreas[i].AxisY.Maximum = AXIS_Y_MAX;
+                //chart2.ChartAreas[i].AxisY.Minimum = 0.0;
+                //chart2.ChartAreas[i].AxisY.Maximum = 0.0001;
                 //chart1.ChartAreas[i].AxisX.Enabled = AxisEnabled.True;
                 //chart1.ChartAreas[i].AxisY.Enabled = AxisEnabled.True;
                 ////chart1.ChartAreas[i].AlignWithChartArea = strArea;
@@ -631,26 +634,11 @@ namespace Chart_Project
                     double yData = buffer[i];
                     double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
                     chart1.Series[i].Points.AddXY(xData, yData);
-                    if (chart2.Visible == true)
+                    
+                    if (bMinMaxInit_1 == true)
                     {
-                        /* Chart2 */
-                        if (chart2Mode == 0)
-                        {
-                            chart2.Series[i].Points.AddXY(Math.Cos(xData * Math.PI), yData);
-                        }
-                        else if (chart2Mode == 1)
-                        {
-                            chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
-                        }
-                        else if (chart2Mode == 2)
-                        {
-                            chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData);
-                        }
-                    }
-                    if (bMinMaxInit == true)
-                    {
-                        chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = 0.0;
-                        chart1.ChartAreas[aAreaSel[i]].AxisX.Maximum = 0.00001;
+                        chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum = 0.0;
+                        chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum = 0.00001;
                     }
                     //double delta = chart1.ChartAreas[aAreaSel[i]].AxisY.Maximum - chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum;
                     if (yData < chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum)
@@ -672,19 +660,90 @@ namespace Chart_Project
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Minimum = chart1.Series[i].Points[0].XValue;
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Maximum = xData;
                     chart1.ChartAreas[aAreaSel[i]].AxisX.Interval = 0.5 * ((chart1.Series[i].Points.Count / 300)+1);
-                    if (chart2.Visible == true)
+                }
+                bMinMaxInit_1 = false;
+                //xIndx++;
+            }
+        }
+        private void Draw_Chart2(double[] buffer, int size)
+        {
+            if (chart1.InvokeRequired)
+            {
+                Draw_Chart2Delegate del = new Draw_Chart2Delegate(Draw_Chart2);
+                chart2.Invoke(del, new object[] { buffer, size });
+            }
+            else
+            {
+                for (int i = 0; i < nSeries; i++)
+                {
+                    double yData = buffer[i];
+                    double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
+                    
+                    if (chart2Mode == 0)
+                    {   // cos, sin
+                        chart2.Series[i].Points.AddXY(Math.Cos(xData * Math.PI), yData);
+                    }
+                    else if (chart2Mode == 1)
+                    {   // sin * cos, sin * sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
+                    }
+                    else if (chart2Mode == 2)
+                    {   // sin * cos, sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData);
+                    }
+                    else if (chart2Mode == 3)
+                    {   // sin, sin
+                        chart2.Series[i].Points.AddXY(Math.Sin(xData * Math.PI), yData);
+                    }
+                    else if (chart2Mode == 4)
+                    {   // sin * sin, sin * sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Sin(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
+                    }
+                    else if (chart2Mode == 5)
+                    {   // sin * sin, sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Sin(xData * Math.PI), yData);
+                    }
+                    else if (chart2Mode == 6)
+                    {   // tan , sin
+                        chart2.Series[i].Points.AddXY(Math.Tan(xData * Math.PI), yData);
+                    }
+                    else if (chart2Mode == 7)
+                    {   // sin * tan ,sin * sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Tan(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
+                    }
+                    else if (chart2Mode == 8)
+                    {   // sin * tan, sin
+                        chart2.Series[i].Points.AddXY(yData * Math.Tan(xData * Math.PI), yData);
+                    }
+
+                    if (bMinMaxInit_2 == true)
                     {
-                        if (chart2.Series[i].Points.Count > Convert.ToInt32(textBox_resolution.Text))
+                        chart2.ChartAreas[0].AxisY.Minimum = 0.0;
+                        chart2.ChartAreas[0].AxisY.Maximum = 0.00001;
+                    }
+                    if (yData < chart2.ChartAreas[0].AxisY.Minimum)
+                    {
+                        chart2.ChartAreas[0].AxisY.Minimum = yData;
+                    }
+                    if (yData > chart2.ChartAreas[0].AxisY.Maximum)
+                    {
+                        chart2.ChartAreas[0].AxisY.Maximum = yData;
+                    }
+
+                    //chart2.ChartAreas[0].AxisX.Minimum = chart2.Series[i].Points[0].XValue;
+                    //chart2.ChartAreas[0].AxisX.Maximum = xData;
+                    //chart2.ChartAreas[0].AxisX.Interval = 0.5 * ((chart2.Series[i].Points.Count / 300) + 1);
+                    
+                    if (chart2.Series[i].Points.Count > Convert.ToInt32(textBox_resolution.Text))
+                    {
+                        for (int j = 0; j < chart2.Series[i].Points.Count - Convert.ToInt32(textBox_resolution.Text); j++)
                         {
-                            for (int j = 0; j < chart2.Series[i].Points.Count - Convert.ToInt32(textBox_resolution.Text); j++)
-                            {
-                                chart2.Series[i].Points.RemoveAt(0);
-                            }
+                            chart2.Series[i].Points.RemoveAt(0);
                         }
                     }
                 }
-                bMinMaxInit = false;
-                xIndx++;
+                bMinMaxInit_2 = false;
+                //xIndx++;
             }
         }
 
@@ -809,6 +868,8 @@ namespace Chart_Project
                         {
 bMouseMoveReady = true;
                             Draw_Chart1(item, nSeries);
+                            Draw_Chart2(item, nSeries);
+                            xIndx++;
                             return;
                         }
                     }
@@ -1382,7 +1443,7 @@ bMouseMoveReady = false;
                                     {
                                         for (int j = 0; j < COLUMN_N; j++)
                                         {
-                                            checks[ROW_N - 1 + i, j].Checked = false;
+                                            checks[i, j].Checked = false;
                                         }
                                     }
                                 }
@@ -1412,32 +1473,32 @@ bMouseMoveReady = false;
                             trackBar_DrawSpeed.Value = Convert.ToInt32(textBox_DrawTick.Text);
                             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
                         }
-                        mc = Regex.Match(str, @"-d[ftblr]");            // dock
+                        mc = Regex.Match(str, @"-d[ftblr]");                // docking
                         if (mc.Success)
                         {
-                            if (mc.Value.Substring(2, 1) == "f")         // fill
+                            if (mc.Value.Substring(2, 1) == "f")            // docking fill
                             {
                                 chart2.Visible = false;
                                 chart1.Dock = DockStyle.Fill;
                             }
-                            else if (mc.Value.Substring(2, 1) == "t")   // top
+                            else if (mc.Value.Substring(2, 1) == "t")       // docking top
                             {
                                 chart2.Visible = false;
                                 chart1.Dock = DockStyle.Top;
                             }
-                            else if (mc.Value.Substring(2, 1) == "b")   // bottom
+                            else if (mc.Value.Substring(2, 1) == "b")       // docking bottom
                             {
                                 chart2.Visible = false;
                                 chart1.Dock = DockStyle.Bottom;
                             }
-                            else if (mc.Value.Substring(2, 1) == "l")   // left
+                            else if (mc.Value.Substring(2, 1) == "l")       // docking left
                             {
                                 chart1.Dock = DockStyle.Left;
                                 chart2.Width = chart1.Width;
                                 chart2.Height = chart1.Height;
                                 chart2.Visible = true;
                             }
-                            else if (mc.Value.Substring(2, 1) == "r")   // right
+                            else if (mc.Value.Substring(2, 1) == "r")       // docking right
                             {
                                 chart1.Dock = DockStyle.Right;
                                 chart2.Width = chart1.Width;
@@ -1445,7 +1506,7 @@ bMouseMoveReady = false;
                                 chart2.Visible = true;
                             }
                         }
-                        mc = Regex.Match(str, @"-v");                   // vertical
+                        mc = Regex.Match(str, @"-v");                       // vertical
                         if (mc.Success)
                         {
                             if (bChartVertical == true)
@@ -1459,7 +1520,7 @@ bMouseMoveReady = false;
                             Set_Chart1();
                             Set_Chart2();
                         }
-                        mc = Regex.Match(str, @"-wm");                // vertical
+                        mc = Regex.Match(str, @"-wm");                      // window miximized
                         if (mc.Success)
                         {
                             if (WindowState == FormWindowState.Maximized)
@@ -1471,22 +1532,23 @@ bMouseMoveReady = false;
                                 WindowState = FormWindowState.Maximized;
                             }
                         }
-                        mc = Regex.Match(str, @"-p\d+");                // vertical
+                        mc = Regex.Match(str, @"-p\d+");                    // chart2 shape
                         if (mc.Success)
                         {
                             mc = Regex.Match(mc.Value, @"\d+");
-                            if (mc.Value == "0")
-                            {
-                                chart2Mode = 0;
-                            }
-                            else if (mc.Value == "1")
-                            {
-                                chart2Mode = 1;
-                            }
-                            else if (mc.Value == "2")
-                            {
-                                chart2Mode = 2;
-                            }
+                            //if (mc.Value == "0")
+                            //{
+                            //    chart2Mode = 0;
+                            //}
+                            //else if (mc.Value == "1")
+                            //{
+                            //    chart2Mode = 1;
+                            //}
+                            //else if (mc.Value == "2")
+                            //{
+                            //    chart2Mode = 2;
+                            //}
+                            chart2Mode = Convert.ToInt32(mc.Value);
                             Set_Chart2();
                         }
                     }
