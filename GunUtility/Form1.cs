@@ -680,7 +680,7 @@ namespace Chart_Project
                     double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
                     
                     if (chart2Mode == 0)
-                    {   // cos, sin
+                    {   // cos, sin @yData 가 sin(x)인 경우
                         chart2.Series[i].Points.AddXY(Math.Cos(xData * Math.PI), yData);
                     }
                     else if (chart2Mode == 1)
