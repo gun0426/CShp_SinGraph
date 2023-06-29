@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+
 //using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+//using System.Runtime.InteropServices;
+
 
 /**********************************************
 *
@@ -57,7 +61,14 @@ namespace Chart_Project
         bool bChartVertical = false;
         int textFuncIndex = 0;
         bool bClick = false;
-        int chart2Mode = 0;
+        //int chart2Mode = 0;
+        string[] strMixXY = new string[2];// = "";
+        //string strMixY = "";
+        bool bOverlap = true;
+        bool bDocking = true;
+        int checkIndex = 0;
+        
+
 
         public Form1()
         {
@@ -81,8 +92,10 @@ namespace Chart_Project
             splitContainer2.FixedPanel = FixedPanel.Panel2;
             splitContainer3.FixedPanel = FixedPanel.Panel2;
             textBox_Cmd.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
-            textBox_Cmd.ForeColor = Color.FromArgb(BACK_COLOR_R+100, BACK_COLOR_G+100, BACK_COLOR_B+100);
-
+            textBox_Cmd.ForeColor = Color.FromArgb(BACK_COLOR_R + 100, BACK_COLOR_G + 100, BACK_COLOR_B + 100);
+            textBox_Mix.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+            textBox_Mix.ForeColor = Color.FromArgb(BACK_COLOR_R + 100, BACK_COLOR_G + 100, BACK_COLOR_B + 100);
+            textBox_Mix.Visible = false;
             textBox_dispcount.Text = Convert.ToString(SAMPLE_N);
             textBox_MousePoint.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             textBox_MousePoint.ForeColor = Color.White;
@@ -214,6 +227,19 @@ namespace Chart_Project
 
             Init_Chart1();
             chart2.Visible = false;
+            strMixXY[0] = "cos";
+            strMixXY[1] = "y";
+            textBox_Mix.Visible = false;
+            textBox_Mix.Text = "cos,y";
+            textBox_Cmd.Focus();
+
+            //Complex[] input = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
+            //FFT(input);
+            //foreach (Complex c in input)
+            //{
+            //    Console.WriteLine(c);
+            //}
+
         }
 
         private void Init_Chart1()
@@ -613,7 +639,7 @@ namespace Chart_Project
             chart2.Series[series_idx].XValueType = ChartValueType.Double;
             chart2.Series[series_idx].YValueType = ChartValueType.Double;
             chart2.Series[series_idx].MarkerSize = marker_size;
-            chart2.Series[series_idx].MarkerStyle = MarkerStyle.Circle;// MarkerStyle.None; //MarkerStyle.Circle;    //MarkerStyle.None;    // ###GUN
+            chart2.Series[series_idx].MarkerStyle = MarkerStyle.Circle; //MarkerStyle.None; //MarkerStyle.Circle;   //MarkerStyle.None;    // ###GUN
             chart2.Series[series_idx].BorderWidth = 1;
             chart2.Series[series_idx].BorderDashStyle = dash;
             chart2.Series[series_idx].Color = color;
@@ -678,61 +704,73 @@ namespace Chart_Project
                 {
                     double yData = buffer[i];
                     double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
-                    
-                    if (chart2Mode == 0)
-                    {   // cos, sin @yData 가 sin(x)인 경우
-                        chart2.Series[i].Points.AddXY(Math.Cos(xData * Math.PI), yData);
+
+                    double[] mixXY = new double[2];
+                    mixXY[0] = 1;
+                    mixXY[1] = 1;
+                    MatchCollection mcs;
+                    bool xAxis = false;
+                    for (int xy = 0; xy < 2; xy++)
+                    {
+                        mcs = Regex.Matches(strMixXY[xy], @"(y|x|sin|cos|tan|asin|acos|atan)");
+                        for (int j = 0; j < mcs.Count; j++)
+                        {
+                            if (mcs[j].Value == "y")
+                            {
+                                mixXY[xy] *= yData;
+                            }
+                            else if (mcs[j].Value == "x")
+                            {
+                                mixXY[xy] *= xData;
+                                xAxis = true;
+                            }
+                            else if (mcs[j].Value == "sin")
+                            {
+                                mixXY[xy] *= Math.Sin(xData * Math.PI);
+                            }
+                            else if (mcs[j].Value == "cos")
+                            {
+                                mixXY[xy] *= Math.Cos(xData * Math.PI);
+                            }
+                            else if (mcs[j].Value == "tan")
+                            {
+                                mixXY[xy] *= Math.Tan(xData * Math.PI);
+                            }
+                            else if (mcs[j].Value == "asin")
+                            {
+                                mixXY[xy] *= Math.Asin(yData);
+                            }
+                            else if (mcs[j].Value == "acos")
+                            {
+                                mixXY[xy] *= Math.Acos(yData);
+                            }
+                            else if (mcs[j].Value == "atan")
+                            {
+                                mixXY[xy] *= Math.Atan(yData);
+                            }
+                        }
                     }
-                    else if (chart2Mode == 1)
-                    {   // sin * cos, sin * sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
-                    }
-                    else if (chart2Mode == 2)
-                    {   // sin * cos, sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Cos(xData * Math.PI), yData);
-                    }
-                    else if (chart2Mode == 3)
-                    {   // sin, sin
-                        chart2.Series[i].Points.AddXY(Math.Sin(xData * Math.PI), yData);
-                    }
-                    else if (chart2Mode == 4)
-                    {   // sin * sin, sin * sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Sin(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
-                    }
-                    else if (chart2Mode == 5)
-                    {   // sin * sin, sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Sin(xData * Math.PI), yData);
-                    }
-                    else if (chart2Mode == 6)
-                    {   // tan , sin
-                        chart2.Series[i].Points.AddXY(Math.Tan(xData * Math.PI), yData);
-                    }
-                    else if (chart2Mode == 7)
-                    {   // sin * tan ,sin * sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Tan(xData * Math.PI), yData * Math.Sin(xData * Math.PI));
-                    }
-                    else if (chart2Mode == 8)
-                    {   // sin * tan, sin
-                        chart2.Series[i].Points.AddXY(yData * Math.Tan(xData * Math.PI), yData);
-                    }
+                    chart2.Series[i].Points.AddXY(mixXY[0], mixXY[1]);
 
                     if (bMinMaxInit_2 == true)
                     {
                         chart2.ChartAreas[0].AxisY.Minimum = 0.0;
                         chart2.ChartAreas[0].AxisY.Maximum = 0.00001;
                     }
-                    if (yData < chart2.ChartAreas[0].AxisY.Minimum)
+                    if (mixXY[1] < chart2.ChartAreas[0].AxisY.Minimum)
                     {
-                        chart2.ChartAreas[0].AxisY.Minimum = yData;
+                        chart2.ChartAreas[0].AxisY.Minimum = mixXY[1];
                     }
-                    if (yData > chart2.ChartAreas[0].AxisY.Maximum)
+                    if (mixXY[1] > chart2.ChartAreas[0].AxisY.Maximum)
                     {
-                        chart2.ChartAreas[0].AxisY.Maximum = yData;
+                        chart2.ChartAreas[0].AxisY.Maximum = mixXY[1];
                     }
-
-                    //chart2.ChartAreas[0].AxisX.Minimum = chart2.Series[i].Points[0].XValue;
-                    //chart2.ChartAreas[0].AxisX.Maximum = xData;
-                    //chart2.ChartAreas[0].AxisX.Interval = 0.5 * ((chart2.Series[i].Points.Count / 300) + 1);
+                    if (xAxis == true)
+                    {
+                        chart2.ChartAreas[0].AxisX.Minimum = chart2.Series[i].Points[0].XValue;
+                        chart2.ChartAreas[0].AxisX.Maximum = xData;
+                        chart2.ChartAreas[0].AxisX.Interval = 0.5 * ((chart2.Series[i].Points.Count / 300) + 1);
+                    }
                     
                     if (chart2.Series[i].Points.Count > Convert.ToInt32(textBox_resolution.Text))
                     {
@@ -747,6 +785,57 @@ namespace Chart_Project
             }
         }
 
+ //       int BitRev(int n, int bits)
+ //       {
+ //           int rN = n;
+ //           int cnt = bits - 1;
+ //
+ //           n >>= 1;
+ //           while (n > 0)
+ //           {
+ //               rN = (rN << 1) | (n & 1);
+ //               cnt--;
+ //               n >>= 1;
+ //           }
+ //
+ //           return ((rN << cnt) & ((1 << bits) - 1));
+ //       }
+ //       void FFT(Complex[] buf)
+ //       {
+ //           int i, j, k, N;
+ //
+ //           for (j = 1; j < buf.Length; j++)
+ //           {
+ //               int swapP = BitRev(j, bits);
+ //               if (swapP <= j)
+ //               {
+ //                   continue;
+ //               }
+ //               var temp = buf[j];
+ //               buf[j] = buf[swapP];
+ //               buf[swapP] = temp;
+ //           }
+ //
+ //           for (N = 2; N <= buf.Length; N <<= 1)
+ //           {
+ //               for (i = 0; i < buf.Length; i += N)
+ //               {
+ //                   for (k = 0; k < N / 2; k++)
+ //                   {
+ //                       int evenI = i + k;
+ //                       int oddI = i + k + (N / 2);
+ //                       var even = buf[evenI];
+ //                       var odd = buf[oddI];
+ //
+ //                       double term = -2 * Math.PI * k / (double)N;
+ //                       Complex exp = new Complex(Math.Cos(term), Math.Sin(term)) * odd;
+ //
+ //                       buf[evenI] = even + exp;
+ //                       buf[oddI] = even - exp;
+ //                   }
+ //               }
+ //           }
+ //       }
         /* 
          * 3sin(2x+pi/4) + x^2 + 10x+ 2 
          * -> 3*Sin(2*x+PI/4)+x*x+10*x+2
@@ -756,7 +845,6 @@ namespace Chart_Project
         private double Calc_StrMath(string math)
         {
             string name = math;
-
 
             //Match mcChar = Regex.Match(name, @"[^sincostanx]");
 
@@ -877,24 +965,29 @@ bMouseMoveReady = true;
             }
  
         }
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            checkIndex = 0;
+            timer2.Stop();
+        }
 
- //       private void keyDown(object sender, KeyEventArgs e)
- //       {
- //           if (e.KeyCode == Keys.Enter)
- //           {
- //               Debug.WriteLine("Enter !");
- //               if (textBox1.Text.ToLower() == "sinx")
- //               {
- //                   Debug.WriteLine("sinx !");
- //               }
- //               if (textBox1.Text.ToLower() == "cosx")
- //               {
- //                   Debug.WriteLine("cosx !");
- //               }
- //               textBox1.Text = "";
- //           }
- //           return;
- //       }
+        //       private void keyDown(object sender, KeyEventArgs e)
+        //       {
+        //           if (e.KeyCode == Keys.Enter)
+        //           {
+        //               Debug.WriteLine("Enter !");
+        //               if (textBox1.Text.ToLower() == "sinx")
+        //               {
+        //                   Debug.WriteLine("sinx !");
+        //               }
+        //               if (textBox1.Text.ToLower() == "cosx")
+        //               {
+        //                   Debug.WriteLine("cosx !");
+        //               }
+        //               textBox1.Text = "";
+        //           }
+        //           return;
+        //       }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -1351,7 +1444,7 @@ bMouseMoveReady = false;
                             if (mc.Success)
                             {
                                 int n = Convert.ToInt32(mc.Value.Substring(2, mc.Value.Length - 2));
-                                mc = Regex.Match(str, @"-d");       // distrbute
+                                mc = Regex.Match(str, @"-d");       // distribute
                                 if (mc.Success)
                                 {
                                     for (int i = 0; i < n; i++)
@@ -1479,16 +1572,19 @@ bMouseMoveReady = false;
                             if (mc.Value.Substring(2, 1) == "f")            // docking fill
                             {
                                 chart2.Visible = false;
+                                textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Fill;
                             }
                             else if (mc.Value.Substring(2, 1) == "t")       // docking top
                             {
                                 chart2.Visible = false;
+                                textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Top;
                             }
                             else if (mc.Value.Substring(2, 1) == "b")       // docking bottom
                             {
                                 chart2.Visible = false;
+                                textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Bottom;
                             }
                             else if (mc.Value.Substring(2, 1) == "l")       // docking left
@@ -1497,6 +1593,7 @@ bMouseMoveReady = false;
                                 chart2.Width = chart1.Width;
                                 chart2.Height = chart1.Height;
                                 chart2.Visible = true;
+                                textBox_Mix.Visible = true;
                             }
                             else if (mc.Value.Substring(2, 1) == "r")       // docking right
                             {
@@ -1504,6 +1601,7 @@ bMouseMoveReady = false;
                                 chart2.Width = chart1.Width;
                                 chart2.Height = chart1.Height;
                                 chart2.Visible = true;
+                                textBox_Mix.Visible = true;
                             }
                         }
                         mc = Regex.Match(str, @"-v");                       // vertical
@@ -1532,23 +1630,13 @@ bMouseMoveReady = false;
                                 WindowState = FormWindowState.Maximized;
                             }
                         }
-                        mc = Regex.Match(str, @"-p\d+");                    // chart2 shape
+                        //mc = Regex.Match(str, @"-p\(.+,.+\)$");             // chart2 shape
+                        mc = Regex.Match(str, @"-p\((y|x|sin|cos|tan|asin|acos|atan|\*)+,(y|x|sin|cos|tan|asin|acos|atan|\*)+\)$");
                         if (mc.Success)
                         {
-                            mc = Regex.Match(mc.Value, @"\d+");
-                            //if (mc.Value == "0")
-                            //{
-                            //    chart2Mode = 0;
-                            //}
-                            //else if (mc.Value == "1")
-                            //{
-                            //    chart2Mode = 1;
-                            //}
-                            //else if (mc.Value == "2")
-                            //{
-                            //    chart2Mode = 2;
-                            //}
-                            chart2Mode = Convert.ToInt32(mc.Value);
+                            textBox_Mix.Text = mc.Value.Substring(mc.Value.IndexOf("("));
+                            strMixXY[0] = mc.Value.Substring(mc.Value.IndexOf("(") + 1, (mc.Value.IndexOf(",") - 1) - mc.Value.IndexOf("("));
+                            strMixXY[1] = mc.Value.Substring(mc.Value.IndexOf(",") + 1, (mc.Value.IndexOf(")") - 1) - mc.Value.IndexOf(","));
                             Set_Chart2();
                         }
                     }
@@ -1563,8 +1651,7 @@ bMouseMoveReady = false;
                         //if (mc.Success) return;
                         //mc = Regex.Match(lastLine, @"(sn|cs|tn)");
                         //if (mc.Success) return;
-
-                        mc = Regex.Match(lastLine, @"[^sincostanx0-9\+\-\*\/\(\)]+");
+                        mc = Regex.Match(lastLine, @"[^sincostanx0-9\.\+\-\*\/\(\)]+");
                         if (mc.Success)
                         {
                             Console.WriteLine("E1");
@@ -1588,12 +1675,12 @@ bMouseMoveReady = false;
                             preIndex = 0;
                             Console.WriteLine("preIndex error");
                         }
-                        strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
-                        textFunc[textFuncIndex % (ROW_N - 1)].Text = strThis;
-                        textFuncIndex++;
-                        preIndex = textFunc[COLUMN_N - 1].Text.Length;
-                        Update_textBox();
-                        Console.WriteLine(strThis);
+                        //strThis = textFunc[COLUMN_N - 1].Text.Substring(preIndex, textFunc[COLUMN_N - 1].Text.Length - preIndex);
+                        //textFunc[textFuncIndex % (ROW_N - 1)].Text = strThis;
+                        //textFuncIndex++;
+                        //preIndex = textFunc[COLUMN_N - 1].Text.Length;
+                        //Update_textBox();
+                        //Console.WriteLine(strThis);
                     }
                 }
                 else
@@ -1629,6 +1716,167 @@ bMouseMoveReady = false;
             int chartWidth = chart1.Width;
             //textBox_UserTitle.Location = new Point(chart1.Location.X + (chartWidth / 2) - (textWidth / 2), chart1.Location.Y+20);
             textBox_UserTitle.Location = new Point(chart1.Location.X, chart1.Location.Y);
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Modifiers & Keys.Shift) == Keys.Shift && e.KeyCode == Keys.W)
+            {
+                if (WindowState == FormWindowState.Maximized)
+                {
+                    WindowState = FormWindowState.Normal;
+                }
+                else
+                {
+                    WindowState = FormWindowState.Maximized;
+                }
+                if (bDocking == true)
+                {
+                    chart2.Visible = false;
+                    textBox_Mix.Visible = false;
+                    chart1.Dock = DockStyle.Fill;
+                }
+                else
+                {
+                    chart1.Dock = DockStyle.Left;
+                    chart1.Width = splitContainer3.Panel1.Width / 2;
+                    chart2.Width = splitContainer3.Panel1.Width / 2;
+                    chart2.Height = chart1.Height;
+                    chart2.Visible = true;
+                    textBox_Mix.Visible = true;
+                }
+                textBox_Cmd.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if ((e.Modifiers & Keys.Shift) == Keys.Shift && e.KeyCode == Keys.O)
+            {
+                if (bOverlap == false)
+                {
+                    bOverlap = true;
+                    for (int i = 0; i < ROW_N; i++)
+                    {
+                        for (int j = 0; j < COLUMN_N; j++)
+                        {
+                            if (checks[i, j].Checked == true)
+                            {
+                                checks[i, 0].Checked = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    bOverlap = false;
+                    for (int i = 0; i < ROW_N; i++)
+                    {
+                        for (int j = 0; j < COLUMN_N; j++)
+                        {
+                            if (checks[i, j].Checked == true)
+                            {
+                                checks[i, i].Checked = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                textBox_Cmd.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if ((e.Modifiers & Keys.Shift) == Keys.Shift && e.KeyCode == Keys.D)
+            {
+                if (bDocking == false)
+                {
+                    bDocking = true;
+                    chart2.Visible = false;
+                    textBox_Mix.Visible = false;
+                    chart1.Dock = DockStyle.Fill;
+                }
+                else
+                {
+                    bDocking = false;
+                    chart1.Dock = DockStyle.Left;
+                    chart1.Width = splitContainer3.Panel1.Width / 2;
+                    chart2.Width = splitContainer3.Panel1.Width / 2;
+                    chart2.Height = chart1.Height;
+                    chart2.Visible = true;
+                    textBox_Mix.Visible = true;
+                }
+                textBox_Cmd.Focus();    //this.ActiveControl = textBox_Cmd;
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.F5)
+            {
+                textBox0.Text = "sin(x)";
+                textBox1.Text = "cos(x)";
+                textBox2.Text = "sin(2x)";
+                textBox3.Text = "cos(2x)";
+                textBox4.Text = "sin(3x)";
+                textBox5.Text = "cos(3x)";
+                textBox6.Text = "sin(4x)";
+                textBox7.Text = "sin(x)+cos(x)+sin(2x)+cos(2x)+sin(3x)+cos(3x)+sin(4x)";
+                Update_textBox();
+                Set_Chart1();
+                Set_Chart2();
+                startToggle = false;
+                button_Start_Click(sender, e);
+                textBox_Cmd.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.F6)
+            {
+                if (checkIndex == 0)
+                {
+                    for (int row = 0; row < ROW_N; row++)
+                    {
+                        checks[row, 0].Checked = false;
+                    }
+                }
+                checks[checkIndex++, 0].Checked = true;
+                checkIndex %= 8;
+                timer2.Stop();
+                timer2.Interval = 1000;
+                timer2.Tick += new EventHandler(timer2_Tick);
+                timer2.Start();
+                textBox_Cmd.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.F7)
+            {
+                if (checkIndex == 0)
+                {
+                    for (int row = 0; row < ROW_N; row++)
+                    {
+                        for (int col = 0; col < COLUMN_N; col++)
+                        {
+                            checks[row, col].Checked = false;
+                        }
+                    }
+                }
+                checks[checkIndex, checkIndex].Checked = true;
+                checkIndex++;
+                checkIndex %= 8;
+                timer2.Stop();
+                timer2.Interval = 500;
+                timer2.Tick += new EventHandler(timer2_Tick);
+                timer2.Start();
+                textBox_Cmd.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.F8)
+            {
+                if (bChartVertical == true)
+                {
+                    bChartVertical = false;
+                }
+                else
+                {
+                    bChartVertical = true;
+                }
+                Set_Chart1();
+                Set_Chart2();
+                e.SuppressKeyPress = true;
+            }
         }
     }
 }
