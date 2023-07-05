@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Numerics;
+using System.Numerics;  // 참조 : 어셈블리
+using MathNet.Numerics; // 참조 : NuGet
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-//using System.Runtime.InteropServices;
+using ChartDirector;
 
 
+
+using DSPLib;
 /**********************************************
 *
 *       Search Keyword
@@ -27,9 +29,6 @@ namespace Chart_Project
     {
         private delegate void Draw_Chart1Delegate(double[] buffer, int size);
         private delegate void Draw_Chart2Delegate(double[] buffer, int size);
-        //public const double AXIS_Y_MIN = Double.NaN;
-        //public const double AXIS_Y_MAX = Double.NaN;
-        //     public const double FREQ = 100.0;
         public const double TICK = 100.0;
         public const int PERIOD_COUNT = 50;
         public const int ROW_N = 8;
@@ -40,11 +39,10 @@ namespace Chart_Project
         public const int SAMPLE_N = 200;
         public const int DRAW_TICK = 100;
         public const int TEXT_FUNC_N = 8;
-        //       public const double PI = 3.1415926535897931;
         double xIndx = 0;
         bool startToggle = false;
         CheckBox[,] checks = new CheckBox[ROW_N, COLUMN_N];
-        TextBox[] textFunc = new TextBox[TEXT_FUNC_N];
+        System.Windows.Forms.TextBox[] textFunc = new System.Windows.Forms.TextBox[TEXT_FUNC_N];
         Button[] btnColor = new Button[TEXT_FUNC_N];
         Button[] btnColorS = new Button[TEXT_FUNC_N];
         string[] textDisp = new string[TEXT_FUNC_N];
@@ -55,28 +53,23 @@ namespace Chart_Project
         bool bMinMaxInit_1 = true;
         bool bMinMaxInit_2 = true;
         bool bMouseMoveReady = false;
-        //string strCmd = "";
-        string strThis = "";
         int preIndex = 0;
         bool bChartVertical = false;
-        int textFuncIndex = 0;
         bool bClick = false;
-        //int chart2Mode = 0;
-        string[] strMixXY = new string[2];// = "";
-        //string strMixY = "";
+        string[] strMixXY = new string[2];
         bool bOverlap = true;
         bool bDocking = true;
         int checkIndex = 0;
-        
+        double[] preData = new double[ROW_N];
+
+        List<Scatter> scallterList = new List<Scatter>();
 
 
         public Form1()
         {
             InitializeComponent();
 
-            //Graphics graphics = CreateGraphics();
-            //Pen RefPen = new Pen(Color.Red, 3);
-
+            #region UI Color
             chart1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
             splitContainer1.BackColor = Color.FromArgb(BACK_COLOR_R + 20, BACK_COLOR_G + 20, BACK_COLOR_B + 20);
             splitContainer1.Panel1.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
@@ -103,6 +96,11 @@ namespace Chart_Project
             textBox_UserTitle.ForeColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B); //Color.White;
             textBox_UserTitle.Text = "";
 
+
+            chart3DControl.BackColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+            chart3DControl.BorderColor = Color.FromArgb(BACK_COLOR_R, BACK_COLOR_G, BACK_COLOR_B);
+            #endregion
+
             /* trackBar */
             //this.TopMost = true;
             //trackBar_DrawSpeed.BringToFront();
@@ -114,6 +112,8 @@ namespace Chart_Project
             timer1.Interval = Convert.ToInt32(textBox_DrawTick.Text);
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Stop();
+
+            #region Control Array
             /* Chart1 @Chart */
             textBox_resolution.Text = Convert.ToString(PERIOD_COUNT);
             textFunc[0] = textBox0;
@@ -224,22 +224,307 @@ namespace Chart_Project
             btnColorS[5] = button_ColorS5;
             btnColorS[6] = button_ColorS6;
             btnColorS[7] = button_ColorS7;
-
+            #endregion
             Init_Chart1();
             chart2.Visible = false;
+            chart3DControl.Visible = false;
             strMixXY[0] = "cos";
             strMixXY[1] = "y";
             textBox_Mix.Visible = false;
             textBox_Mix.Text = "cos,y";
             textBox_Cmd.Focus();
 
-            //Complex[] input = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
-            //FFT(input);
-            //foreach (Complex c in input)
-            //{
-            //    Console.WriteLine(c);
-            //}
+            this.dataSourceComboBox.SelectedIndexChanged += dataSourceComboBox_SelectedIndexChanged;
+            this.colorSchemeComboBox.SelectedIndexChanged += colorSchemeComboBox_SelectedIndexChanged;
+            this.rasterTypeComboBox.SelectedIndexChanged += rasterTypeComboBox_SelectedIndexChanged;
+            this.resetPositionButton.Click += resetPositionButton_Click;
+            this.saveImageButton.Click += saveImageButton_Click;
 
+            //this.chart3DControl.SetFunction
+            //(
+            //    rendererDelegate,
+            //    new PointF(-120f, -80f),
+            //    new PointF(120f, 80f),
+            //    5d,
+            //    NormalizeType.MaintainXYZ
+            //);
+        }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            this.dataSourceComboBox.SelectedIndex = 0;
+
+            this.colorSchemeComboBox.Sorted = false;
+
+            foreach (ColoeScheme schemaType in Enum.GetValues(typeof(ColoeScheme)))
+            {
+                this.colorSchemeComboBox.Items.Add(schemaType);
+            }
+
+            this.colorSchemeComboBox.SelectedIndex = (int)ColoeScheme.Rainbow1;
+
+            this.rasterTypeComboBox.Sorted = false;
+
+            foreach (RasterType rasterType in Enum.GetValues(typeof(RasterType)))
+            {
+                this.rasterTypeComboBox.Items.Add(rasterType);
+            }
+
+            this.rasterTypeComboBox.SelectedIndex = (int)RasterType.Label;
+
+            this.chart3DControl.AssignTrackBars(this.rhoTrackBar, this.thetaTrackBar, this.phiTrackBar);
+        }
+        private void dataSourceComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.chart3DControl.AxisXLegend = null;
+            this.chart3DControl.AxisYLegend = null;
+            this.chart3DControl.AxisZLegend = null;
+
+            switch (this.dataSourceComboBox.SelectedIndex)
+            {
+                case 0: SetFunction1(); break;
+                case 1: SetFunction2(); break;
+                case 2: SetSurfacePoints(); break;
+                case 3: SetScatterPoints(false); break;
+                case 4: SetScatterPoints(true); break;
+                case 5: SetScatterPoints(); break;
+            }
+
+            this.informationLabel.Text = "포인트 수 : " + this.chart3DControl.PointCount;
+        }
+        private void colorSchemeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Color[] colorArray = ColorSchema.GetSchema((ColoeScheme)this.colorSchemeComboBox.SelectedIndex);
+
+            this.chart3DControl.SetColorScheme(colorArray, 3);
+        }
+        private void rasterTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.chart3DControl.RasterType = (RasterType)this.rasterTypeComboBox.SelectedIndex;
+        }
+        private void resetPositionButton_Click(object sender, EventArgs e)
+        {
+            this.chart3DControl.SetCoefficients(1350, 70, 230);
+        }
+        private void saveImageButton_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.Title = "PNG 이미지 저장하기";
+            saveFileDialog.Filter = "PNG 이미지|*.png";
+            saveFileDialog.DefaultExt = ".png";
+
+            if (DialogResult.Cancel == saveFileDialog.ShowDialog(this))
+            {
+                return;
+            }
+
+            Bitmap bitmap = this.chart3DControl.GetBitmap();
+
+            try
+            {
+                bitmap.Save(saveFileDialog.FileName, ImageFormat.Png);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(this, exception.Message, "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void SetFunction1()
+        {
+            RendererDelegate rendererDelegate = delegate (double X, double Y)
+            {
+                double r = 0.15 * Math.Sqrt(X * X + Y * Y);
+
+                if (r < 1e-10)
+                {
+                    return 120;
+                }
+                else
+                {
+                    return 120 * Math.Sin(r) / r;
+                }
+            };
+
+            this.chart3DControl.SetFunction
+            (
+                rendererDelegate,
+                new PointF(-120f, -80f),
+                new PointF(120f, 80f),
+                5d,
+                NormalizeType.MaintainXYZ
+            );
+        }
+        private void SetFunction2()
+        {
+            string formula = "12 * sin(x) * cos(y) / (sqrt(sqrt(x * x + y * y)) + 0.2)";
+
+            try
+            {
+                RendererDelegate rendererDelegate = FunctionCompiler.Compile(formula);
+
+                this.chart3DControl.SetFunction
+                (
+                    rendererDelegate,
+                    new PointF(-10f, -10f),
+                    new PointF(10f, 10f),
+                    0.5d,
+                    NormalizeType.MaintainXYZ
+                );
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void SetSurfacePoints()
+        {
+            int[,] valueArray = new int[,]
+            {
+                { 34767, 34210, 33718, 33096, 32342, 31851, 31228, 30867, 31457, 30867, 30266, 28934, 27984, 26492, 25167, 25167, 25167},
+                { 34669, 34210, 33653, 33096, 32539, 32047, 31490, 30933, 31293, 30671, 29983, 28803, 27886, 26492, 25167, 25167, 25167},
+                { 34603, 34144, 33718, 33227, 32768, 32342, 31719, 30999, 31228, 30333, 29622, 28606, 27886, 26492, 25167, 25167, 25167},
+                { 34472, 34079, 33653, 33161, 32768, 32408, 31785, 31162, 30802, 30048, 29360, 28312, 27755, 26367, 25049, 25049, 25049},
+                { 34210, 33784, 33423, 33161, 32801, 32408, 31785, 31097, 30474, 29622, 29000, 28115, 27623, 26367, 25049, 25049, 25049},
+                { 33980, 33587, 33161, 32935, 32588, 32342, 31621, 30802, 29852, 29000, 28377, 27689, 27421, 26367, 25049, 25049, 25049},
+                { 33522, 33227, 32702, 32615, 32452, 31851, 30933, 30179, 29295, 28358, 27984, 27132, 27301, 26367, 25049, 25049, 25049},
+                { 32672, 32178, 31916, 31469, 31246, 30540, 29852, 29065, 28377, 27623, 27263, 26706, 26935, 26367, 25049, 25049, 25049},
+                { 30769, 30423, 29917, 29231, 29392, 28705, 28075, 27726, 27263, 26691, 26417, 26182, 26575, 26575, 25246, 25246, 25246},
+                { 27525, 27518, 26701, 27334, 27682, 27402, 26903, 26707, 26444, 25887, 25719, 25690, 26122, 26122, 26122, 26122, 26122},
+                { 23475, 23888, 24478, 25330, 26212, 26199, 25701, 25664, 25740, 25013, 24904, 25068, 25374, 25374, 25374, 25374, 25374},
+                { 20677, 21445, 22544, 23593, 24441, 24785, 24538, 24644, 24773, 24299, 24062, 24576, 24510, 24510, 24510, 24510, 24510},
+                { 18743, 19792, 20808, 22086, 22805, 23167, 23486, 23366, 23757, 23411, 23691, 23822, 23822, 23822, 23822, 23822, 23822},
+                { 17334, 18579, 19497, 20775, 21463, 21848, 22288, 22446, 22643, 22446, 22643, 22708, 23069, 23069, 23069, 23069, 23069},
+                { 16155, 17236, 18350, 19399, 20251, 20677, 21016, 21332, 21660, 21791, 21889, 21955, 22217, 22217, 22217, 22217, 22217},
+                { 14746, 15860, 17039, 17990, 18842, 19595, 20050, 20349, 20546, 20840, 20972, 20972, 21332, 21332, 21332, 21332, 21332},
+                { 13337, 14516, 15729, 16679, 17564, 18514, 18907, 19169, 19399, 19661, 19792, 19594, 20152, 20152, 20152, 20152, 20152},
+                { 12452, 13435, 14615, 15499, 16253, 17105, 17596, 17924, 18153, 18285, 18428, 18776, 19104, 19104, 19104, 19104, 19104},
+                { 11469, 12354, 13533, 14287, 15008, 15925, 16187, 16482, 16690, 16976, 17105, 17302, 17531, 17531, 17531, 17531, 17531},
+                { 10486, 11370, 12255, 13009, 13861, 14746, 15172, 15368, 15434, 15630, 15794, 15991, 16351, 16351, 16351, 16351, 16351},
+                {  9684, 10387, 11141, 11796, 12546, 13337, 14029, 14320, 14549, 14811, 14939, 15434, 15794, 15794, 15794, 15794, 15794},
+                {  9059,  9634, 10617, 11141, 11838, 12681, 13411, 13861, 14121, 14624, 14868, 15172, 15368, 15368, 15368, 15368, 15368}
+            };
+
+            Point3D[,] pointArray = new Point3D[valueArray.GetLength(0), valueArray.GetLength(1)];
+
+            for (int x = 0; x < valueArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < valueArray.GetLength(1); y++)
+                {
+                    pointArray[x, y] = new Point3D(x * 10, y * 500, valueArray[x, y]);
+                }
+            }
+
+            this.chart3DControl.AxisXLegend = "MAP (kPa)";
+            this.chart3DControl.AxisYLegend = "Engine Speed (rpm)";
+            this.chart3DControl.AxisZLegend = "ADS";
+
+            this.chart3DControl.SetSurfacePoints(pointArray, NormalizeType.Separate);
+        }
+        private void SetScatterPoints(bool drawLine)
+        {
+            List<Scatter> scallterList = new List<Scatter>();
+
+            for (double p = -33d; p < 33d; p += 0.1d)
+            {
+                double x = Math.Sin(p) * p;
+                double y = Math.Cos(p) * p;
+                double z = p;
+
+                //if (z > 0d)
+                //{
+                //    z /= 3d;
+                //}
+
+                scallterList.Add(new Scatter(x, y, z, null));
+            }
+
+            if (drawLine)
+            {
+                this.chart3DControl.SetScatterLines(scallterList.ToArray(), NormalizeType.Separate, 3f);
+            }
+            else
+            {
+                this.chart3DControl.SetScatterPoints(scallterList.ToArray(), NormalizeType.Separate);
+            }
+        }
+        private void SetScatterPoints()
+        {
+            List<Scatter> scatterList = new List<Scatter>();
+
+            double x = 0.0d;
+            double z = 0.0d;
+
+            for (double p = 0.0d; p <= Math.PI * 1.32d; p += 0.025d)
+            {
+                x = Math.Cos(p) * 1.5d - 1.5d;
+                z = Math.Sin(p) * 3.0d + 6.0d;
+
+                scatterList.Add(new Scatter(x, -x, z, Brushes.Red));
+                scatterList.Add(new Scatter(-x, x, z, Brushes.Red));
+            }
+
+            double deltaX = x / 70d;
+            double deltaZ = z / 70d;
+
+            while (z >= 0.0d)
+            {
+                scatterList.Add(new Scatter(x, -x, z, Brushes.Red));
+                scatterList.Add(new Scatter(-x, x, z, Brushes.Red));
+
+                x -= deltaX;
+                z -= deltaZ;
+            }
+
+            this.chart3DControl.SetScatterPoints(scatterList.ToArray(), NormalizeType.MaintainXYZ);
+        }
+        public static void Example8() //================[ Basic DFT + Signal & Noise + Log Magnitude ]================
+        {
+            // Same Input Signal as Example 1, except amplitude is 5 Vrms.
+            double amplitude = 5.0; 
+            double frequency = 20000;
+            UInt32 length = 1000; double samplingRate = 100000;
+            double[] inputSignal = DSP.Generate.ToneSampling(amplitude, frequency, samplingRate, length);
+
+            // Add noise that is about 80 dBc from signal level
+            // 80 dBc is about the level of noise from a 14 bit ADC
+            // 1/10,000 down from full scale
+            double[] inputNoise = DSP.Generate.NoiseRms(amplitude / 10000.0, length);
+
+            // Add noise to the signal
+            double[] compositeInput = DSP.Math.Add(inputSignal, inputNoise);
+
+            // Use the BH92 type window - this is a very "Spectrum Analyzer" like window.
+            // Apply window to the Input Data & calculate Scale Factor
+            double[] wCoefs = DSP.Window.Coefficients(DSP.Window.Type.BH92, length);
+            double wScaleFactor = DSP.Window.ScaleFactor.Signal(wCoefs);
+            double[] wInputData = DSP.Math.Multiply(compositeInput, wCoefs);
+
+            // Instantiate & Initialize a new DFT
+            DSPLib.DFT dft = new DSPLib.DFT();
+            dft.Initialize(length);
+
+            // Call the DFT and get the scaled spectrum back
+            Complex[] cSpectrum = dft.Execute(wInputData);
+
+            // Convert the complex spectrum to note: Magnitude Format
+            double[] lmSpectrum = DSP.ConvertComplex.ToMagnitude(cSpectrum);
+
+            // Properly scale the spectrum for the added window
+            lmSpectrum = DSP.Math.Multiply(lmSpectrum, wScaleFactor);
+
+            // Convert from linear magnitude to log magnitude format
+            double[] logMagSpectrum = DSP.ConvertMagnitude.ToMagnitudeDBV(lmSpectrum);
+
+            // For plotting on an XY Scatter plot generate the X Axis frequency Span
+            double[] freqSpan = dft.FrequencySpan(samplingRate);
+
+            // At this point a XY Scatter plot can be generated from,
+            // X axis => freqSpan
+            // Y axis => logMagSpectrum
+
+            // In this example - maximum amplitude of 13.974 dBV is at bin 200 (20,000 Hz)
         }
 
         private void Init_Chart1()
@@ -339,16 +624,16 @@ namespace Chart_Project
 
                 Update_textBox();
 
-                strThis = "";
+                //strThis = "";
                 //preIndex = 0;
                 //textFuncIndex = 0;
             }
         }
-
         private void Set_Chart2()
         {
             chart2.ChartAreas.Clear();
             chart2.Series.Clear();
+            scallterList.Clear();
 
             if (nSeries != 0)
             {
@@ -389,7 +674,6 @@ namespace Chart_Project
             }
             bMinMaxInit_2 = true;
         }
-
         static int Count_SetBit(int n)
         {
             int count = 0;
@@ -421,7 +705,6 @@ namespace Chart_Project
 
             return bitIndx;
         }
-
         private void Set_Area(int n_area)
         {
             for (int i = 0; i < n_area; i++)
@@ -596,18 +879,17 @@ namespace Chart_Project
             // ###GUN En:4 x 1, Dis:2 x 2
             if (bChartVertical == true)
             {
-                float currentHeight = 0;
+                float currentHeight = 3;
                 foreach (var itm in chart1.ChartAreas)
                 {
-                    itm.Position.Height = 100 / chart1.ChartAreas.Count; // Note: the valus are in percenteges and not absolute pixels
+                    itm.Position.Height = 97 / chart1.ChartAreas.Count; // Note: the valus are in percenteges and not absolute pixels
                     itm.Position.Y = currentHeight;
                     itm.Position.X = 5;
                     itm.Position.Width = 95;
-                    currentHeight += 100 / chart1.ChartAreas.Count;
+                    currentHeight += 97 / chart1.ChartAreas.Count;
                 }
             }
         }
-
         private void Set_Series1(int series_idx, int area_idx, int marker_size, ChartDashStyle dash, Color color)
         {
             string strSeries = "S"; // Series ";
@@ -626,7 +908,6 @@ namespace Chart_Project
             chart1.Series[series_idx].Color = color;
             chart1.Series[series_idx].IsVisibleInLegend = false;
         }
-
         private void Set_Series2(int series_idx, int area_idx, int marker_size, ChartDashStyle dash, Color color)
         {
             string strSeries = "S";  //eries ";
@@ -645,7 +926,6 @@ namespace Chart_Project
             chart2.Series[series_idx].Color = color;
             chart2.Series[series_idx].IsVisibleInLegend = false;
         }
-
         private void Draw_Chart1(double[] buffer, int size)
         {
             if (chart1.InvokeRequired)
@@ -660,7 +940,20 @@ namespace Chart_Project
                     double yData = buffer[i];
                     double xData = 2 * xIndx / PERIOD_COUNT;  // (2*pi/PERIOD_COUNT) * xIndx
                     chart1.Series[i].Points.AddXY(xData, yData);
-                    
+                    //double difData;
+                    //
+                    //difData = yData - preData[i];
+                    //preData[i] = yData;
+                    //
+                    //if (true)
+                    //{
+                    //    chart1.Series[i].Points.AddXY(xData, yData);
+                    //}
+                    //else
+                    //{
+                    //    chart1.Series[i].Points.AddXY(xData, difData);
+                    //}
+
                     if (bMinMaxInit_1 == true)
                     {
                         chart1.ChartAreas[aAreaSel[i]].AxisY.Minimum = 0.0;
@@ -736,21 +1029,45 @@ namespace Chart_Project
                             {
                                 mixXY[xy] *= Math.Tan(xData * Math.PI);
                             }
-                            else if (mcs[j].Value == "asin")
+                            else if (mcs[j].Value == "asin")    
                             {
                                 mixXY[xy] *= Math.Asin(yData);
                             }
                             else if (mcs[j].Value == "acos")
                             {
-                                mixXY[xy] *= Math.Acos(yData);
+                                mixXY[xy] *= Math.Acos(yData);              
                             }
-                            else if (mcs[j].Value == "atan")
+                            else if (mcs[j].Value == "atan")                /* y = rsin(θ), x = rcos(θ), θ = atan(y/x) */
                             {
-                                mixXY[xy] *= Math.Atan(yData);
+                                mixXY[xy] *= Math.Atan(yData / Math.Cos(xData * Math.PI));
                             }
                         }
                     }
                     chart2.Series[i].Points.AddXY(mixXY[0], mixXY[1]);
+
+                    if (i == 0)
+                    {
+                        double x = mixXY[0];// Math.Sin(xIndx * 0.1);
+                        double y = mixXY[1];// Math.Cos(xIndx * 0.1);
+                        double z = xIndx;
+                        
+                        scallterList.Add(new Scatter(x, y, z, null));
+                        this.chart3DControl.SetScatterLines(scallterList.ToArray(), NormalizeType.Separate, 3f);
+
+                        //RendererDelegate rendererDelegate = delegate (double X, double Y)
+                        //{
+                        //    double r = 0.15 * Math.Sqrt(X * X + Y * Y);
+                        //
+                        //    if (r < 1e-10)
+                        //    {
+                        //        return 120;
+                        //    }
+                        //    else
+                        //    {
+                        //        return 120 * Math.Sin(r) / r;
+                        //    }
+                        //};
+                    }
 
                     if (bMinMaxInit_2 == true)
                     {
@@ -781,61 +1098,12 @@ namespace Chart_Project
                     }
                 }
                 bMinMaxInit_2 = false;
-                //xIndx++;
+                //xIndx++;             
+                
             }
         }
 
- //       int BitRev(int n, int bits)
- //       {
- //           int rN = n;
- //           int cnt = bits - 1;
- //
- //           n >>= 1;
- //           while (n > 0)
- //           {
- //               rN = (rN << 1) | (n & 1);
- //               cnt--;
- //               n >>= 1;
- //           }
- //
- //           return ((rN << cnt) & ((1 << bits) - 1));
- //       }
- //       void FFT(Complex[] buf)
- //       {
- //           int i, j, k, N;
- //
- //           for (j = 1; j < buf.Length; j++)
- //           {
- //               int swapP = BitRev(j, bits);
- //               if (swapP <= j)
- //               {
- //                   continue;
- //               }
- //               var temp = buf[j];
- //               buf[j] = buf[swapP];
- //               buf[swapP] = temp;
- //           }
- //
- //           for (N = 2; N <= buf.Length; N <<= 1)
- //           {
- //               for (i = 0; i < buf.Length; i += N)
- //               {
- //                   for (k = 0; k < N / 2; k++)
- //                   {
- //                       int evenI = i + k;
- //                       int oddI = i + k + (N / 2);
- //                       var even = buf[evenI];
- //                       var odd = buf[oddI];
- //
- //                       double term = -2 * Math.PI * k / (double)N;
- //                       Complex exp = new Complex(Math.Cos(term), Math.Sin(term)) * odd;
- //
- //                       buf[evenI] = even + exp;
- //                       buf[oddI] = even - exp;
- //                   }
- //               }
- //           }
- //       }
+
         /* 
          * 3sin(2x+pi/4) + x^2 + 10x+ 2 
          * -> 3*Sin(2*x+PI/4)+x*x+10*x+2
@@ -856,7 +1124,7 @@ namespace Chart_Project
             name = name.Replace(" ", "");
 
             /* x^2 -> x * x */
-            name = name.Replace("^2", "*x");   
+            name = name.Replace("^2", "*x"); 
             int i = 1;
             /* 10x -> 10 * x */
             foreach (Match match in Regex.Matches(name, @"\d[x|\(]", RegexOptions.IgnoreCase))//, TimeSpan.FromSeconds(1)))
@@ -891,19 +1159,21 @@ namespace Chart_Project
                 name = name.Insert(match.Index + i++, "*");
             }
 
-            MatchCollection mc = Regex.Matches(name, @"(Sin|Cos|Tan)\([^\(]+\)", RegexOptions.None, TimeSpan.FromSeconds(1));
+ //         MatchCollection mc = Regex.Matches(name, @"(Sin|Cos|Tan)\([^\(]+\){1}", RegexOptions.None, TimeSpan.FromSeconds(1));
+            MatchCollection mc0 = Regex.Matches(name, @"(Sin|Cos|Tan)\([^\(]+\){2}");
+            MatchCollection mc = Regex.Matches(name, @"(Sin|Cos|Tan)\([^\(]+\)");
             DataTable dt = new DataTable();
             string strIn;
             double dblIn;
             double dblSin;
             for (int j = 0; j < mc.Count; j++)
             {
-                 strIn = mc[mc.Count - j - 1].Value.Substring(mc[mc.Count - j - 1].Value.IndexOf("(") + 1, mc[mc.Count - j - 1].Value.IndexOf(")") - 1 - mc[mc.Count - j - 1].Value.IndexOf("("));
+                strIn = mc[mc.Count - j - 1].Value.Substring(mc[mc.Count - j - 1].Value.IndexOf("(") + 1, mc[mc.Count - j - 1].Value.IndexOf(")") - 1 - mc[mc.Count - j - 1].Value.IndexOf("("));
                 strIn = strIn.Replace("PI", "3.1415926535897931");
                 
-                 dblIn = Convert.ToDouble(dt.Compute(strIn, ""));
+                dblIn = Convert.ToDouble(dt.Compute(strIn, ""));
 
-                 dblSin = 0;
+                dblSin = 0;
                 if (mc[mc.Count - j - 1].Value.IndexOf("Sin") != -1)
                 {
                     dblSin = Math.Sin(dblIn);
@@ -917,11 +1187,18 @@ namespace Chart_Project
                     dblSin = Math.Tan(dblIn);
                 }
                 //name = name.Replace(mc[mc.Count - j - 1].Value, "");
-                name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
+                if (mc0.Count != 0)
+                {
+                    name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length - 1);
+                }
+                else
+                {
+                    name = name.Remove(mc[mc.Count - j - 1].Index, mc[mc.Count - j - 1].Length);
+                }
                 name = name.Insert(mc[mc.Count - j - 1].Index, Convert.ToString(dblSin));
             }
           
-            Match mmm = Regex.Match(name, @"[^\d\.\+\-\*\/Ee]");
+            Match mmm = Regex.Match(name, @"[^\d\.\+\-\*\/Ee\(\)]");
             if (mmm.Value == "")
             {
                 name = name.TrimEnd('+', '-', '*', '/');   // 0.1234+ -> 0.1234
@@ -971,23 +1248,6 @@ bMouseMoveReady = true;
             timer2.Stop();
         }
 
-        //       private void keyDown(object sender, KeyEventArgs e)
-        //       {
-        //           if (e.KeyCode == Keys.Enter)
-        //           {
-        //               Debug.WriteLine("Enter !");
-        //               if (textBox1.Text.ToLower() == "sinx")
-        //               {
-        //                   Debug.WriteLine("sinx !");
-        //               }
-        //               if (textBox1.Text.ToLower() == "cosx")
-        //               {
-        //                   Debug.WriteLine("cosx !");
-        //               }
-        //               textBox1.Text = "";
-        //           }
-        //           return;
-        //       }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -995,7 +1255,7 @@ bMouseMoveReady = true;
             int numberOfAreas = 5;
             for (int k = 1; k <= numberOfAreas; k++)
             {
-                var S1 = new Series();
+                var S1 = new System.Windows.Forms.DataVisualization.Charting.Series();  // MathNet.Numerics.Series 와 구분
                 chart1.Series.Add(S1);
                 S1.Name = k.ToString();
                 for (int j = 0; j < 100; j += 10) S1.Points.AddXY(j, j / 10);
@@ -1189,7 +1449,7 @@ bMouseMoveReady = false;
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
             {
-                TextBox tb = (TextBox)sender;
+                System.Windows.Forms.TextBox tb = (System.Windows.Forms.TextBox)sender;
                 for (int i = 0; i < TEXT_FUNC_N; i++)
                 {
                     if (tb.Name == "textBox" + Convert.ToString(i))
@@ -1234,7 +1494,7 @@ bMouseMoveReady = false;
                         textFunc[6].Text = "";
                         textFunc[7].Text = "";
                         textBox_Cmd.Text = "";
-                        textFuncIndex = 0;
+                        //textFuncIndex = 0;
                         Set_Chart1();
                         Set_Chart2();
                     }
@@ -1572,18 +1832,21 @@ bMouseMoveReady = false;
                             if (mc.Value.Substring(2, 1) == "f")            // docking fill
                             {
                                 chart2.Visible = false;
+                                chart3DControl.Visible = false;
                                 textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Fill;
                             }
                             else if (mc.Value.Substring(2, 1) == "t")       // docking top
                             {
                                 chart2.Visible = false;
+                                chart3DControl.Visible = false;
                                 textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Top;
                             }
                             else if (mc.Value.Substring(2, 1) == "b")       // docking bottom
                             {
                                 chart2.Visible = false;
+                                chart3DControl.Visible = false;
                                 textBox_Mix.Visible = false;
                                 chart1.Dock = DockStyle.Bottom;
                             }
@@ -1592,7 +1855,10 @@ bMouseMoveReady = false;
                                 chart1.Dock = DockStyle.Left;
                                 chart2.Width = chart1.Width;
                                 chart2.Height = chart1.Height;
-                                chart2.Visible = true;
+                                /////chart2.Visible = true;
+                                chart3DControl.Width = chart1.Width;
+                                chart3DControl.Height = chart1.Height;
+                                chart3DControl.Visible = true;
                                 textBox_Mix.Visible = true;
                             }
                             else if (mc.Value.Substring(2, 1) == "r")       // docking right
@@ -1600,7 +1866,8 @@ bMouseMoveReady = false;
                                 chart1.Dock = DockStyle.Right;
                                 chart2.Width = chart1.Width;
                                 chart2.Height = chart1.Height;
-                                chart2.Visible = true;
+                                /////chart2.Visible = true;
+                                chart3DControl.Visible = true;
                                 textBox_Mix.Visible = true;
                             }
                         }
@@ -1723,12 +1990,17 @@ bMouseMoveReady = false;
             if ((e.Modifiers & Keys.Shift) == Keys.Shift && e.KeyCode == Keys.W)
             {
                 if (WindowState == FormWindowState.Maximized)
+                //if (bWindow == false)
                 {
                     WindowState = FormWindowState.Normal;
+                    //bWindow = true;
+                    //ClientSize = new Size(1630, 700);
                 }
                 else
                 {
                     WindowState = FormWindowState.Maximized;
+                    //bWindow = false;
+                    //ClientSize = new Size(1920, 1024);
                 }
                 if (bDocking == true)
                 {
@@ -1742,7 +2014,10 @@ bMouseMoveReady = false;
                     chart1.Width = splitContainer3.Panel1.Width / 2;
                     chart2.Width = splitContainer3.Panel1.Width / 2;
                     chart2.Height = chart1.Height;
-                    chart2.Visible = true;
+                    /////chart2.Visible = true;
+                    chart3DControl.Width = splitContainer3.Panel1.Width / 2;
+                    chart3DControl.Height = chart1.Height;
+                    chart3DControl.Visible = true;
                     textBox_Mix.Visible = true;
                 }
                 textBox_Cmd.Focus();
@@ -1789,6 +2064,7 @@ bMouseMoveReady = false;
                 {
                     bDocking = true;
                     chart2.Visible = false;
+                    chart3DControl.Visible = false;
                     textBox_Mix.Visible = false;
                     chart1.Dock = DockStyle.Fill;
                 }
@@ -1799,7 +2075,10 @@ bMouseMoveReady = false;
                     chart1.Width = splitContainer3.Panel1.Width / 2;
                     chart2.Width = splitContainer3.Panel1.Width / 2;
                     chart2.Height = chart1.Height;
-                    chart2.Visible = true;
+                    /////chart2.Visible = true;
+                    chart3DControl.Width = splitContainer3.Panel1.Width / 2;
+                    chart3DControl.Height = chart1.Height;
+                    chart3DControl.Visible = true;
                     textBox_Mix.Visible = true;
                 }
                 textBox_Cmd.Focus();    //this.ActiveControl = textBox_Cmd;
@@ -1877,6 +2156,89 @@ bMouseMoveReady = false;
                 Set_Chart2();
                 e.SuppressKeyPress = true;
             }
+            else if (e.KeyCode == Keys.F9)
+            {
+                if (chart2.Visible == true)
+                {
+                    chart2.Visible = false;
+                    chart3DControl.Visible = true;
+                }
+                else if (chart3DControl.Visible == true)
+                {                   
+                    chart3DControl.Visible = false;
+                    chart2.Visible = true;
+                }
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //UInt32 N = Convert.ToUInt32(txtN.Text);
+            //UInt32 zeros = Convert.ToUInt32(txtZp.Text);
+            //double samplingRateHz = Convert.ToDouble(txtFs.Text);
+            //
+            //txtPoints.Text = (N + zeros).ToString();
+            //
+            //string selectedWindowName = cmbWindow.SelectedValue.ToString();
+            //DSPLib.DSP.Window.Type windowToApply = (DSPLib.DSP.Window.Type)Enum.Parse(typeof(DSPLib.DSP.Window.Type), selectedWindowName);
+            //
+            //// Update the output window
+            //txtPoints.Text = (N + zeros).ToString();
+            //
+            //// Make time series data
+            //double[] timeSeries = GenerateTimeSeriesData(N);
+            //
+            //// Apply window to the time series data
+            //double[] wc = DSP.Window.Coefficients(windowToApply, N);
+            //
+            //double windowScaleFactor = DSP.Window.ScaleFactor.Signal(wc);
+            //double[] windowedTimeSeries = DSP.Math.Multiply(timeSeries, wc);
+            //
+            ///////// Plot Time Series data
+            ///////Plot fig1 = new Plot("Figure 1 - FFT Time Series Input", "Sample", "Volts");
+            ///////fig1.PlotData(windowedTimeSeries);
+            ///////fig1.Show();
+            //
+            //// Instantiate & Initialize the FFT class
+            //DSPLib.FFT fft = new DSPLib.FFT();
+            //fft.Initialize(N, zeros);
+            //
+            //// Start a Stopwatch
+            //Stopwatch stopwatch = new Stopwatch();
+            //stopwatch.Start();
+            //
+            //// Perform a DFT
+            //Complex[] cpxResult = fft.Execute(windowedTimeSeries);
+            //
+            //// Calculate the elapsed time
+            //stopwatch.Stop();
+            //txtTime.Text = Convert.ToString(stopwatch.ElapsedMilliseconds / 1.0);
+            //
+            //// Convert the complex result to a scalar magnitude 
+            //double[] magResult = DSP.ConvertComplex.ToMagnitude(cpxResult);
+            //magResult = DSP.Math.Multiply(magResult, windowScaleFactor);
+            //
+            ///////// Plot the DFT Magnitude
+            ///////Plot fig2 = new Plot("Figure 2 - FFT Magnitude", "FFT Bin", "Mag (Vrms)");
+            ///////fig2.PlotData(magResult);
+            ///////fig2.Show();
+            //
+            //// Calculate the frequency span
+            //double[] fSpan = fft.FrequencySpan(samplingRateHz);
+            //
+            //// Convert and Plot Log Magnitude
+            //double[] mag = DSP.ConvertComplex.ToMagnitude(cpxResult);
+            //mag = DSP.Math.Multiply(mag, windowScaleFactor);
+            //double[] magLog = DSP.ConvertMagnitude.ToMagnitudeDBV(mag);
+            ///////Plot fig3 = new Plot("Figure 3 - FFT Log Magnitude ", "Frequency (Hz)", "Mag (dBV)");
+            ///////fig3.PlotData(fSpan, magLog);
+            ///////fig3.Show();
+        }
+
+        private void textBox_resolution_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

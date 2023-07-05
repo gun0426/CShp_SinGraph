@@ -33,10 +33,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChartDirector.Net.Desktop.Controls, Version=7.1.0.0, Culture=neutral, PublicKeyToken=2db5fc05de12e204, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChartDirector.Net.Desktop.Controls.7.1.0\lib\net40\ChartDirector.Net.Desktop.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.5.0.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="netchartdir, Version=7.1.0.0, Culture=neutral, PublicKeyToken=2db5fc05de12e204, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChartDirector.Net.7.1.0\lib\net40\netchartdir.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot, Version=2.1.2.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.1.2\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms, Version=2.1.2.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.WindowsForms.2.1.2\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -49,6 +67,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chart3DControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CLASS\ColorSchema.cs" />
+    <Compile Include="CLASS\DrawObject.cs" />
+    <Compile Include="CLASS\FunctionCompiler.cs" />
+    <Compile Include="CLASS\Line.cs" />
+    <Compile Include="CLASS\Mouse.cs" />
+    <Compile Include="CLASS\Point2D.cs" />
+    <Compile Include="CLASS\Point3D.cs" />
+    <Compile Include="CLASS\Polygon.cs" />
+    <Compile Include="CLASS\Quadrant.cs" />
+    <Compile Include="CLASS\Range3D.cs" />
+    <Compile Include="CLASS\Scatter.cs" />
+    <Compile Include="CLASS\Transform.cs" />
+    <Compile Include="DELEGATE\CompilerDelegate.cs" />
+    <Compile Include="DELEGATE\RendererDelegate.cs" />
+    <Compile Include="DSP\DSPLib.cs" />
+    <Compile Include="ENUMERATION\ColoeScheme.cs" />
+    <Compile Include="ENUMERATION\CoordinateType.cs" />
+    <Compile Include="ENUMERATION\MouseAction.cs" />
+    <Compile Include="ENUMERATION\NormalizeType.cs" />
+    <Compile Include="ENUMERATION\RasterType.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +110,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -81,6 +123,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

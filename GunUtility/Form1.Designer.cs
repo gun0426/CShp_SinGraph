@@ -31,12 +31,12 @@ namespace Chart_Project
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea13 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend13 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea14 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend14 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -62,7 +62,16 @@ namespace Chart_Project
             this.fsinsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tb0sinxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.phiTrackBar = new System.Windows.Forms.TrackBar();
+            this.thetaTrackBar = new System.Windows.Forms.TrackBar();
+            this.rhoTrackBar = new System.Windows.Forms.TrackBar();
+            this.saveImageButton = new System.Windows.Forms.Button();
+            this.resetPositionButton = new System.Windows.Forms.Button();
+            this.rasterTypeComboBox = new System.Windows.Forms.ComboBox();
+            this.colorSchemeComboBox = new System.Windows.Forms.ComboBox();
+            this.dataSourceComboBox = new System.Windows.Forms.ComboBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.button_RegEx = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.trackBar_DrawSpeed = new System.Windows.Forms.TrackBar();
@@ -167,28 +176,32 @@ namespace Chart_Project
             this.label14 = new System.Windows.Forms.Label();
             this.checkBox21 = new System.Windows.Forms.CheckBox();
             this.checkBox37 = new System.Windows.Forms.CheckBox();
+            this.informationLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.checkBox29 = new System.Windows.Forms.CheckBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.chart3DControl = new Chart_Project.Chart3DControl();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.textBox_UserTitle = new System.Windows.Forms.TextBox();
             this.textBox_MousePoint = new System.Windows.Forms.TextBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.textBox_Cmd = new System.Windows.Forms.TextBox();
-            this.button_RegEx = new System.Windows.Forms.Button();
+            this.textBox_Mix = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.textBox_Mix = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.phiTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thetaTrackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rhoTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_DrawSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -372,6 +385,14 @@ namespace Chart_Project
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.splitContainer1.Panel1.Controls.Add(this.phiTrackBar);
+            this.splitContainer1.Panel1.Controls.Add(this.thetaTrackBar);
+            this.splitContainer1.Panel1.Controls.Add(this.rhoTrackBar);
+            this.splitContainer1.Panel1.Controls.Add(this.saveImageButton);
+            this.splitContainer1.Panel1.Controls.Add(this.resetPositionButton);
+            this.splitContainer1.Panel1.Controls.Add(this.rasterTypeComboBox);
+            this.splitContainer1.Panel1.Controls.Add(this.colorSchemeComboBox);
+            this.splitContainer1.Panel1.Controls.Add(this.dataSourceComboBox);
             this.splitContainer1.Panel1.Controls.Add(this.button3);
             this.splitContainer1.Panel1.Controls.Add(this.button_RegEx);
             this.splitContainer1.Panel1.Controls.Add(this.button2);
@@ -478,6 +499,7 @@ namespace Chart_Project
             this.splitContainer1.Panel1.Controls.Add(this.label14);
             this.splitContainer1.Panel1.Controls.Add(this.checkBox21);
             this.splitContainer1.Panel1.Controls.Add(this.checkBox37);
+            this.splitContainer1.Panel1.Controls.Add(this.informationLabel);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.label13);
@@ -486,9 +508,78 @@ namespace Chart_Project
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(1398, 584);
+            this.splitContainer1.Size = new System.Drawing.Size(1398, 773);
             this.splitContainer1.SplitterDistance = 187;
             this.splitContainer1.TabIndex = 10;
+            // 
+            // phiTrackBar
+            // 
+            this.phiTrackBar.Location = new System.Drawing.Point(31, 889);
+            this.phiTrackBar.Name = "phiTrackBar";
+            this.phiTrackBar.Size = new System.Drawing.Size(104, 45);
+            this.phiTrackBar.TabIndex = 21;
+            // 
+            // thetaTrackBar
+            // 
+            this.thetaTrackBar.Location = new System.Drawing.Point(31, 849);
+            this.thetaTrackBar.Name = "thetaTrackBar";
+            this.thetaTrackBar.Size = new System.Drawing.Size(104, 45);
+            this.thetaTrackBar.TabIndex = 21;
+            // 
+            // rhoTrackBar
+            // 
+            this.rhoTrackBar.Location = new System.Drawing.Point(31, 813);
+            this.rhoTrackBar.Name = "rhoTrackBar";
+            this.rhoTrackBar.Size = new System.Drawing.Size(104, 45);
+            this.rhoTrackBar.TabIndex = 21;
+            // 
+            // saveImageButton
+            // 
+            this.saveImageButton.Location = new System.Drawing.Point(35, 772);
+            this.saveImageButton.Name = "saveImageButton";
+            this.saveImageButton.Size = new System.Drawing.Size(75, 23);
+            this.saveImageButton.TabIndex = 20;
+            this.saveImageButton.Text = "button4";
+            this.saveImageButton.UseVisualStyleBackColor = true;
+            // 
+            // resetPositionButton
+            // 
+            this.resetPositionButton.Location = new System.Drawing.Point(35, 743);
+            this.resetPositionButton.Name = "resetPositionButton";
+            this.resetPositionButton.Size = new System.Drawing.Size(75, 23);
+            this.resetPositionButton.TabIndex = 20;
+            this.resetPositionButton.Text = "button4";
+            this.resetPositionButton.UseVisualStyleBackColor = true;
+            // 
+            // rasterTypeComboBox
+            // 
+            this.rasterTypeComboBox.FormattingEnabled = true;
+            this.rasterTypeComboBox.Location = new System.Drawing.Point(31, 697);
+            this.rasterTypeComboBox.Name = "rasterTypeComboBox";
+            this.rasterTypeComboBox.Size = new System.Drawing.Size(121, 20);
+            this.rasterTypeComboBox.TabIndex = 19;
+            // 
+            // colorSchemeComboBox
+            // 
+            this.colorSchemeComboBox.FormattingEnabled = true;
+            this.colorSchemeComboBox.Location = new System.Drawing.Point(31, 671);
+            this.colorSchemeComboBox.Name = "colorSchemeComboBox";
+            this.colorSchemeComboBox.Size = new System.Drawing.Size(121, 20);
+            this.colorSchemeComboBox.TabIndex = 19;
+            // 
+            // dataSourceComboBox
+            // 
+            this.dataSourceComboBox.FormattingEnabled = true;
+            this.dataSourceComboBox.Items.AddRange(new object[] {
+            "Callback",
+            "Formula",
+            "Surface",
+            "Scatterplot",
+            "Scatterlines"});
+            this.dataSourceComboBox.Location = new System.Drawing.Point(31, 645);
+            this.dataSourceComboBox.Name = "dataSourceComboBox";
+            this.dataSourceComboBox.Size = new System.Drawing.Size(121, 20);
+            this.dataSourceComboBox.TabIndex = 19;
             // 
             // button3
             // 
@@ -499,6 +590,17 @@ namespace Chart_Project
             this.button3.Text = "button1";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Visible = false;
+            // 
+            // button_RegEx
+            // 
+            this.button_RegEx.ForeColor = System.Drawing.Color.Black;
+            this.button_RegEx.Location = new System.Drawing.Point(29, 460);
+            this.button_RegEx.Name = "button_RegEx";
+            this.button_RegEx.Size = new System.Drawing.Size(57, 22);
+            this.button_RegEx.TabIndex = 11;
+            this.button_RegEx.Text = "RegEx";
+            this.button_RegEx.UseVisualStyleBackColor = true;
+            this.button_RegEx.Click += new System.EventHandler(this.button_RegEx_Click);
             // 
             // button2
             // 
@@ -519,6 +621,7 @@ namespace Chart_Project
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // trackBar_DrawSpeed
             // 
@@ -1232,6 +1335,7 @@ namespace Chart_Project
             this.textBox_resolution.Size = new System.Drawing.Size(28, 21);
             this.textBox_resolution.TabIndex = 12;
             this.textBox_resolution.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.textBox_resolution.TextChanged += new System.EventHandler(this.textBox_resolution_TextChanged);
             // 
             // checkBox8
             // 
@@ -1528,6 +1632,16 @@ namespace Chart_Project
             this.checkBox37.UseVisualStyleBackColor = true;
             this.checkBox37.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             // 
+            // informationLabel
+            // 
+            this.informationLabel.AutoSize = true;
+            this.informationLabel.Location = new System.Drawing.Point(14, 621);
+            this.informationLabel.Name = "informationLabel";
+            this.informationLabel.Size = new System.Drawing.Size(29, 12);
+            this.informationLabel.TabIndex = 9;
+            this.informationLabel.Text = "정보";
+            this.informationLabel.Visible = false;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -1582,7 +1696,7 @@ namespace Chart_Project
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.textBox_Mix);
-            this.splitContainer2.Size = new System.Drawing.Size(1207, 584);
+            this.splitContainer2.Size = new System.Drawing.Size(1207, 773);
             this.splitContainer2.SplitterDistance = 1058;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -1595,6 +1709,7 @@ namespace Chart_Project
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.chart3DControl);
             this.splitContainer3.Panel1.Controls.Add(this.chart2);
             this.splitContainer3.Panel1.Controls.Add(this.textBox_UserTitle);
             this.splitContainer3.Panel1.Controls.Add(this.textBox_MousePoint);
@@ -1605,24 +1720,43 @@ namespace Chart_Project
             // 
             this.splitContainer3.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.splitContainer3.Panel2.Controls.Add(this.textBox_Cmd);
-            this.splitContainer3.Size = new System.Drawing.Size(1058, 584);
-            this.splitContainer3.SplitterDistance = 555;
+            this.splitContainer3.Size = new System.Drawing.Size(1058, 773);
+            this.splitContainer3.SplitterDistance = 734;
             this.splitContainer3.TabIndex = 2;
+            // 
+            // chart3DControl
+            // 
+            this.chart3DControl.AxisXColor = System.Drawing.Color.DarkBlue;
+            this.chart3DControl.AxisXLegend = null;
+            this.chart3DControl.AxisYColor = System.Drawing.Color.DarkGreen;
+            this.chart3DControl.AxisYLegend = null;
+            this.chart3DControl.AxisZColor = System.Drawing.Color.DarkRed;
+            this.chart3DControl.AxisZLegend = null;
+            this.chart3DControl.BackColor = System.Drawing.Color.White;
+            this.chart3DControl.BorderColor = System.Drawing.Color.Black;
+            this.chart3DControl.Dock = System.Windows.Forms.DockStyle.Right;
+            this.chart3DControl.Location = new System.Drawing.Point(138, 0);
+            this.chart3DControl.Name = "chart3DControl";
+            this.chart3DControl.PolygonLineColor = System.Drawing.Color.Black;
+            this.chart3DControl.RasterType = Chart_Project.RasterType.Off;
+            this.chart3DControl.Size = new System.Drawing.Size(368, 734);
+            this.chart3DControl.TabIndex = 21;
+            this.chart3DControl.TopLegendColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(150)))));
             // 
             // chart2
             // 
-            chartArea13.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea13);
+            chartArea1.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea1);
             this.chart2.Dock = System.Windows.Forms.DockStyle.Right;
-            legend13.Name = "Legend1";
-            this.chart2.Legends.Add(legend13);
+            legend1.Name = "Legend1";
+            this.chart2.Legends.Add(legend1);
             this.chart2.Location = new System.Drawing.Point(506, 0);
             this.chart2.Name = "chart2";
-            series13.ChartArea = "ChartArea1";
-            series13.Legend = "Legend1";
-            series13.Name = "Series1";
-            this.chart2.Series.Add(series13);
-            this.chart2.Size = new System.Drawing.Size(552, 555);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart2.Series.Add(series1);
+            this.chart2.Size = new System.Drawing.Size(552, 734);
             this.chart2.TabIndex = 20;
             this.chart2.Text = "chart2";
             this.chart2.Visible = false;
@@ -1648,18 +1782,18 @@ namespace Chart_Project
             // 
             // chart1
             // 
-            chartArea14.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea14);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend14.Name = "Legend1";
-            this.chart1.Legends.Add(legend14);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(3, 0);
             this.chart1.Name = "chart1";
-            series14.ChartArea = "ChartArea1";
-            series14.Legend = "Legend1";
-            series14.Name = "Series1";
-            this.chart1.Series.Add(series14);
-            this.chart1.Size = new System.Drawing.Size(1055, 555);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(1055, 734);
             this.chart1.TabIndex = 19;
             this.chart1.Text = "chart1";
             this.chart1.SizeChanged += new System.EventHandler(this.chart1_SizeChanged);
@@ -1670,7 +1804,7 @@ namespace Chart_Project
             // 
             this.splitter1.Location = new System.Drawing.Point(0, 0);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 555);
+            this.splitter1.Size = new System.Drawing.Size(3, 734);
             this.splitter1.TabIndex = 1;
             this.splitter1.TabStop = false;
             // 
@@ -1683,21 +1817,9 @@ namespace Chart_Project
             this.textBox_Cmd.Multiline = true;
             this.textBox_Cmd.Name = "textBox_Cmd";
             this.textBox_Cmd.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_Cmd.Size = new System.Drawing.Size(1058, 25);
+            this.textBox_Cmd.Size = new System.Drawing.Size(1058, 35);
             this.textBox_Cmd.TabIndex = 0;
             this.textBox_Cmd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_Cmd_KeyPress);
-            // 
-            // button_RegEx
-            // 
-            this.button_RegEx.ForeColor = System.Drawing.Color.Black;
-            this.button_RegEx.Location = new System.Drawing.Point(29, 460);
-            this.button_RegEx.Name = "button_RegEx";
-            this.button_RegEx.Size = new System.Drawing.Size(57, 22);
-            this.button_RegEx.TabIndex = 11;
-            this.button_RegEx.Text = "RegEx";
-            this.button_RegEx.UseVisualStyleBackColor = true;
-            this.button_RegEx.Visible = false;
-            this.button_RegEx.Click += new System.EventHandler(this.button_RegEx_Click);
             // 
             // textBox_Mix
             // 
@@ -1715,7 +1837,7 @@ namespace Chart_Project
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1398, 608);
+            this.ClientSize = new System.Drawing.Size(1398, 797);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.ForeColor = System.Drawing.Color.White;
@@ -1731,6 +1853,9 @@ namespace Chart_Project
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.phiTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.thetaTrackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.rhoTrackBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_DrawSpeed)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
@@ -1903,6 +2028,16 @@ namespace Chart_Project
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.TextBox textBox_Mix;
+        private System.Windows.Forms.TrackBar phiTrackBar;
+        private System.Windows.Forms.TrackBar thetaTrackBar;
+        private System.Windows.Forms.TrackBar rhoTrackBar;
+        private System.Windows.Forms.Button saveImageButton;
+        private System.Windows.Forms.Button resetPositionButton;
+        private System.Windows.Forms.ComboBox rasterTypeComboBox;
+        private System.Windows.Forms.ComboBox colorSchemeComboBox;
+        private System.Windows.Forms.ComboBox dataSourceComboBox;
+        private Chart_Project.Chart3DControl chart3DControl;
+        private System.Windows.Forms.Label informationLabel;
     }
 }
 
